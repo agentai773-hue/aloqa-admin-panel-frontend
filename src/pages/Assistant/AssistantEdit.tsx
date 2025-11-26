@@ -211,92 +211,127 @@ export default function AssistantEdit() {
   const selectedUser = approvedUsersWithToken.find((u: User) => u._id === formData.userId);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Header */}
+      <div className="bg-white shadow-md border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate(`/assistants/${id}/view`)}
+                className="group p-3 hover:bg-gray-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-gray-300"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-linear-to-r from-blue-600 to-indigo-600 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
+                    <ArrowLeft className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="font-medium text-gray-700 group-hover:text-gray-900">Back</span>
+                </div>
+              </button>
+              <div>
+                <h1 className="text-4xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Edit Assistant
+                </h1>
+                <p className="text-gray-600 mt-1 font-medium">{assistant.agentName}</p>
+              </div>
+            </div>
             <button
               onClick={() => navigate(`/assistants/${id}/view`)}
-              className="p-2 hover:bg-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all border-2 border-gray-300 hover:border-gray-400 font-medium shadow-sm hover:shadow-md"
             >
-              <ArrowLeft className="h-6 w-6 text-gray-700" />
+              <Eye className="h-5 w-5" />
+              View Mode
             </button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Edit Assistant</h1>
-              <p className="text-gray-600 mt-1">{assistant.agentName}</p>
-            </div>
           </div>
-          <button
-            onClick={() => navigate(`/assistants/${id}/view`)}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-          >
-            <Eye className="h-4 w-4" />
-            View Mode
-          </button>
         </div>
+      </div>
 
-        {/* Form */}
+      {/* Form */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - User & Basic Info */}
-            <div className="space-y-6">
-              {/* User Information */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">User Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Assigned User <span className="text-xs font-normal text-gray-500">(Cannot be changed)</span>
-                    </label>
+          {/* User & Basic Information Card */}
+          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden">
+            <div className="p-8 md:p-10 border-b-2 border-gray-100 bg-linear-to-r from-blue-50/30 to-indigo-50/30">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="bg-blue-100 p-3 rounded-xl">
+                  <svg className="h-7 w-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Basic Information</h2>
+              </div>
+            </div>
+            
+            <div className="p-8 md:p-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Assigned User */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                    Assigned User 
+                    <span className="ml-2 text-xs font-normal normal-case text-gray-500 tracking-normal">(Cannot be changed)</span>
+                  </label>
+                  <div className="relative">
                     <select
                       disabled
                       value={formData.userId}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 cursor-not-allowed opacity-60"
+                      className="w-full px-4 py-3.5 border-2 rounded-xl bg-gray-100 cursor-not-allowed opacity-70 border-gray-300"
                     >
                       <option value={formData.userId}>
                         {selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName} - ${selectedUser.email}` : 'User Info'}
                       </option>
                     </select>
-                    {selectedUser && (
-                      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-                        <p><span className="font-semibold">Company:</span> {selectedUser.companyName}</p>
-                        <p className="text-green-600 mt-1">✓ Bearer Token Active</p>
+                  </div>
+                  {selectedUser && (
+                    <div className="mt-3 p-4 bg-linear-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-700">
+                            <span className="text-gray-500">Company:</span> {selectedUser.companyName}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 text-green-700 font-semibold text-sm">
+                          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          Bearer Token Active
+                        </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              {/* Basic Information */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Basic Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Agent Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.agentName}
-                      onChange={(e) => setFormData({ ...formData, agentName: e.target.value })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      placeholder="My Assistant"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Agent Type *</label>
-                    <select
-                      required
-                      value={formData.agentType}
-                      onChange={(e) => setFormData({ ...formData, agentType: e.target.value as 'conversation' | 'webhook' | 'other' })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="conversation">Conversation</option>
-                      <option value="webhook">Webhook</option>
-                      <option value="sales">Sales</option>
-                      <option value="support">Support</option>
-                      <option value="appointment">Appointment</option>
-                      <option value="survey">Survey</option>
+                {/* Agent Name */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                    Agent Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.agentName}
+                    onChange={(e) => setFormData({ ...formData, agentName: e.target.value })}
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    placeholder="My Assistant"
+                  />
+                </div>
+
+                {/* Agent Type */}
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                    Agent Type <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={formData.agentType}
+                    onChange={(e) => setFormData({ ...formData, agentType: e.target.value as 'conversation' | 'webhook' | 'other' })}
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                  >
+                    <option value="conversation">Conversation</option>
+                    <option value="webhook">Webhook</option>
+                    <option value="sales">Sales</option>
+                    <option value="support">Support</option>
+                    <option value="appointment">Appointment</option>
+                    <option value="survey">Survey</option>
                       <option value="other">Other</option>
                     </select>
                   </div>

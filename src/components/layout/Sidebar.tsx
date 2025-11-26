@@ -24,7 +24,9 @@ export default function Sidebar() {
     return { title: 'Dashboard', subtitle: 'Welcome back! Here\'s what\'s happening.' };
   } else if (path === '/users') {
     return { title: 'Users', subtitle: 'Manage user accounts and permissions' };
-  } else if (path.startsWith('/users/') && path.includes('/view')) {
+  } else if(path === '/user/create'){
+    return { title: 'Create User', subtitle: 'Add a new user to the system' };
+  }if (path.startsWith('/users/') && path.includes('/view')) {
     return { title: 'User Details', subtitle: 'View user information and activity' };
   } else if (path.startsWith('/users/') && path.includes('/edit')) {
     return { title: 'Edit User', subtitle: 'Update user information and settings' };

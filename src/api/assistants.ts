@@ -8,31 +8,35 @@ export interface Route {
 }
 
 export interface LLMConfig {
-  agent_flow_type: string;
+  agentType: string;
+  agentFlowType: string;
   provider: string;
   family: string;
   model: string;
   temperature: number;
-  max_tokens: number;
-  top_p: number;
-  min_p?: number;
-  top_k?: number;
-  presence_penalty: number;
-  frequency_penalty: number;
-  request_json: boolean;
+  maxTokens: number;
+  topP: number;
+  minP: number;
+  topK: number;
+  presencePenalty: number;
+  frequencyPenalty: number;
+  requestJson: boolean;
+}
+
+export interface SynthesizerProviderConfig {
+  voice: string;
+  engine: string;
+  samplingRate: string;
+  language: string;
+  model?: string;
 }
 
 export interface SynthesizerConfig {
   provider: string;
-  provider_config: {
-    voice: string;
-    engine: string;
-    sampling_rate: string;
-    language: string;
-  };
+  providerConfig: SynthesizerProviderConfig;
   stream: boolean;
-  buffer_size: number;
-  audio_format: string;
+  bufferSize: number;
+  audioFormat: string;
 }
 
 export interface TranscriberConfig {
@@ -40,17 +44,27 @@ export interface TranscriberConfig {
   model: string;
   language: string;
   stream: boolean;
-  sampling_rate: number;
+  samplingRate: number;
   encoding: string;
   endpointing: number;
 }
 
 export interface TaskConfig {
-  hangup_after_silence: number;
-  incremental_delay: number;
-  number_of_words_for_interruption: number;
+  hangupAfterSilence: number;
+  incrementalDelay: number;
+  numberOfWordsForInterruption: number;
   backchanneling: boolean;
-  call_terminate: number;
+  callTerminate?: number; // Optional - user must select
+  hangupAfterLLMCall?: boolean;
+  callCancellationPrompt?: string | null;
+  backchannelingMessageGap?: number;
+  backchannelingStartDelay?: number;
+  ambientNoise?: boolean;
+  ambientNoiseTrack?: string;
+  voicemail?: boolean;
+  inboundLimit?: number;
+  whitelistPhoneNumbers?: string[];
+  disallowUnknownNumbers?: boolean;
 }
 
 export interface InputOutputConfig {
@@ -61,7 +75,7 @@ export interface InputOutputConfig {
 export interface CreateAssistantData {
   userId: string;
   agentName: string;
-  agentType: 'conversation' | 'webhook' | 'other';
+  agentType: string;
   agentWelcomeMessage: string;
   webhookUrl?: string;
   systemPrompt: string;
@@ -84,7 +98,7 @@ export interface Assistant {
     bearerToken?: string;
   };
   agentName: string;
-  agentType: 'conversation' | 'webhook' | 'other';
+  agentType: string;
   agentWelcomeMessage: string;
   webhookUrl?: string;
   systemPrompt: string;

@@ -15,7 +15,7 @@ export interface User {
   totalMinutes: number;
   paymentId?: string;
   lastLogin?: string;
-  isActive: boolean;
+  isActive: 0 | 1; // 0 = Email not verified, 1 = Email verified
   createdAt: string;
   updatedAt: string;
 }
@@ -52,6 +52,11 @@ export interface UserStatsResponse {
   totalUsers: number;
   approvedUsers: number;
   pendingUsers: number;
+}
+
+export interface DeleteUserResponse {
+  deletedAssistants: number;
+  deletedPhoneNumbers: number;
 }
 
 export const usersAPI = {
@@ -93,11 +98,16 @@ export const usersAPI = {
 
   // Delete user
   async deleteUser(id: string) {
-    return apiClient.delete<void>(`/users/${id}`);
+    return apiClient.delete<DeleteUserResponse>(`/users/${id}`);
   },
 
   // Get user statistics
   async getUserStats() {
     return apiClient.get<UserStatsResponse>('/users/stats');
+  },
+
+  // Manually verify user email (admin only)
+  async verifyUserEmail(id: string) {
+    return apiClient.patch<{ user: User }>(`/users/${id}/verify-email`, {});
   }
 };

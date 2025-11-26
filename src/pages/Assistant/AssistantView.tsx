@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { assistantsAPI } from '../../api/assistants';
-import { ArrowLeft, Loader2, Edit, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Edit, CheckCircle2 } from 'lucide-react';
 import type { User } from '../../api/users';
 
 export default function AssistantView() {
@@ -41,266 +41,226 @@ export default function AssistantView() {
   const user = typeof assistant.userId === 'object' ? assistant.userId as User : null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/assistant')}
-              className="p-2 hover:bg-white rounded-lg transition-colors"
-            >
-              <ArrowLeft className="h-6 w-6 text-gray-700" />
-            </button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{assistant.agentName}</h1>
-              <p className="text-gray-600 mt-1">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 capitalize">
-                  {assistant.agentType}
-                </span>
-                {assistant.agentId && (
-                  <span className="ml-3 text-sm text-gray-500">
-                    Agent ID: <span className="font-mono">{assistant.agentId}</span>
-                  </span>
-                )}
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-4">
           <button
-            onClick={() => navigate(`/assistants/${id}/edit`)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            onClick={() => navigate('/assistant')}
+            className="group inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-6"
           >
-            <Edit className="h-4 w-4" />
-            Edit Assistant
+            <div className="p-1 rounded-full group-hover:bg-blue-100 transition-colors">
+              <ArrowLeft className="h-5 w-5" />
+            </div>
+            <span className="font-medium">Back to Assistants</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">User Information</h2>
-              {user ? (
-                <div className="space-y-3">
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-gray-600">Name</p>
-                    <p className="text-base font-semibold text-gray-900">{user.firstName} {user.lastName}</p>
-                  </div>
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-gray-600">Email</p>
-                    <p className="text-base font-semibold text-gray-900">{user.email}</p>
-                  </div>
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-gray-600">Company</p>
-                    <p className="text-base font-semibold text-gray-900">{user.companyName}</p>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    <p className="text-sm font-semibold text-green-800">Bearer Token Active</p>
+        {/* Main Card */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+          {/* Profile Header */}
+          <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-8 py-10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="h-24 w-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-4 border-white/30">
+                  <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-3xl font-bold text-white mb-2">
+                    {assistant.agentName}
+                  </h2>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold bg-white/20 backdrop-blur-sm text-white border border-white/30 capitalize">
+                      {assistant.agentType}
+                    </span>
+                    {assistant.agentId && (
+                      <span className="text-blue-100 text-sm">
+                        ID: <span className="font-mono font-medium">{assistant.agentId}</span>
+                      </span>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <p className="text-gray-500">No user information available</p>
-              )}
+              </div>
+              <button
+                onClick={() => navigate(`/assistants/${id}/edit`)}
+                className="flex items-center gap-2 px-5 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-xl transition-all border-2 border-white/30 hover:border-white/50 font-medium shadow-lg"
+              >
+                <Edit className="h-5 w-5" />
+                Edit Assistant
+              </button>
             </div>
+          </div>
 
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Basic Information</h2>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Agent Name</p>
-                  <p className="text-base font-semibold text-gray-900 p-3 bg-gray-50 rounded border">{assistant.agentName}</p>
+          {/* Content */}
+          <div className="p-8">
+            {/* User Information */}
+            {user && (
+              <div className="mb-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900">Assigned User</h3>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Agent Type</p>
-                  <p className="text-base font-semibold text-gray-900 p-3 bg-gray-50 rounded border capitalize">{assistant.agentType}</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200">
+                    <label className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2 block">Name</label>
+                    <p className="text-lg font-bold text-gray-900">{user.firstName} {user.lastName}</p>
+                  </div>
+                  <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
+                    <label className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-2 block">Email</label>
+                    <p className="text-lg font-bold text-gray-900 break-all">{user.email}</p>
+                  </div>
+                  <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-5 border border-green-200">
+                    <label className="text-sm font-semibold text-green-600 uppercase tracking-wide mb-2 block">Company</label>
+                    <p className="text-lg font-bold text-gray-900">{user.companyName}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Welcome Message</p>
-                  <p className="text-base text-gray-900 p-3 bg-gray-50 rounded border">{assistant.agentWelcomeMessage}</p>
+                
+                <div className="mt-4 flex items-center gap-2 p-4 bg-linear-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <p className="text-sm font-semibold text-green-800">Bearer Token Active</p>
+                </div>
+              </div>
+            )}
+
+            {/* Basic Information */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-indigo-100 rounded-lg">
+                  <svg className="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">Basic Information</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200">
+                  <label className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Agent Name</label>
+                  <p className="text-xl font-bold text-gray-900">{assistant.agentName}</p>
+                </div>
+                <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200">
+                  <label className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Agent Type</label>
+                  <p className="text-xl font-bold text-gray-900 capitalize">{assistant.agentType}</p>
+                </div>
+                <div className="md:col-span-2 bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200">
+                  <label className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2 block">Welcome Message</label>
+                  <p className="text-base text-gray-900">{assistant.agentWelcomeMessage}</p>
                 </div>
                 {assistant.webhookUrl && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Webhook URL</p>
-                    <p className="text-sm text-gray-900 p-3 bg-gray-50 rounded border break-all">{assistant.webhookUrl}</p>
+                  <div className="md:col-span-2 bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
+                    <label className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-2 block">Webhook URL</label>
+                    <p className="text-sm text-gray-900 break-all font-mono">{assistant.webhookUrl}</p>
                   </div>
                 )}
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">System Prompt</p>
-                  <p className="text-sm text-gray-900 p-3 bg-gray-50 rounded border whitespace-pre-wrap">{assistant.systemPrompt}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">LLM Configuration</h2>
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Provider</p>
-                    <p className="text-sm font-semibold text-gray-900 capitalize">{assistant.llmConfig?.provider || 'N/A'}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Model</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.llmConfig?.model || 'N/A'}</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Temperature</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.llmConfig?.temperature ?? 'N/A'}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Max Tokens</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.llmConfig?.max_tokens || 'N/A'}</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Top P</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.llmConfig?.top_p ?? 'N/A'}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Flow Type</p>
-                    <p className="text-sm font-semibold text-gray-900 capitalize">{assistant.llmConfig?.agent_flow_type || 'N/A'}</p>
-                  </div>
+                <div className="md:col-span-2 bg-linear-to-br from-gray-50 to-slate-50 rounded-xl p-5 border border-gray-200">
+                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2 block">System Prompt</label>
+                  <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">{assistant.systemPrompt}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Voice Synthesizer</h2>
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Provider</p>
-                    <p className="text-sm font-semibold text-gray-900 capitalize">{assistant.synthesizerConfig?.provider || 'N/A'}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Voice</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.synthesizerConfig?.provider_config?.voice || 'N/A'}</p>
-                  </div>
+            {/* Technical Configuration */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Language</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.synthesizerConfig?.provider_config?.language || 'N/A'}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Sampling Rate</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.synthesizerConfig?.provider_config?.sampling_rate || 'N/A'}</p>
-                  </div>
-                </div>
+                <h3 className="text-2xl font-bold text-gray-900">Technical Configuration</h3>
               </div>
-            </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* LLM Config */}
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <span className="h-2 w-2 bg-blue-500 rounded-full"></span>
+                    LLM Configuration
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                      <span className="text-xs text-gray-500">Provider</span>
+                      <span className="text-sm font-semibold text-gray-900 capitalize">{assistant.llmConfig?.provider || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                      <span className="text-xs text-gray-500">Model</span>
+                      <span className="text-sm font-semibold text-gray-900">{assistant.llmConfig?.model || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                      <span className="text-xs text-gray-500">Temperature</span>
+                      <span className="text-sm font-semibold text-gray-900">{assistant.llmConfig?.temperature ?? 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Max Tokens</span>
+                      <span className="text-sm font-semibold text-gray-900">{assistant.llmConfig?.max_tokens || 'N/A'}</span>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Transcriber</h2>
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Provider</p>
-                    <p className="text-sm font-semibold text-gray-900 capitalize">{assistant.transcriberConfig?.provider || 'N/A'}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Model</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.transcriberConfig?.model || 'N/A'}</p>
+                {/* Voice Synthesizer */}
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <span className="h-2 w-2 bg-green-500 rounded-full"></span>
+                    Voice Synthesizer
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                      <span className="text-xs text-gray-500">Provider</span>
+                      <span className="text-sm font-semibold text-gray-900 capitalize">{assistant.synthesizerConfig?.provider || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                      <span className="text-xs text-gray-500">Voice</span>
+                      <span className="text-sm font-semibold text-gray-900">{assistant.synthesizerConfig?.provider_config?.voice || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                      <span className="text-xs text-gray-500">Language</span>
+                      <span className="text-sm font-semibold text-gray-900">{assistant.synthesizerConfig?.provider_config?.language || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Sampling Rate</span>
+                      <span className="text-sm font-semibold text-gray-900">{assistant.synthesizerConfig?.provider_config?.sampling_rate || 'N/A'}</span>
+                    </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Language</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.transcriberConfig?.language || 'N/A'}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Endpointing</p>
-                    <p className="text-sm font-semibold text-gray-900">{assistant.transcriberConfig?.endpointing ? `${assistant.transcriberConfig.endpointing}ms` : 'N/A'}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Input/Output</h2>
-              <div className="space-y-3">
-                <div className="p-3 bg-gray-50 rounded border">
-                  <p className="text-xs text-gray-600 mb-1">Input Provider</p>
-                  <p className="text-sm font-semibold text-gray-900 capitalize">
-                    {assistant.inputConfig?.provider || 'N/A'} ({assistant.inputConfig?.format || 'N/A'})
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded border">
-                  <p className="text-xs text-gray-600 mb-1">Output Provider</p>
-                  <p className="text-sm font-semibold text-gray-900 capitalize">
-                    {assistant.outputConfig?.provider || 'N/A'} ({assistant.outputConfig?.format || 'N/A'})
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Task Configuration</h2>
-              <div className="space-y-3">
-                <div className="p-3 bg-gray-50 rounded border flex justify-between items-center">
-                  <span className="text-xs text-gray-600">Hangup After Silence</span>
-                  <span className="text-sm font-semibold text-gray-900">
-                    {assistant.taskConfig?.hangup_after_silence ? `${assistant.taskConfig.hangup_after_silence}s` : 'N/A'}
-                  </span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded border flex justify-between items-center">
-                  <span className="text-xs text-gray-600">Incremental Delay</span>
-                  <span className="text-sm font-semibold text-gray-900">
-                    {assistant.taskConfig?.incremental_delay ? `${assistant.taskConfig.incremental_delay}ms` : 'N/A'}
-                  </span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded border flex justify-between items-center">
-                  <span className="text-xs text-gray-600">Words for Interruption</span>
-                  <span className="text-sm font-semibold text-gray-900">
-                    {assistant.taskConfig?.number_of_words_for_interruption ?? 'N/A'}
-                  </span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded border flex justify-between items-center">
-                  <span className="text-xs text-gray-600">Call Terminate</span>
-                  <span className="text-sm font-semibold text-gray-900">
-                    {assistant.taskConfig?.call_terminate ? `${assistant.taskConfig.call_terminate}s` : 'N/A'}
-                  </span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded border flex justify-between items-center">
-                  <span className="text-xs text-gray-600">Backchanneling</span>
-                  <span className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    {assistant.taskConfig?.backchanneling ? (
-                      <><CheckCircle2 className="h-4 w-4 text-green-600" /> Enabled</>
+                {/* Transcriber */}
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <span className="h-2 w-2 bg-purple-500 rounded-full"></span>
+                    Transcriber
+                  </h4>
+                  <div className="space-y-3">{assistant.transcriberConfig ? (
+                      <>
+                        <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                          <span className="text-xs text-gray-500">Provider</span>
+                          <span className="text-sm font-semibold text-gray-900 capitalize">{assistant.transcriberConfig.provider}</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                          <span className="text-xs text-gray-500">Model</span>
+                          <span className="text-sm font-semibold text-gray-900">{assistant.transcriberConfig.model}</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                          <span className="text-xs text-gray-500">Language</span>
+                          <span className="text-sm font-semibold text-gray-900">{assistant.transcriberConfig.language}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-500">Sampling Rate</span>
+                          <span className="text-sm font-semibold text-gray-900">{assistant.transcriberConfig.sampling_rate}</span>
+                        </div>
+                      </>
                     ) : (
-                      <><XCircle className="h-4 w-4 text-red-600" /> Disabled</>
+                      <p className="text-sm text-gray-500">Not configured</p>
                     )}
-                  </span>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Metadata</h2>
-              <div className="space-y-3">
-                {assistant.agentId && (
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Bolna Agent ID</p>
-                    <p className="text-sm font-mono text-gray-900">{assistant.agentId}</p>
-                  </div>
-                )}
-                {assistant.createdAt && (
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Created At</p>
-                    <p className="text-sm text-gray-900">{new Date(assistant.createdAt).toLocaleString()}</p>
-                  </div>
-                )}
-                {assistant.updatedAt && (
-                  <div className="p-3 bg-gray-50 rounded border">
-                    <p className="text-xs text-gray-600 mb-1">Last Updated</p>
-                    <p className="text-sm text-gray-900">{new Date(assistant.updatedAt).toLocaleString()}</p>
-                  </div>
-                )}
               </div>
             </div>
           </div>

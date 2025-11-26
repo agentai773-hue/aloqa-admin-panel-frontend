@@ -362,390 +362,384 @@ export default function AssistantEdit() {
                       required
                       value={formData.systemPrompt}
                       onChange={(e) => setFormData({ ...formData, systemPrompt: e.target.value })}
-                      rows={5}
+                      rows={10}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
                       placeholder="You are a helpful assistant..."
                     />
                   </div>
+              </div>
+            </div>
+          </div>
+
+          {/* LLM Configuration */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">LLM Configuration</h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
+                  <select
+                    value={formData.llmConfig.provider}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      llmConfig: { ...formData.llmConfig, provider: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                    <option value="groq">Groq</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Model</label>
+                  <input
+                    type="text"
+                    value={formData.llmConfig.model}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      llmConfig: { ...formData.llmConfig, model: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Temperature</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="2"
+                    value={formData.llmConfig.temperature}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      llmConfig: { ...formData.llmConfig, temperature: parseFloat(e.target.value) }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Max Tokens</label>
+                  <input
+                    type="number"
+                    value={formData.llmConfig.max_tokens}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      llmConfig: { ...formData.llmConfig, max_tokens: parseInt(e.target.value) }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Top P</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="1"
+                    value={formData.llmConfig.top_p}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      llmConfig: { ...formData.llmConfig, top_p: parseFloat(e.target.value) }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Flow Type</label>
+                  <select
+                    value={formData.llmConfig.agent_flow_type}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      llmConfig: { ...formData.llmConfig, agent_flow_type: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="streaming">Streaming</option>
+                    <option value="default">Default</option>
+                  </select>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Middle Column - LLM & Voice */}
-            <div className="space-y-6">
-              {/* LLM Configuration */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">LLM Configuration</h2>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
-                      <select
-                        value={formData.llmConfig.provider}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          llmConfig: { ...formData.llmConfig, provider: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="openai">OpenAI</option>
-                        <option value="anthropic">Anthropic</option>
-                        <option value="groq">Groq</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Model</label>
-                      <input
-                        type="text"
-                        value={formData.llmConfig.model}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          llmConfig: { ...formData.llmConfig, model: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Temperature</label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="2"
-                        value={formData.llmConfig.temperature}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          llmConfig: { ...formData.llmConfig, temperature: parseFloat(e.target.value) }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Max Tokens</label>
-                      <input
-                        type="number"
-                        value={formData.llmConfig.max_tokens}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          llmConfig: { ...formData.llmConfig, max_tokens: parseInt(e.target.value) }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Top P</label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="1"
-                        value={formData.llmConfig.top_p}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          llmConfig: { ...formData.llmConfig, top_p: parseFloat(e.target.value) }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Flow Type</label>
-                      <select
-                        value={formData.llmConfig.agent_flow_type}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          llmConfig: { ...formData.llmConfig, agent_flow_type: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="streaming">Streaming</option>
-                        <option value="default">Default</option>
-                      </select>
-                    </div>
-                  </div>
+          {/* Voice Synthesizer */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Voice Synthesizer</h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
+                  <select
+                    value={formData.synthesizerConfig.provider}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      synthesizerConfig: { ...formData.synthesizerConfig, provider: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="polly">Amazon Polly</option>
+                    <option value="elevenlabs">ElevenLabs</option>
+                    <option value="deepgram">Deepgram</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Voice</label>
+                  <input
+                    type="text"
+                    value={formData.synthesizerConfig.provider_config?.voice || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      synthesizerConfig: {
+                        ...formData.synthesizerConfig,
+                        provider_config: {
+                          ...(formData.synthesizerConfig.provider_config || {}),
+                          voice: e.target.value
+                        }
+                      }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
-
-              {/* Voice Synthesizer */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Voice Synthesizer</h2>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
-                      <select
-                        value={formData.synthesizerConfig.provider}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          synthesizerConfig: { ...formData.synthesizerConfig, provider: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="polly">Amazon Polly</option>
-                        <option value="elevenlabs">ElevenLabs</option>
-                        <option value="deepgram">Deepgram</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Voice</label>
-                      <input
-                        type="text"
-                        value={formData.synthesizerConfig.provider_config?.voice || ''}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          synthesizerConfig: {
-                            ...formData.synthesizerConfig,
-                            provider_config: {
-                              ...(formData.synthesizerConfig.provider_config || {}),
-                              voice: e.target.value
-                            }
-                          }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Language</label>
-                      <input
-                        type="text"
-                        value={formData.synthesizerConfig.provider_config?.language || ''}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          synthesizerConfig: {
-                            ...formData.synthesizerConfig,
-                            provider_config: {
-                              ...(formData.synthesizerConfig.provider_config || {}),
-                              language: e.target.value
-                            }
-                          }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Sampling Rate</label>
-                      <input
-                        type="text"
-                        value={formData.synthesizerConfig.provider_config?.sampling_rate || ''}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          synthesizerConfig: {
-                            ...formData.synthesizerConfig,
-                            provider_config: {
-                              ...(formData.synthesizerConfig.provider_config || {}),
-                              sampling_rate: e.target.value
-                            }
-                          }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Language</label>
+                  <input
+                    type="text"
+                    value={formData.synthesizerConfig.provider_config?.language || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      synthesizerConfig: {
+                        ...formData.synthesizerConfig,
+                        provider_config: {
+                          ...(formData.synthesizerConfig.provider_config || {}),
+                          language: e.target.value
+                        }
+                      }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-              </div>
-
-              {/* Transcriber */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Transcriber</h2>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
-                      <select
-                        value={formData.transcriberConfig.provider}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          transcriberConfig: { ...formData.transcriberConfig, provider: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="deepgram">Deepgram</option>
-                        <option value="whisper">Whisper</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Model</label>
-                      <input
-                        type="text"
-                        value={formData.transcriberConfig.model}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          transcriberConfig: { ...formData.transcriberConfig, model: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Language</label>
-                      <input
-                        type="text"
-                        value={formData.transcriberConfig.language}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          transcriberConfig: { ...formData.transcriberConfig, language: e.target.value }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Endpointing (ms)</label>
-                      <input
-                        type="number"
-                        value={formData.transcriberConfig.endpointing}
-                        onChange={(e) => setFormData({
-                          ...formData,
-                          transcriberConfig: { ...formData.transcriberConfig, endpointing: parseInt(e.target.value) }
-                        })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Sampling Rate</label>
+                  <input
+                    type="text"
+                    value={formData.synthesizerConfig.provider_config?.sampling_rate || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      synthesizerConfig: {
+                        ...formData.synthesizerConfig,
+                        provider_config: {
+                          ...(formData.synthesizerConfig.provider_config || {}),
+                          sampling_rate: e.target.value
+                        }
+                      }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Right Column - I/O & Task Config */}
-            <div className="space-y-6">
-              {/* Input/Output */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Input/Output</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Input Provider</label>
-                    <select
-                      value={formData.inputConfig.provider}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        inputConfig: { ...formData.inputConfig, provider: e.target.value }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="plivo">Plivo</option>
-                      <option value="twilio">Twilio</option>
-                      <option value="exotel">Exotel</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Input Format</label>
-                    <select
-                      value={formData.inputConfig.format}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        inputConfig: { ...formData.inputConfig, format: e.target.value }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="wav">WAV</option>
-                      <option value="mp3">MP3</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Output Provider</label>
-                    <select
-                      value={formData.outputConfig.provider}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        outputConfig: { ...formData.outputConfig, provider: e.target.value }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="plivo">Plivo</option>
-                      <option value="twilio">Twilio</option>
-                      <option value="exotel">Exotel</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Output Format</label>
-                    <select
-                      value={formData.outputConfig.format}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        outputConfig: { ...formData.outputConfig, format: e.target.value }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="wav">WAV</option>
-                      <option value="mp3">MP3</option>
-                    </select>
-                  </div>
+          {/* Transcriber */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Transcriber</h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
+                  <select
+                    value={formData.transcriberConfig.provider}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      transcriberConfig: { ...formData.transcriberConfig, provider: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="deepgram">Deepgram</option>
+                    <option value="whisper">Whisper</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Model</label>
+                  <input
+                    type="text"
+                    value={formData.transcriberConfig.model}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      transcriberConfig: { ...formData.transcriberConfig, model: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
-
-              {/* Task Configuration */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Task Configuration</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Hangup After Silence (s)</label>
-                    <input
-                      type="number"
-                      value={formData.taskConfig.hangup_after_silence}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        taskConfig: { ...formData.taskConfig, hangup_after_silence: parseInt(e.target.value) }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Incremental Delay (ms)</label>
-                    <input
-                      type="number"
-                      value={formData.taskConfig.incremental_delay}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        taskConfig: { ...formData.taskConfig, incremental_delay: parseInt(e.target.value) }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Words for Interruption</label>
-                    <input
-                      type="number"
-                      value={formData.taskConfig.number_of_words_for_interruption}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        taskConfig: { ...formData.taskConfig, number_of_words_for_interruption: parseInt(e.target.value) }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Call Terminate (s)</label>
-                    <input
-                      type="number"
-                      value={formData.taskConfig.call_terminate}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        taskConfig: { ...formData.taskConfig, call_terminate: parseInt(e.target.value) }
-                      })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      id="backchanneling"
-                      checked={formData.taskConfig.backchanneling}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        taskConfig: { ...formData.taskConfig, backchanneling: e.target.checked }
-                      })}
-                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                    />
-                    <label htmlFor="backchanneling" className="text-sm font-semibold text-gray-700">
-                      Enable Backchanneling
-                    </label>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Language</label>
+                  <input
+                    type="text"
+                    value={formData.transcriberConfig.language}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      transcriberConfig: { ...formData.transcriberConfig, language: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Endpointing (ms)</label>
+                  <input
+                    type="number"
+                    value={formData.transcriberConfig.endpointing}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      transcriberConfig: { ...formData.transcriberConfig, endpointing: parseInt(e.target.value) }
+                    })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          {/* Input/Output */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Input/Output</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Input Provider</label>
+                <select
+                  value={formData.inputConfig.provider}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    inputConfig: { ...formData.inputConfig, provider: e.target.value }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="plivo">Plivo</option>
+                  <option value="twilio">Twilio</option>
+                  <option value="exotel">Exotel</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Input Format</label>
+                <select
+                  value={formData.inputConfig.format}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    inputConfig: { ...formData.inputConfig, format: e.target.value }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="wav">WAV</option>
+                  <option value="mp3">MP3</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Output Provider</label>
+                <select
+                  value={formData.outputConfig.provider}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    outputConfig: { ...formData.outputConfig, provider: e.target.value }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="plivo">Plivo</option>
+                  <option value="twilio">Twilio</option>
+                  <option value="exotel">Exotel</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Output Format</label>
+                <select
+                  value={formData.outputConfig.format}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    outputConfig: { ...formData.outputConfig, format: e.target.value }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="wav">WAV</option>
+                  <option value="mp3">MP3</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Task Configuration */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Task Configuration</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Hangup After Silence (s)</label>
+                <input
+                  type="number"
+                  value={formData.taskConfig.hangup_after_silence}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    taskConfig: { ...formData.taskConfig, hangup_after_silence: parseInt(e.target.value) }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Incremental Delay (ms)</label>
+                <input
+                  type="number"
+                  value={formData.taskConfig.incremental_delay}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    taskConfig: { ...formData.taskConfig, incremental_delay: parseInt(e.target.value) }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Words for Interruption</label>
+                <input
+                  type="number"
+                  value={formData.taskConfig.number_of_words_for_interruption}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    taskConfig: { ...formData.taskConfig, number_of_words_for_interruption: parseInt(e.target.value) }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Call Terminate (s)</label>
+                <input
+                  type="number"
+                  value={formData.taskConfig.call_terminate}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    taskConfig: { ...formData.taskConfig, call_terminate: parseInt(e.target.value) }
+                  })}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="backchanneling"
+                  checked={formData.taskConfig.backchanneling}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    taskConfig: { ...formData.taskConfig, backchanneling: e.target.checked }
+                  })}
+                  className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                />
+                <label htmlFor="backchanneling" className="text-sm font-semibold text-gray-700">
+                  Enable Backchanneling
+                </label>
               </div>
             </div>
           </div>

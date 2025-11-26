@@ -61,9 +61,9 @@ axiosInstance.interceptors.response.use(
 
 // API client object with methods
 export const apiClient = {
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+  async get<T>(endpoint: string, params?: Record<string, unknown>): Promise<ApiResponse<T>> {
     try {
-      const response = await axiosInstance.get<ApiResponse<T>>(endpoint);
+      const response = await axiosInstance.get<ApiResponse<T>>(endpoint, { params });
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response?.data) {
@@ -122,4 +122,5 @@ export const apiClient = {
   }
 };
 
+export { axiosInstance as axios };
 export default apiClient;

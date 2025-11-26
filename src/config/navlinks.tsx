@@ -2,12 +2,12 @@ import React from 'react';
 import {
   Home,
   Users,
+  UserPlus,
   Bot,
   PlusCircle,
   PhoneCall,
   List,
-  Mic,
-  Hash,
+  Phone,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -23,7 +23,12 @@ export const navigationItems: NavItem[] = [
     icon: <Home className="h-5 w-5" />
   },
   {
-    name: 'Users',
+    name: 'Create User',
+    href: '/user/create',
+    icon: <UserPlus className="h-5 w-5" />
+  },
+  {
+    name: 'User List',
     href: '/users',
     icon: <Users className="h-5 w-5" />
   },
@@ -38,6 +43,11 @@ export const navigationItems: NavItem[] = [
     icon: <PlusCircle className="h-5 w-5" />
   },
   {
+    name: 'Phone Numbers',
+    href: '/phone-numbers',
+    icon: <Phone className="h-5 w-5" />
+  },
+  {
     name: 'Assign Number',
     href: '/assign/number',
     icon: <PhoneCall className="h-5 w-5" />
@@ -46,15 +56,5 @@ export const navigationItems: NavItem[] = [
     name: 'Number Lists',
     href: '/number/lists',
     icon: <List className="h-5 w-5" />
-  },
-  {
-    name: 'Assign Voice',
-    href: '/assign/voice',
-    icon: <Mic className="h-5 w-5" />
-  },
-  {
-    name: 'Voice Lists',
-    href: '/voice/lists',
-    icon: <Hash className="h-5 w-5" />
   },
 ];

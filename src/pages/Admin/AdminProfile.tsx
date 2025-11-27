@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { motion } from 'framer-motion';
-import { User, Mail, Shield, Calendar, Edit2, Save, X } from 'lucide-react';
+import { User, Mail, Shield, Edit2, Save, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { adminAuthAPI } from '../../api/auth';
 
 export default function AdminProfile() {
   const { user, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -14,11 +16,24 @@ export default function AdminProfile() {
 
   const handleSave = async () => {
     try {
-      // Here you would typically make an API call to update the profile
-      toast.success('Profile updated successfully!');
-      setIsEditing(false);
-    } catch {
+      setLoading(true);
+      
+      const response = await adminAuthAPI.updateProfile({
+        name: formData.name,
+        email: formData.email,
+      });
+
+      if (response.success) {
+        toast.success('Profile updated successfully!');
+        setIsEditing(false);
+      } else {
+        toast.error(response.message || 'Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
       toast.error('Failed to update profile');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,7 +55,7 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Header */}
       <motion.div 
         className="mb-8"
@@ -49,7 +64,7 @@ export default function AdminProfile() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Profile</h1>
-        <p className="text-gray-600">Manage your account settings and preferences</p>
+        <p className="text-gray-600">Manage your account settings</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -64,7 +79,7 @@ export default function AdminProfile() {
             {/* Profile Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <div className="h-16 w-16 bg-linear-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-xl font-bold text-white">
                     {user?.name?.charAt(0).toUpperCase() || 'A'}
                   </span>
@@ -139,21 +154,6 @@ export default function AdminProfile() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Login
-                </label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={user?.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}
-                    disabled
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-                  />
-                </div>
-              </div>
-
               {isEditing && (
                 <motion.div 
                   className="flex justify-end space-x-3 pt-4"
@@ -163,7 +163,8 @@ export default function AdminProfile() {
                 >
                   <motion.button
                     onClick={handleCancel}
-                    className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                    disabled={loading}
+                    className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -172,12 +173,13 @@ export default function AdminProfile() {
                   </motion.button>
                   <motion.button
                     onClick={handleSave}
-                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded-lg transition-colors"
+                    disabled={loading}
+                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded-lg transition-colors disabled:opacity-50"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <Save className="h-4 w-4" />
-                    <span>Save Changes</span>
+                    <span>{loading ? 'Saving...' : 'Save Changes'}</span>
                   </motion.button>
                 </motion.div>
               )}
@@ -185,7 +187,7 @@ export default function AdminProfile() {
           </div>
         </motion.div>
 
-        {/* Account Actions */}
+        {/* Account Info */}
         <motion.div 
           className="space-y-6"
           initial={{ opacity: 0, x: 20 }}
@@ -213,39 +215,20 @@ export default function AdminProfile() {
             </div>
           </div>
 
-          {/* Quick Actions */}
+          {/* Logout */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-            <div className="space-y-3">
-              <motion.button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>Logout</span>
-              </motion.button>
-            </div>
-          </div>
-
-          {/* Security Info */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Security</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Two-Factor Auth</span>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                  Not Enabled
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Login Sessions</span>
-                <span className="text-sm font-medium text-gray-900">1 Active</span>
-              </div>
-            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Actions</h3>
+            <motion.button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>Logout</span>
+            </motion.button>
           </div>
         </motion.div>
       </div>

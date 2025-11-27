@@ -97,6 +97,35 @@ export const adminAuthAPI = {
     }
   },
 
+  // Update admin profile
+  async updateProfile(profileData: { name: string; email: string }): Promise<{ success: boolean; message: string; admin?: AdminUser }> {
+    try {
+      const response = await apiClient.put<{ admin: AdminUser }>('/admin/auth/profile', profileData);
+      
+      if (response.success && response.data?.admin) {
+        // Update stored admin data
+        Cookies.set('adminUser', JSON.stringify(response.data.admin), COOKIE_OPTIONS);
+        
+        return {
+          success: true,
+          message: response.message || 'Profile updated successfully',
+          admin: response.data.admin
+        };
+      }
+      
+      return {
+        success: false,
+        message: response.message || 'Failed to update profile'
+      };
+    } catch (error) {
+      console.error('Profile update error:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to update profile'
+      };
+    }
+  },
+
   // Check if user is authenticated
   isAuthenticated(): boolean {
     return !!Cookies.get('authToken');

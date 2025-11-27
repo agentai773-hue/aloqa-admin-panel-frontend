@@ -3,11 +3,14 @@ import { Outlet, NavLink, useLocation, useNavigate } from 'react-router';
 import { navigationItems } from '../../config/navlinks';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
+import { InternetProvider } from '../providers/InternetProvider';
+import { useInternetContext } from '../../hooks/useInternetContext';
 
-export default function Sidebar() {
+function SidebarContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout, user } = useAuth();
+  const { isOnline } = useInternetContext();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
@@ -425,6 +428,40 @@ export default function Sidebar() {
               
               {/* Header actions */}
               <div className="flex items-center space-x-2 sm:space-x-4">
+                {/* Connection Status Indicator */}
+                <motion.div 
+                  className={`hidden sm:flex items-center space-x-2 px-3 py-2 rounded-lg ${
+                    isOnline 
+                      ? 'bg-green-50 text-green-700' 
+                      : 'bg-red-50 text-red-700'
+                  }`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div
+                    animate={isOnline ? { scale: [1, 1.1, 1] } : { scale: [1, 0.9, 1] }}
+                    transition={{ 
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {isOnline ? (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636L5.636 18.364M8.111 16.404a5.5 5.5 0 010-7.778M12 20h.01M1.394 9.393L18.364 5.636" />
+                      </svg>
+                    )}
+                  </motion.div>
+                  <span className="text-xs font-medium">
+                    {isOnline ? 'Online' : 'Offline'}
+                  </span>
+                </motion.div>
+
                 {/* Notifications */}
                 <motion.button 
                   className="relative p-2 text-gray-400 hover:text-[#5DD149] hover:bg-green-50 rounded-lg"
@@ -566,5 +603,13 @@ export default function Sidebar() {
         />
       )}
     </div>
+  );
+}
+
+export default function Sidebar() {
+  return (
+    <InternetProvider>
+      <SidebarContent />
+    </InternetProvider>
   );
 }

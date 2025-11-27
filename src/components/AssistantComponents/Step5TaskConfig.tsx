@@ -40,10 +40,10 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
               min={SLIDER_CONFIGS.hangupAfterSilence.min}
               max={SLIDER_CONFIGS.hangupAfterSilence.max}
               step={SLIDER_CONFIGS.hangupAfterSilence.step}
-              value={formData.taskConfig.hangupAfterSilence}
+              value={formData.taskConfig.hangup_after_silence}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
-                taskConfig: { ...prev.taskConfig, hangupAfterSilence: parseInt(e.target.value) }
+                taskConfig: { ...prev.taskConfig, hangup_after_silence: parseInt(e.target.value) }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
             />
@@ -60,10 +60,10 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
               min={SLIDER_CONFIGS.incrementalDelay.min}
               max={SLIDER_CONFIGS.incrementalDelay.max}
               step={SLIDER_CONFIGS.incrementalDelay.step}
-              value={formData.taskConfig.incrementalDelay}
+              value={formData.taskConfig.incremental_delay}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
-                taskConfig: { ...prev.taskConfig, incrementalDelay: parseInt(e.target.value) }
+                taskConfig: { ...prev.taskConfig, incremental_delay: parseInt(e.target.value) }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
             />
@@ -80,10 +80,10 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
               min={SLIDER_CONFIGS.numberOfWordsForInterruption.min}
               max={SLIDER_CONFIGS.numberOfWordsForInterruption.max}
               step={SLIDER_CONFIGS.numberOfWordsForInterruption.step}
-              value={formData.taskConfig.numberOfWordsForInterruption}
+              value={formData.taskConfig.number_of_words_for_interruption}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
-                taskConfig: { ...prev.taskConfig, numberOfWordsForInterruption: parseInt(e.target.value) }
+                taskConfig: { ...prev.taskConfig, number_of_words_for_interruption: parseInt(e.target.value) }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
             />
@@ -115,10 +115,10 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
             <input
               type="number"
               required
-              value={formData.taskConfig.callTerminate || ''}
+              value={formData.taskConfig.call_terminate || ''}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
-                taskConfig: { ...prev.taskConfig, callTerminate: e.target.value ? parseInt(e.target.value) : undefined }
+                taskConfig: { ...prev.taskConfig, call_terminate: e.target.value ? parseInt(e.target.value) : undefined }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
               min={1}

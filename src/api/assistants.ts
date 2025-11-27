@@ -8,35 +8,34 @@ export interface Route {
 }
 
 export interface LLMConfig {
-  agentType: string;
-  agentFlowType: string;
+  agent_flow_type: string;
   provider: string;
   family: string;
   model: string;
   temperature: number;
-  maxTokens: number;
-  topP: number;
-  minP: number;
-  topK: number;
-  presencePenalty: number;
-  frequencyPenalty: number;
-  requestJson: boolean;
+  max_tokens: number;
+  top_p: number;
+  min_p: number;
+  top_k: number;
+  presence_penalty: number;
+  frequency_penalty: number;
+  request_json: boolean;
 }
 
 export interface SynthesizerProviderConfig {
   voice: string;
   engine: string;
-  samplingRate: string;
+  sampling_rate: string;
   language: string;
   model?: string;
 }
 
 export interface SynthesizerConfig {
   provider: string;
-  providerConfig: SynthesizerProviderConfig;
+  provider_config: SynthesizerProviderConfig;
   stream: boolean;
-  bufferSize: number;
-  audioFormat: string;
+  buffer_size: number;
+  audio_format: string;
 }
 
 export interface TranscriberConfig {
@@ -44,27 +43,27 @@ export interface TranscriberConfig {
   model: string;
   language: string;
   stream: boolean;
-  samplingRate: number;
+  sampling_rate: number;
   encoding: string;
   endpointing: number;
 }
 
 export interface TaskConfig {
-  hangupAfterSilence: number;
-  incrementalDelay: number;
-  numberOfWordsForInterruption: number;
+  hangup_after_silence: number;
+  incremental_delay: number;
+  number_of_words_for_interruption: number;
   backchanneling: boolean;
-  callTerminate?: number; // Optional - user must select
-  hangupAfterLLMCall?: boolean;
-  callCancellationPrompt?: string | null;
-  backchannelingMessageGap?: number;
-  backchannelingStartDelay?: number;
-  ambientNoise?: boolean;
-  ambientNoiseTrack?: string;
+  call_terminate?: number;
+  hangup_after_llm_call?: boolean;
+  call_cancellation_prompt?: string | null;
+  backchanneling_message_gap?: number;
+  backchanneling_start_delay?: number;
+  ambient_noise?: boolean;
+  ambient_noise_track?: string;
   voicemail?: boolean;
-  inboundLimit?: number;
-  whitelistPhoneNumbers?: string[];
-  disallowUnknownNumbers?: boolean;
+  inbound_limit?: number;
+  whitelist_phone_numbers?: string[];
+  disallow_unknown_numbers?: boolean;
 }
 
 export interface InputOutputConfig {
@@ -147,10 +146,6 @@ export const assistantsAPI = {
     return apiClient.put<Assistant>(`/assistants/${id}`, data as unknown as Record<string, unknown>);
   },
 
-  // Full update assistant (database + Bolna AI)
-  updateAssistantFull: async (id: string, data: Partial<CreateAssistantData>) => {
-    return apiClient.put<Assistant>(`/assistants/${id}/full`, data as unknown as Record<string, unknown>);
-  },
 
   // Patch update assistant (partial update to Bolna AI)
   patchAssistant: async (id: string, data: Partial<CreateAssistantData>) => {

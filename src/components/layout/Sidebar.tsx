@@ -38,16 +38,10 @@ export default function Sidebar() {
     return { title: 'Assistant Details', subtitle: 'View assistant configuration' };
   } else if (path.startsWith('/assistants/') && path.includes('/edit')) {
     return { title: 'Edit Assistant', subtitle: 'Update assistant configuration' };
-  } 
-  // 🔽 New header mappings
-  else if (path === '/assign/number') {
-    return { title: 'Assign Number', subtitle: 'Assign phone numbers to assistants or users' };
-  } else if (path === '/number/lists') {
-    return { title: 'Number List', subtitle: 'View and manage all assigned numbers' };
-  } else if (path === '/assign/voice') {
-    return { title: 'Assign Voice', subtitle: 'Assign voice profiles to your assistants' };
-  } else if (path === '/voice/lists') {
-    return { title: 'Voice List', subtitle: 'Review and manage all voice configurations' };
+  } else if (path === '/phone-numbers') {
+    return { title: 'Buy Phone Number', subtitle: 'Purchase phone number' };
+  } else if (path === '/phone-numbers-assign') {
+    return { title: 'Assign Phone Number', subtitle: 'Assign purchased numbers to users' };
   }
 
   return { title: 'Dashboard', subtitle: 'Welcome back! Here\'s what\'s happening.' };

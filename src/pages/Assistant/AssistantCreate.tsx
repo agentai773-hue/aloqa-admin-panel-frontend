@@ -46,38 +46,37 @@ export default function AssistantCreate() {
     webhookUrl: '',
     systemPrompt: 'You are a helpful AI assistant.',
     llmConfig: {
-      agentType: 'simple_llm_agent',
-      agentFlowType: 'streaming',
+      agent_flow_type: 'streaming',
       provider: 'openai',
       family: 'openai',
-      model: 'gpt-3.5-turbo',
-      temperature: 0.4,
-      maxTokens: 100,
-      topP: 0.9,
-      minP: 0.1,
-      topK: 0,
-      presencePenalty: 0,
-      frequencyPenalty: 0,
-      requestJson: true
+      model: 'gpt-4o-mini',
+      temperature: 0.2,
+      max_tokens: 80,
+      top_p: 0.9,
+      min_p: 0.1,
+      top_k: 0,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      request_json: true
     },
     synthesizerConfig: {
       provider: 'polly',
-      providerConfig: {
+      provider_config: {
         voice: 'Kajal',
         engine: 'neural',
-        samplingRate: '8000',
+        sampling_rate: '8000',
         language: 'hi-IN'
       },
       stream: true,
-      bufferSize: 60,
-      audioFormat: 'wav'
+      buffer_size: 60,
+      audio_format: 'wav'
     },
     transcriberConfig: {
       provider: 'deepgram',
       model: 'nova-2',
       language: 'hi',
       stream: true,
-      samplingRate: 16000,
+      sampling_rate: 16000,
       encoding: 'linear16',
       endpointing: 250
     },
@@ -90,11 +89,11 @@ export default function AssistantCreate() {
       format: 'wav'
     },
     taskConfig: {
-      hangupAfterSilence: 6,
-      incrementalDelay: 400,
-      numberOfWordsForInterruption: 2,
+      hangup_after_silence: 6,
+      incremental_delay: 40,
+      number_of_words_for_interruption: 2,
       backchanneling: false,
-      callTerminate: undefined // Optional - user must select
+      call_terminate: undefined // Optional - user must select
     }
   });
   console.log('Form Data:', formData);
@@ -108,10 +107,20 @@ export default function AssistantCreate() {
       queryClient.invalidateQueries({ queryKey: ['assistants'] });
     },
     onError: (error: unknown) => {
-      const message = (error as { response?: { data?: { message?: string } }; message?: string })?.response?.data?.message 
+      const errorResponse = (error as { response?: { data?: { message?: string; errorDetail?: string } } })?.response?.data;
+      
+      // Use the user-friendly message from backend, or the error detail, or fallback message
+      const message = errorResponse?.message 
+        || errorResponse?.errorDetail
         || (error as { message?: string })?.message 
         || 'Failed to create assistant';
-      toast.error(message);
+      
+      toast.error(message, {
+        duration: 6000, // Show error for 6 seconds since it might be detailed
+        style: {
+          maxWidth: '600px'
+        }
+      });
     }
   });
 

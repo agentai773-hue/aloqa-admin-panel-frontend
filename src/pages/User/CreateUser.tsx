@@ -154,15 +154,41 @@ export default function CreateUser() {
     } catch (err: unknown) {
       console.error('Error creating user:', err);
       
-      // Check if it's a duplicate email error
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create user';
-      
-      if (errorMessage.toLowerCase().includes('email already exists') || 
-          errorMessage.toLowerCase().includes('already exists')) {
-        setValidationErrors({ email: 'User with this email already exists' });
-      } else {
-        setValidationErrors({ submit: errorMessage });
+      // Handle axios error with response
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string; error?: string; field?: string } } };
+        const errorData = axiosError.response?.data;
+        
+        // Check for duplicate key error
+        if (errorData?.field === 'email' || 
+            errorData?.message?.toLowerCase().includes('email already exists')) {
+          setValidationErrors({ 
+            email: errorData?.error || 'This email is already registered. Please use a different email address.' 
+          });
+          return;
+        }
+        
+        // Check for email configuration error
+        if (errorData?.message?.toLowerCase().includes('email service not configured') ||
+            errorData?.message?.toLowerCase().includes('email configuration missing')) {
+          setValidationErrors({ 
+            submit: 'Email service is not configured. Please contact the administrator to enable email verification.' 
+          });
+          return;
+        }
+        
+        // Generic error from backend
+        if (errorData?.message || errorData?.error) {
+          setValidationErrors({ 
+            submit: errorData.error || errorData.message || 'Failed to create user' 
+          });
+          return;
+        }
       }
+      
+      // Fallback error message
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create user. Please try again.';
+      setValidationErrors({ submit: errorMessage });
     } finally {
       setIsSubmitting(false);
     }

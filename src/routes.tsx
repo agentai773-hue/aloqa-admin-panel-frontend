@@ -9,10 +9,9 @@ import EditUser from './pages/User/EditUser';
 import Assistant from './pages/Assistant/Assistant';
 import AssistantCreate from './pages/Assistant/AssistantCreate';
 import AssistantView from './pages/Assistant/AssistantView';
-import AssignNumber from './pages/Number/AssignNumber';
-import NumberLists from './pages/Number/NumberList';
 import AssistantEdit from './pages/Assistant/AssistantEdit';
 import PhoneNumberList from './pages/PhoneNumber/PhoneNumberList';
+import AssignNumber from './pages/PhoneNumber/AssignNumber';
 import NotFound from './pages/NotFound';
 import { VerifyEmail, ResendVerification } from './pages/VerifyEmail';
 
@@ -77,14 +76,11 @@ export const routes: RouteObject[] = [
         path: "phone-numbers",
         element: <PhoneNumberList />,
       },
-          {
-        path: "assign/number",
+      {
+        path: "phone-numbers-assign",
         element: <AssignNumber />,
       },
-      {
-        path: "number/lists",
-        element: <NumberLists />,
-      },
+   
     ],
   },
   {

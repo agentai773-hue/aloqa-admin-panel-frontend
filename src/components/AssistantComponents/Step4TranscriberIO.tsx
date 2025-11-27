@@ -20,6 +20,12 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
     return TRANSCRIBER_MODELS[provider] || [];
   };
 
+  // Get transcriber languages based on selected provider
+  const getTranscriberLanguages = () => {
+    const provider = formData.transcriberConfig.provider as keyof typeof TRANSCRIBER_LANGUAGES;
+    return TRANSCRIBER_LANGUAGES[provider] || [];
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -48,12 +54,14 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
               onChange={(e) => {
                 const newProvider = e.target.value;
                 const defaultModel = TRANSCRIBER_MODELS[newProvider as keyof typeof TRANSCRIBER_MODELS]?.[0]?.value || '';
+                const defaultLanguage = TRANSCRIBER_LANGUAGES[newProvider as keyof typeof TRANSCRIBER_LANGUAGES]?.[0]?.value || 'en';
                 setFormData(prev => ({
                   ...prev,
                   transcriberConfig: { 
                     ...prev.transcriberConfig, 
                     provider: newProvider,
-                    model: defaultModel
+                    model: defaultModel,
+                    language: defaultLanguage
                   }
                 }));
               }}
@@ -97,7 +105,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
             >
-              {TRANSCRIBER_LANGUAGES.map(lang => (
+              {getTranscriberLanguages().map(lang => (
                 <option key={lang.value} value={lang.value}>{lang.label}</option>
               ))}
             </select>
@@ -117,6 +125,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
           </div>
 
           {/* Sampling Rate */}
+          {/* Sampling Rate */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Sampling Rate (Hz)
@@ -126,10 +135,10 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
               min={SLIDER_CONFIGS.samplingRate.min}
               max={SLIDER_CONFIGS.samplingRate.max}
               step={SLIDER_CONFIGS.samplingRate.step}
-              value={formData.transcriberConfig.samplingRate}
+              value={formData.transcriberConfig.sampling_rate}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
-                transcriberConfig: { ...prev.transcriberConfig, samplingRate: parseInt(e.target.value) }
+                transcriberConfig: { ...prev.transcriberConfig, sampling_rate: parseInt(e.target.value) }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
             />

@@ -55,8 +55,8 @@ export default function Step3VoiceSynthesizer({ formData, setFormData }: Step3Pr
                   synthesizerConfig: { 
                     ...prev.synthesizerConfig, 
                     provider: newProvider,
-                    providerConfig: {
-                      ...prev.synthesizerConfig.providerConfig,
+                    provider_config: {
+                      ...prev.synthesizerConfig.provider_config,
                       voice: newProvider === 'elevenlabs' ? 'ava' : 'Kajal'
                     }
                   }
@@ -76,12 +76,12 @@ export default function Step3VoiceSynthesizer({ formData, setFormData }: Step3Pr
               Voice *
             </label>
             <select
-              value={formData.synthesizerConfig.providerConfig.voice}
+              value={formData.synthesizerConfig.provider_config.voice}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
                 synthesizerConfig: {
                   ...prev.synthesizerConfig,
-                  providerConfig: { ...prev.synthesizerConfig.providerConfig, voice: e.target.value }
+                  provider_config: { ...prev.synthesizerConfig.provider_config, voice: e.target.value }
                 }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
@@ -98,12 +98,12 @@ export default function Step3VoiceSynthesizer({ formData, setFormData }: Step3Pr
               Engine
             </label>
             <select
-              value={formData.synthesizerConfig.providerConfig.engine}
+              value={formData.synthesizerConfig.provider_config.engine}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
                 synthesizerConfig: {
                   ...prev.synthesizerConfig,
-                  providerConfig: { ...prev.synthesizerConfig.providerConfig, engine: e.target.value }
+                  provider_config: { ...prev.synthesizerConfig.provider_config, engine: e.target.value }
                 }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
@@ -120,12 +120,12 @@ export default function Step3VoiceSynthesizer({ formData, setFormData }: Step3Pr
               Language *
             </label>
             <select
-              value={formData.synthesizerConfig.providerConfig.language}
+              value={formData.synthesizerConfig.provider_config.language}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
                 synthesizerConfig: {
                   ...prev.synthesizerConfig,
-                  providerConfig: { ...prev.synthesizerConfig.providerConfig, language: e.target.value }
+                  provider_config: { ...prev.synthesizerConfig.provider_config, language: e.target.value }
                 }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
@@ -142,10 +142,10 @@ export default function Step3VoiceSynthesizer({ formData, setFormData }: Step3Pr
               Audio Format
             </label>
             <select
-              value={formData.synthesizerConfig.audioFormat}
+              value={formData.synthesizerConfig.audio_format}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
-                synthesizerConfig: { ...prev.synthesizerConfig, audioFormat: e.target.value }
+                synthesizerConfig: { ...prev.synthesizerConfig, audio_format: e.target.value }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
             >
@@ -165,10 +165,10 @@ export default function Step3VoiceSynthesizer({ formData, setFormData }: Step3Pr
               min={SLIDER_CONFIGS.bufferSize.min}
               max={SLIDER_CONFIGS.bufferSize.max}
               step={SLIDER_CONFIGS.bufferSize.step}
-              value={formData.synthesizerConfig.bufferSize}
+              value={formData.synthesizerConfig.buffer_size}
               onChange={(e) => setFormData(prev => ({
                 ...prev,
-                synthesizerConfig: { ...prev.synthesizerConfig, bufferSize: parseInt(e.target.value) }
+                synthesizerConfig: { ...prev.synthesizerConfig, buffer_size: parseInt(e.target.value) }
               }))}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
             />

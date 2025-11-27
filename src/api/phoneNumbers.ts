@@ -16,7 +16,6 @@ export interface PhoneNumber {
   country: 'US' | 'IN';
   userId?: {
     _id: string;
-    name: string;
     email: string;
   };
   agentId?: string;
@@ -41,19 +40,45 @@ export interface BuyPhoneNumberParams {
   userId: string;
 }
 
-export interface AssignPhoneNumberParams {
-  phoneNumberId: string;
-  userId: string;
-  agentId?: string;
+export interface PurchasedNumber {
+  id: string;
+  phone_number: string;
+  telephony_provider: string;
+  agent_id: string | null;
+  price: string;
+  renewal_at: string;
+  created_at: string;
+  humanized_created_at: string;
+  humanized_updated_at: string;
+  updated_at: string;
+  rented: boolean;
 }
 
-export interface GetAllPhoneNumbersParams {
-  status?: 'available' | 'assigned' | 'deleted';
-  userId?: string;
-  country?: 'US' | 'IN';
+export interface AssignedPhoneNumber {
+  _id: string;
+  phoneNumber: string;
+  userId: {
+    _id: string;
+    email: string;
+    companyName: string;
+  };
+  assignedAt: string;
+  renewalDate: string;
+  daysUntilRenewal?: number;
+}
+
+export interface AssignPhoneNumberParams {
+  phoneNumber: string;
+  userId: string;
 }
 
 export const phoneNumbersAPI = {
+  // Get purchased phone numbers from backend (using Aloqa_TOKEN)
+  getPurchasedNumbers: async (): Promise<PurchasedNumber[]> => {
+    const response = await axios.get<{ success: boolean; data: PurchasedNumber[] }>('/phone-numbers/purchased');
+    return response.data.data;
+  },
+
   // Search available phone numbers from Bolna
   searchPhoneNumbers: async (params: SearchPhoneNumbersParams): Promise<PhoneNumberSearch[]> => {
     const response = await axios.get<{ success: boolean; data: PhoneNumberSearch[] }>('/phone-numbers/search', { params });
@@ -66,26 +91,15 @@ export const phoneNumbersAPI = {
     return response.data.data;
   },
 
-  // Get all phone numbers with optional filters
-  getAllPhoneNumbers: async (params?: GetAllPhoneNumbersParams): Promise<PhoneNumber[]> => {
-    const response = await axios.get<{ success: boolean; data: PhoneNumber[] }>('/phone-numbers', { params });
-    return response.data.data;
+  // Assign phone number to user
+  assignPhoneNumber: async (data: AssignPhoneNumberParams): Promise<{ success: boolean; message: string }> => {
+    const response = await axios.post<{ success: boolean; message: string }>('/phone-numbers/assign', data);
+    return response.data;
   },
 
-  // Assign phone number to a user
-  assignPhoneNumber: async (data: AssignPhoneNumberParams): Promise<PhoneNumber> => {
-    const response = await axios.post<{ success: boolean; data: PhoneNumber }>('/phone-numbers/assign', data);
+  // Get assigned phone numbers
+  getAssignedNumbers: async (): Promise<AssignedPhoneNumber[]> => {
+    const response = await axios.get<{ success: boolean; data: AssignedPhoneNumber[] }>('/phone-numbers/assigned');
     return response.data.data;
-  },
-
-  // Unassign phone number from user
-  unassignPhoneNumber: async (id: string): Promise<PhoneNumber> => {
-    const response = await axios.patch<{ success: boolean; data: PhoneNumber }>(`/phone-numbers/${id}/unassign`);
-    return response.data.data;
-  },
-
-  // Delete phone number (from Bolna and database)
-  deletePhoneNumber: async (id: string): Promise<void> => {
-    await axios.delete(`/phone-numbers/${id}`);
   },
 };

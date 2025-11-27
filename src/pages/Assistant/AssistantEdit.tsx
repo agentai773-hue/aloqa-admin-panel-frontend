@@ -96,71 +96,74 @@ export default function AssistantEdit() {
     if (assistant) {
       const userId = typeof assistant.userId === 'object' ? assistant.userId._id : assistant.userId;
 
+      // Deep merge configurations from database with defaults
       setFormData({
         userId,
-        agentName: assistant.agentName,
-        agentType: assistant.agentType,
-        agentWelcomeMessage: assistant.agentWelcomeMessage,
+        agentName: assistant.agentName || '',
+        agentType: assistant.agentType || 'conversation',
+        agentWelcomeMessage: assistant.agentWelcomeMessage || '',
         webhookUrl: assistant.webhookUrl || '',
-        systemPrompt: assistant.systemPrompt,
-        llmConfig: assistant.llmConfig || {
-          agent_flow_type: 'streaming',
-          provider: 'openai',
-          family: 'openai',
-          model: 'gpt-4o-mini',
-          temperature: 0.2,
-          max_tokens: 80,
-          top_p: 0.9,
-          min_p: 0.1,
-          top_k: 0,
-          presence_penalty: 0,
-          frequency_penalty: 0,
-          request_json: true
+        systemPrompt: assistant.systemPrompt || '',
+        llmConfig: {
+          agent_flow_type: assistant.llmConfig?.agent_flow_type || 'streaming',
+          provider: assistant.llmConfig?.provider || 'openai',
+          family: assistant.llmConfig?.family || 'openai',
+          model: assistant.llmConfig?.model || 'gpt-4o-mini',
+          temperature: assistant.llmConfig?.temperature ?? 0.2,
+          max_tokens: assistant.llmConfig?.max_tokens ?? 80,
+          top_p: assistant.llmConfig?.top_p ?? 0.9,
+          min_p: assistant.llmConfig?.min_p ?? 0.1,
+          top_k: assistant.llmConfig?.top_k ?? 0,
+          presence_penalty: assistant.llmConfig?.presence_penalty ?? 0,
+          frequency_penalty: assistant.llmConfig?.frequency_penalty ?? 0,
+          request_json: assistant.llmConfig?.request_json ?? true
         },
-        synthesizerConfig: assistant.synthesizerConfig || {
-          provider: 'polly',
+        synthesizerConfig: {
+          provider: assistant.synthesizerConfig?.provider || 'polly',
           provider_config: {
-            voice: 'Kajal',
-            engine: 'neural',
-            sampling_rate: '8000',
-            language: 'hi-IN'
+            voice: assistant.synthesizerConfig?.provider_config?.voice || 'Kajal',
+            engine: assistant.synthesizerConfig?.provider_config?.engine || 'neural',
+            sampling_rate: assistant.synthesizerConfig?.provider_config?.sampling_rate || '8000',
+            language: assistant.synthesizerConfig?.provider_config?.language || 'hi-IN'
           },
-          stream: true,
-          buffer_size: 60,
-          audio_format: 'wav'
+          stream: assistant.synthesizerConfig?.stream ?? true,
+          buffer_size: assistant.synthesizerConfig?.buffer_size ?? 60,
+          audio_format: assistant.synthesizerConfig?.audio_format || 'wav'
         },
-        transcriberConfig: assistant.transcriberConfig || {
-          provider: 'deepgram',
-          model: 'nova-2',
-          language: 'hi',
-          stream: true,
-          sampling_rate: 16000,
-          encoding: 'linear16',
-          endpointing: 250
+        transcriberConfig: {
+          provider: assistant.transcriberConfig?.provider || 'deepgram',
+          model: assistant.transcriberConfig?.model || 'nova-2',
+          language: assistant.transcriberConfig?.language || 'hi',
+          stream: assistant.transcriberConfig?.stream ?? true,
+          sampling_rate: assistant.transcriberConfig?.sampling_rate ?? 16000,
+          encoding: assistant.transcriberConfig?.encoding || 'linear16',
+          endpointing: assistant.transcriberConfig?.endpointing ?? 250
         },
-        taskConfig: assistant.taskConfig || {
-          hangup_after_silence: 8,
-          incremental_delay: 40,
-          number_of_words_for_interruption: 2,
-          backchanneling: false,
-          call_terminate: 800
+        taskConfig: {
+          hangup_after_silence: assistant.taskConfig?.hangup_after_silence ?? 8,
+          incremental_delay: assistant.taskConfig?.incremental_delay ?? 40,
+          number_of_words_for_interruption: assistant.taskConfig?.number_of_words_for_interruption ?? 2,
+          backchanneling: assistant.taskConfig?.backchanneling ?? false,
+          call_terminate: assistant.taskConfig?.call_terminate ?? 800
         },
-        inputConfig: assistant.inputConfig || {
-          provider: 'plivo',
-          format: 'wav'
+        inputConfig: {
+          provider: assistant.inputConfig?.provider || 'plivo',
+          format: assistant.inputConfig?.format || 'wav'
         },
-        outputConfig: assistant.outputConfig || {
-          provider: 'plivo',
-          format: 'wav'
+        outputConfig: {
+          provider: assistant.outputConfig?.provider || 'plivo',
+          format: assistant.outputConfig?.format || 'wav'
         },
         routes: assistant.routes || []
       });
+      
+      console.log('✅ Assistant data loaded from database:', assistant);
     }
   }, [assistant]);
 
-  // Update mutation
+  // Update mutation - using PATCH for partial updates (Bolna AI compatible)
   const updateMutation = useMutation({
-    mutationFn: (data: CreateAssistantData) => assistantsAPI.updateAssistantFull(id!, data),
+    mutationFn: (data: CreateAssistantData) => assistantsAPI.patchAssistant(id!, data),
     onSuccess: () => {
       toast.success('Assistant updated successfully!');
       queryClient.invalidateQueries({ queryKey: ['assistants'] });
@@ -168,10 +171,20 @@ export default function AssistantEdit() {
       navigate(`/assistants/${id}/view`);
     },
     onError: (error: unknown) => {
-      const message = (error as { response?: { data?: { message?: string } }; message?: string })?.response?.data?.message 
+      const errorResponse = (error as { response?: { data?: { message?: string; errorDetail?: string } } })?.response?.data;
+      
+      // Use the user-friendly message from backend, or the error detail, or fallback message
+      const message = errorResponse?.message 
+        || errorResponse?.errorDetail
         || (error as { message?: string })?.message 
         || 'Failed to update assistant';
-      toast.error(message);
+      
+      toast.error(message, {
+        duration: 6000, // Show error for 6 seconds since it might be detailed
+        style: {
+          maxWidth: '600px'
+        }
+      });
     }
   });
 
@@ -316,15 +329,28 @@ export default function AssistantEdit() {
                 </div>
 
                 {/* Agent Type */}
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
                     Agent Type <span className="text-red-500">*</span>
                   </label>
                   <select
                     required
                     value={formData.agentType}
-                    onChange={(e) => setFormData({ ...formData, agentType: e.target.value as 'conversation' | 'webhook' | 'other' })}
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        agentType: e.target.value as
+                          | 'conversation'
+                          | 'webhook'
+                          | 'sales'
+                          | 'support'
+                          | 'appointment'
+                          | 'survey'
+                          | 'other',
+                      })
+                    }
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 
+                               focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
                   >
                     <option value="conversation">Conversation</option>
                     <option value="webhook">Webhook</option>
@@ -332,41 +358,68 @@ export default function AssistantEdit() {
                     <option value="support">Support</option>
                     <option value="appointment">Appointment</option>
                     <option value="survey">Survey</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Welcome Message *</label>
-                    <textarea
-                      required
-                      value={formData.agentWelcomeMessage}
-                      onChange={(e) => setFormData({ ...formData, agentWelcomeMessage: e.target.value })}
-                      rows={3}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      placeholder="Hello! How can I help you?"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Webhook URL</label>
-                    <input
-                      type="url"
-                      value={formData.webhookUrl}
-                      onChange={(e) => setFormData({ ...formData, webhookUrl: e.target.value })}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      placeholder="https://example.com/webhook"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">System Prompt *</label>
-                    <textarea
-                      required
-                      value={formData.systemPrompt}
-                      onChange={(e) => setFormData({ ...formData, systemPrompt: e.target.value })}
-                      rows={10}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                      placeholder="You are a helpful assistant..."
-                    />
-                  </div>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                {/* Welcome Message */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                    Welcome Message <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={formData.agentWelcomeMessage}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        agentWelcomeMessage: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    placeholder="Hello! How can I help you?"
+                  />
+                </div>
+
+                {/* Webhook URL */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                    Webhook URL
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.webhookUrl}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        webhookUrl: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    placeholder="https://example.com/webhook"
+                  />
+                </div>
+
+                {/* System Prompt */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                    System Prompt <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    required
+                    rows={100}
+                    value={formData.systemPrompt}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        systemPrompt: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    placeholder="You are a helpful assistant..."
+                  />
+                </div>
               </div>
             </div>
           </div>

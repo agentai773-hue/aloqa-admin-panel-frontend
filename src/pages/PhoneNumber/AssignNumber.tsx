@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { phoneNumbersAPI } from '../../api/phoneNumbers';
 import { usersAPI } from '../../api/users';
 import toast from 'react-hot-toast';
+import AssignNumberModal from '../../components/modals/phoneNumberModal/AssignNumberModal';
+import AssignSuccessModal from '../../components/modals/phoneNumberModal/AssignSuccessModal';
 
 export default function AssignNumber() {
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
+  const [assignedData, setAssignedData] = useState<{ phoneNumber: string; userName: string; userEmail: string } | null>(null);
 
   // Fetch users
   const { data: usersResponse } = useQuery({
@@ -35,8 +40,17 @@ export default function AssignNumber() {
     mutationFn: (data: { phoneNumber: string; userId: string }) => 
       phoneNumbersAPI.assignPhoneNumber(data),
     onSuccess: () => {
+      const user = users.find(u => u._id === selectedUserId);
+      if (user) {
+        setAssignedData({
+          phoneNumber: selectedPhoneNumber,
+          userName: user.companyName,
+          userEmail: user.email
+        });
+      }
       toast.success('Phone number assigned successfully');
       setShowAssignModal(false);
+      setShowSuccessModal(true);
       setSelectedPhoneNumber('');
       setSelectedUserId('');
       refetchAssigned();
@@ -78,115 +92,176 @@ export default function AssignNumber() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-linear-to-r from-gray-900 to-gray-800 text-white rounded-xl shadow-lg p-6 mb-6">
+        <motion.div 
+          className="bg-white border-b border-gray-200 shadow-lg rounded-2xl p-6 mb-6"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Assign Phone Numbers</h1>
-              <p className="text-gray-300 mt-2">Assign purchased numbers to users</p>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+                Assign Phone Numbers
+              </h1>
+              <p className="text-gray-600 mt-2 text-lg">Assign purchased numbers to users</p>
             </div>
-            <button
+            <motion.button
               onClick={() => setShowAssignModal(true)}
-              className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-lg"
+              className="group relative px-6 py-3 text-white font-bold rounded-xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center gap-2 overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)',
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              + Assign Number
-            </button>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#4BC13B] to-[#255A1D] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative flex items-center gap-2">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Assign Number
+              </span>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Renewal Alerts */}
         {renewalAlerts.length > 0 && (
-          <div className="bg-red-50 border-2 border-red-500 rounded-xl shadow-lg p-6 mb-6 animate-pulse">
-            <div className="flex items-start">
-              <div className="shrink-0">
+          <motion.div 
+            className="bg-gradient-to-r from-red-50 to-red-100/50 border-2 border-red-300 rounded-2xl shadow-lg p-6 mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <div className="flex items-start gap-4">
+              <div className="shrink-0 p-3 bg-red-200 rounded-xl">
                 <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-lg font-bold text-red-900 mb-3">⚠️ Renewal Alert - Action Required!</h3>
-                <div className="space-y-2">
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-red-900 mb-4 flex items-center gap-2">
+                  ⚠️ Renewal Alert - Action Required!
+                </h3>
+                <div className="space-y-3">
                   {renewalAlerts.map((num) => (
-                    <div key={num._id} className="bg-white rounded-lg p-4 border border-red-200">
+                    <motion.div 
+                      key={num._id} 
+                      className="bg-white rounded-xl p-4 border-2 border-red-200 shadow-md"
+                      whileHover={{ scale: 1.01 }}
+                    >
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-mono text-lg font-bold text-gray-900">{num.phoneNumber}</p>
                           <p className="text-sm text-gray-600 mt-1">
-                            Assigned to: <span className="font-semibold">{num.userId.companyName}</span> ({num.userId.email})
+                            Assigned to: <span className="font-semibold">{num.userId.companyName}</span>
                           </p>
+                          <p className="text-xs text-gray-500">{num.userId.email}</p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-red-600">
-                            {num.daysUntilRenewal} {num.daysUntilRenewal === 1 ? 'day' : 'days'}
+                        <div className="text-right bg-red-50 px-4 py-3 rounded-xl border border-red-200">
+                          <p className="text-3xl font-bold text-red-600">
+                            {num.daysUntilRenewal}
                           </p>
-                          <p className="text-xs text-gray-600">until renewal</p>
+                          <p className="text-xs text-gray-600 font-semibold">
+                            {num.daysUntilRenewal === 1 ? 'day left' : 'days left'}
+                          </p>
                           <p className="text-xs text-gray-500 mt-1">
                             {new Date(num.renewalDate).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Assigned Numbers List */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6 bg-gray-900 text-white">
-            <h2 className="text-xl font-bold">Assigned Phone Numbers</h2>
+        <motion.div 
+          className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="p-6 bg-gradient-to-r from-[#5DD149]/10 to-[#306B25]/10 border-b-2 border-[#5DD149]/20">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-gradient-to-br from-[#5DD149] to-[#306B25] rounded-xl shadow-lg">
+                <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Assigned Phone Numbers</h2>
+                <p className="text-sm text-gray-600 mt-1">View and manage assigned numbers</p>
+              </div>
+            </div>
           </div>
           
           {isAssignedLoading ? (
             <div className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading assigned numbers...</p>
+              <motion.div 
+                className="inline-block"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              >
+                <svg className="h-12 w-12 text-[#5DD149]" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </motion.div>
+              <p className="mt-4 text-gray-600 font-medium">Loading assigned numbers...</p>
             </div>
           ) : assignedNumbers.length === 0 ? (
-            <div className="p-12 text-center">
+            <motion.div 
+              className="p-12 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
               <div className="max-w-md mx-auto">
                 <div className="text-6xl mb-4">📋</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No Assigned Numbers</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No Assigned Numbers</h3>
                 <p className="text-gray-600">
                   No phone numbers have been assigned yet. Click "Assign Number" to get started.
                 </p>
               </div>
-            </div>
+            </motion.div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b-2 border-gray-200">
+                <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-[#5DD149]/20">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Phone Number</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">User</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Assigned Date</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Renewal Date</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Phone Number</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">User</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Assigned Date</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Renewal Date</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {assignedNumbers.map((num) => {
+                  {assignedNumbers.map((num, index) => {
                     const renewalDate = new Date(num.renewalDate);
                     const today = new Date();
                     const diffDays = Math.ceil((renewalDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
                     const isExpiringSoon = diffDays <= 3 && diffDays >= 0;
 
                     return (
-                      <tr 
+                      <motion.tr 
                         key={num._id} 
-                        className={`hover:bg-gray-50 transition-colors ${isExpiringSoon ? 'bg-red-50' : ''}`}
+                        className={`hover:bg-green-50/50 transition-all duration-200 ${isExpiringSoon ? 'bg-red-50/50' : ''}`}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        whileHover={{ scale: 1.001 }}
                       >
                         <td className="px-6 py-4">
-                          <span className="font-mono text-sm font-semibold text-gray-900">
+                          <span className="font-mono text-sm font-bold text-[#306B25]">
                             {num.phoneNumber}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                           {num.userId.companyName}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-600">
@@ -198,166 +273,84 @@ export default function AssignNumber() {
                         <td className="px-6 py-4 text-sm text-gray-600">
                           {renewalDate.toLocaleDateString()}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 text-center">
                           {isExpiringSoon ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">
                               ⚠️ {diffDays} {diffDays === 1 ? 'day' : 'days'} left
                             </span>
                           ) : (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              Active
+                            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+                              ✓ Active
                             </span>
                           )}
                         </td>
-                      </tr>
+                      </motion.tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* Info Footer */}
         {assignedNumbers.length > 0 && (
-          <div className="mt-6 bg-green-50 border border-green-200 rounded-xl p-4">
-            <div className="flex items-start">
-              <div className="shrink-0">
-                <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <motion.div 
+            className="mt-6 rounded-xl p-5 border-2 border-green-100"
+            style={{
+              background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)'
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-start gap-3">
+              <div className="bg-green-100 p-2 rounded-lg">
+                <svg className="h-5 w-5 text-[#5DD149]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
               </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm text-[#306B25]">
+              <div className="flex-1">
+                <p className="text-sm font-bold text-[#306B25]">
                   Total {assignedNumbers.length} assigned number{assignedNumbers.length !== 1 ? 's' : ''} • 
-                  {availableNumbers.length} available for assignment
+                  {' '}{availableNumbers.length} available for assignment
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
 
       {/* Assign Modal */}
-      {showAssignModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            {/* Modal Header */}
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-gray-900">Assign Phone Number to User</h3>
-                <button
-                  onClick={() => {
-                    setShowAssignModal(false);
-                    setSelectedPhoneNumber('');
-                    setSelectedUserId('');
-                  }}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+      <AssignNumberModal
+        isOpen={showAssignModal}
+        onClose={() => {
+          setShowAssignModal(false);
+          setSelectedPhoneNumber('');
+          setSelectedUserId('');
+        }}
+        onConfirm={handleAssign}
+        selectedPhoneNumber={selectedPhoneNumber}
+        selectedUserId={selectedUserId}
+        availableNumbers={availableNumbers}
+        users={users}
+        setSelectedPhoneNumber={setSelectedPhoneNumber}
+        setSelectedUserId={setSelectedUserId}
+        isLoading={assignMutation.isPending}
+        isPurchasedLoading={isPurchasedLoading}
+      />
 
-            {/* Modal Content */}
-            <div className="flex-1 overflow-y-auto p-6">
-              {isPurchasedLoading ? (
-                <div className="py-12 text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-                  <p className="mt-4 text-gray-600">Loading numbers...</p>
-                </div>
-              ) : availableNumbers.length === 0 ? (
-                <div className="py-12 text-center">
-                  <div className="text-6xl mb-4">📵</div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Available Numbers</h4>
-                  <p className="text-gray-600">
-                    All purchased numbers have been assigned. Buy more numbers to assign them to users.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Select Phone Number */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Phone Number *
-                    </label>
-                    <select
-                      value={selectedPhoneNumber}
-                      onChange={(e) => setSelectedPhoneNumber(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900"
-                    >
-                      <option value="">Choose a phone number</option>
-                      {availableNumbers.map((num) => (
-                        <option key={num.id} value={num.phone_number}>
-                          {num.phone_number} ({num.telephony_provider})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Select User */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select User *
-                    </label>
-                    <select
-                      value={selectedUserId}
-                      onChange={(e) => setSelectedUserId(e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900"
-                    >
-                      <option value="">Choose a user</option>
-                      {users.map((user) => (
-                        <option key={user._id} value={user._id}>
-                          {user.companyName} ({user.email})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Selected Info */}
-                  {selectedPhoneNumber && selectedUserId && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <p className="text-sm text-[#306B25] font-medium mb-2">Assignment Summary:</p>
-                      <p className="text-sm text-[#306B25]">
-                        Number <span className="font-mono font-bold">{selectedPhoneNumber}</span> will be assigned to{' '}
-                        <span className="font-bold">
-                          {users.find(u => u._id === selectedUserId)?.companyName}
-                        </span>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            {availableNumbers.length > 0 && (
-              <div className="p-6 border-t border-gray-200 bg-gray-50">
-                <div className="flex items-center justify-end gap-3">
-                  <button
-                    onClick={() => {
-                      setShowAssignModal(false);
-                      setSelectedPhoneNumber('');
-                      setSelectedUserId('');
-                    }}
-                    className="px-6 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleAssign}
-                    disabled={!selectedPhoneNumber || !selectedUserId || assignMutation.isPending}
-                    className="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    {assignMutation.isPending ? 'Assigning...' : 'Assign Number'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+      {/* Success Modal */}
+      {assignedData && (
+        <AssignSuccessModal
+          isOpen={showSuccessModal}
+          onClose={() => {
+            setShowSuccessModal(false);
+            setAssignedData(null);
+          }}
+          phoneNumber={assignedData.phoneNumber}
+          userName={assignedData.userName}
+          userEmail={assignedData.userEmail}
+        />
       )}
     </div>
   );

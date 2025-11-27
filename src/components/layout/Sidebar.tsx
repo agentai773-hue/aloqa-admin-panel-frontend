@@ -459,13 +459,13 @@ export default function Sidebar() {
 
         {/* Main Content */}
         <motion.main 
-          className="flex-1 p-6 lg:p-8"
+          className="flex-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
         >
           <motion.div 
-            className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[calc(100vh-200px)]"
+            className="bg-white min-h-[calc(100vh-200px)]"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.4, type: "spring", stiffness: 200 }}

@@ -55,19 +55,19 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
       {/* Header */}
       <motion.div 
-        className="mb-8"
+        className="mb-6 sm:mb-8"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Profile</h1>
-        <p className="text-gray-600">Manage your account settings</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Admin Profile</h1>
+        <p className="text-sm sm:text-base text-gray-600">Manage your account settings</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Profile Card */}
         <motion.div 
           className="lg:col-span-2"
@@ -75,17 +75,17 @@ export default function AdminProfile() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
             {/* Profile Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
               <div className="flex items-center space-x-4">
-                <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-xl font-bold text-white">
+                <div className="h-14 w-14 sm:h-16 sm:w-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-lg sm:text-xl font-bold text-white">
                     {user?.name?.charAt(0).toUpperCase() || 'A'}
                   </span>
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">{user?.name || 'Admin User'}</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{user?.name || 'Admin User'}</h2>
                   <p className="text-green-600 text-sm font-medium flex items-center">
                     <Shield className="h-4 w-4 mr-1" />
                     Administrator
@@ -94,7 +94,7 @@ export default function AdminProfile() {
               </div>
               <motion.button
                 onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                className="flex items-center justify-center space-x-2 px-4 py-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors w-full sm:w-auto"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -104,7 +104,7 @@ export default function AdminProfile() {
             </div>
 
             {/* Profile Form */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Full Name
@@ -116,7 +116,7 @@ export default function AdminProfile() {
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                     disabled={!isEditing}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                    className="w-full pl-10 pr-4 py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -133,7 +133,7 @@ export default function AdminProfile() {
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={!isEditing}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                    className="w-full pl-10 pr-4 py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -149,14 +149,14 @@ export default function AdminProfile() {
                     type="text"
                     value="Administrator"
                     disabled
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+                    className="w-full pl-10 pr-4 py-3 text-sm sm:text-base border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
                   />
                 </div>
               </div>
 
               {isEditing && (
                 <motion.div 
-                  className="flex justify-end space-x-3 pt-4"
+                  className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
@@ -164,7 +164,7 @@ export default function AdminProfile() {
                   <motion.button
                     onClick={handleCancel}
                     disabled={loading}
-                    className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+                    className="flex items-center justify-center space-x-2 px-6 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 w-full sm:w-auto order-2 sm:order-1"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -174,7 +174,7 @@ export default function AdminProfile() {
                   <motion.button
                     onClick={handleSave}
                     disabled={loading}
-                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded-lg transition-colors disabled:opacity-50"
+                    className="flex items-center justify-center space-x-2 px-6 py-3 bg-green-600 text-white hover:bg-green-700 rounded-lg transition-colors disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -189,13 +189,13 @@ export default function AdminProfile() {
 
         {/* Account Info */}
         <motion.div 
-          className="space-y-6"
+          className="space-y-4 sm:space-y-6"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           {/* Account Status */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Status</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -216,7 +216,7 @@ export default function AdminProfile() {
           </div>
 
           {/* Logout */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Actions</h3>
             <motion.button
               onClick={handleLogout}

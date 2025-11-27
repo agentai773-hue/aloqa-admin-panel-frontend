@@ -88,7 +88,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#5DD149]" />
       </div>
     );
   }
@@ -106,7 +106,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
               placeholder="Search by name, type, status, user, email, or agent ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DD149] focus:border-transparent"
             />
             {searchQuery && (
               <button
@@ -123,7 +123,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
             <select
               value={selectedUserId}
               onChange={(e) => setSelectedUserId(e.target.value)}
-              className="w-full appearance-none pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white cursor-pointer"
+              className="w-full appearance-none pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DD149] focus:border-transparent bg-white cursor-pointer"
             >
               <option value="">All Users</option>
               {users.map((user) => {
@@ -151,7 +151,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                 setSearchQuery('');
                 setSelectedUserId('');
               }}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="text-sm text-[#5DD149] hover:text-[#306B25] font-medium"
             >
               Clear Filters
             </button>
@@ -160,24 +160,25 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-linear-to-r from-blue-600 to-indigo-600">
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <table className="w-full divide-y divide-gray-200" style={{ minWidth: '1200px' }}>
+            <thead className="bg-linear-to-r from-gray-50 to-gray-100">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Agent Name</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Assign User</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Type</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">LLM Model</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Created</th>
-                <th className="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '50px' }}>No.</th>
+                <th className="px-6 py-6 text-left text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '200px' }}>Agent Name</th>
+                <th className="px-6 py-6 text-left text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '200px' }}>Assigned User</th>
+                <th className="px-6 py-6 text-left text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '150px' }}>Type</th>
+                <th className="px-6 py-6 text-left text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '150px' }}>LLM Model</th>
+                <th className="px-6 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '120px' }}>Status</th>
+                <th className="px-6 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '150px' }}>Created</th>
+                <th className="px-6 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '140px' }}>Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredAssistants.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center">
+                  <td colSpan={8} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center">
                       <Search className="h-12 w-12 text-gray-400 mb-3" />
                       <p className="text-gray-600 font-semibold">No assistants found</p>
@@ -188,13 +189,18 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                   </td>
                 </tr>
               ) : (
-                filteredAssistants.map((assistant) => {
+                filteredAssistants.map((assistant, index) => {
                   const user = typeof assistant.userId === 'object' ? assistant.userId : null;
                   return (
-                    <tr key={assistant._id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={assistant._id} className="hover:bg-green-50 transition-colors duration-150">
+                      <td className="px-4 py-3 whitespace-nowrap text-center">
+                        <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-linear-to-br from-green-100 to-emerald-100 text-sm font-bold text-[#306B25]">
+                          {index + 1}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-col">
-                          <div className="text-sm font-bold text-gray-900">{assistant.agentName}</div>
+                          <div className="text-sm font-semibold text-gray-900">{assistant.agentName}</div>
                           {assistant.agentId && (
                             <div className="text-xs text-gray-500 font-mono mt-1">
                               ID: {assistant.agentId.substring(0, 16)}...
@@ -204,18 +210,29 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {user ? (
-                          <div className="flex flex-col">
-                            <div className="text-sm font-semibold text-gray-900">
-                              {user.firstName} {user.lastName}
+                          <div className="flex items-center">
+                            <div className="h-10 w-10 shrink-0">
+                              <div className="h-10 w-10 rounded-full flex items-center justify-center" style={{
+                                background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
+                              }}>
+                                <span className="text-sm font-bold text-white">
+                                  {(user.firstName?.[0] || '').toUpperCase()}{(user.lastName?.[0] || '').toUpperCase()}
+                                </span>
+                              </div>
                             </div>
-                            <div className="text-xs text-gray-500">{user.email}</div>
+                            <div className="ml-3">
+                              <div className="text-sm font-semibold text-gray-900">
+                                {user.firstName} {user.lastName}
+                              </div>
+                              <div className="text-xs text-gray-500">{user.email}</div>
+                            </div>
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-500">Unknown</span>
+                          <span className="text-sm text-gray-500">Unassigned</span>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-900 capitalize">{assistant.agentType}</span>
+                        <span className="text-sm font-medium text-gray-900 capitalize">{assistant.agentType}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-col">
@@ -225,36 +242,36 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                           <span className="text-xs text-gray-500">{assistant.llmConfig.model}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusBadge(assistant.status)}`}>
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold border ${getStatusBadge(assistant.status)}`}>
                           {assistant.status.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-600">
                         {new Date(assistant.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-1.5">
                           <button
                             onClick={() => navigate(`/assistants/${assistant._id}/view`)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-1.5 text-[#5DD149] hover:bg-green-50 rounded-lg transition-colors"
                             title="View Details"
                           >
-                            <Eye className="h-5 w-5" />
+                            <Eye className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => navigate(`/assistants/${assistant._id}/edit`)}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                             title="Edit Assistant"
                           >
-                            <Edit className="h-5 w-5" />
+                            <Edit className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => openDeleteModal(assistant)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete Assistant"
                           >
-                            <Trash2 className="h-5 w-5" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                       </td>

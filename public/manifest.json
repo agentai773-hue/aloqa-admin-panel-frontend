@@ -1,0 +1,24 @@
+{
+  "name": "Aloqa AI Admin Panel",
+  "short_name": "Aloqa AI",
+  "description": "Aloqa AI Admin Panel - Manage your AI assistants and users",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5DD149",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

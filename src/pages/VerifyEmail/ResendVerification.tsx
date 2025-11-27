@@ -39,7 +39,7 @@ export default function ResendVerification() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 via-white to-emerald-50">
       <div className="max-w-md w-full mx-4">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Logo/Brand */}
@@ -61,7 +61,7 @@ export default function ResendVerification() {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent outline-none transition-all"
                 placeholder="your.email@example.com"
                 disabled={status === 'loading'}
               />
@@ -99,7 +99,7 @@ export default function ResendVerification() {
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-[#5DD149] text-white rounded-lg hover:bg-[#306B25] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {status === 'loading' ? (
                 <>
@@ -113,14 +113,14 @@ export default function ResendVerification() {
           </form>
 
           {/* Info Box */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
             <div className="flex items-start gap-3">
-              <svg className="h-6 w-6 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-6 w-6 text-[#5DD149] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <p className="text-blue-800 text-sm font-medium">What happens next?</p>
-                <ul className="text-blue-700 text-sm mt-1 space-y-1 list-disc list-inside">
+                <p className="text-[#306B25] text-sm font-medium">What happens next?</p>
+                <ul className="text-[#306B25] text-sm mt-1 space-y-1 list-disc list-inside">
                   <li>You'll receive a verification email</li>
                   <li>Click the link to verify your account</li>
                   <li>Wait for admin approval to access your account</li>
@@ -133,7 +133,7 @@ export default function ResendVerification() {
           <div className="mt-6 text-center">
             <button
               onClick={() => navigate('/login')}
-              className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
+              className="text-[#5DD149] hover:text-[#306B25] font-medium text-sm"
             >
               ← Back to Login
             </button>

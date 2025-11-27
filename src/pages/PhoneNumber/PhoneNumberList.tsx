@@ -101,19 +101,19 @@ export default function PhoneNumberList() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-900 text-white">
+                <thead className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Phone Number</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Provider</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Price</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Purchased</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Renewal</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Phone Number</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Provider</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Price</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Status</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Purchased</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Renewal</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {purchasedNumbers.map((number: PurchasedNumber) => (
-                    <tr key={number.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={number.id} className="hover:bg-green-50 transition-colors">
                       <td className="px-6 py-4">
                         <span className="font-mono text-sm font-semibold text-gray-900">
                           {number.phone_number}
@@ -150,15 +150,15 @@ export default function PhoneNumberList() {
 
         {/* Info Footer */}
         {purchasedNumbers.length > 0 && (
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="mt-6 bg-green-50 border border-green-200 rounded-xl p-4">
             <div className="flex items-start">
               <div className="shrink-0">
-                <svg className="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="ml-3 flex-1">
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-[#306B25]">
                   Total {purchasedNumbers.length} purchased number{purchasedNumbers.length !== 1 ? 's' : ''}
                 </p>
               </div>

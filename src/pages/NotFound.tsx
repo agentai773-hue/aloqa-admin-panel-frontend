@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-6 px-4">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 flex items-center justify-center py-6 px-4">
       <div className="max-w-sm sm:max-w-md w-full text-center">
         <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
           <div className="mb-6 sm:mb-8">
@@ -21,14 +21,14 @@ export default function NotFound() {
           <div className="space-y-3 sm:space-y-4">
             <Link
               to="/"
-              className="block bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg touch-target"
+              className="block bg-[#5DD149] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#306B25] transition-colors shadow-md hover:shadow-lg touch-target"
             >
               Go to Dashboard
             </Link>
             <div>
               <Link
                 to="/"
-                className="text-indigo-600 hover:text-indigo-800 font-medium text-sm sm:text-base"
+                className="text-[#5DD149] hover:text-[#306B25] font-medium text-sm sm:text-base"
               >
                 Return Home
               </Link>

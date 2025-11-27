@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import { navigationItems } from '../../config/navlinks';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
@@ -67,14 +68,74 @@ export default function Sidebar() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 ${isSidebarOpen ? 'w-64' : 'w-20'} bg-white shadow-lg border-r border-gray-200 transition-all duration-500 ease-in-out transform ${isSidebarOpen ? 'translate-x-0 shadow-xl' : 'lg:translate-x-0'} ${!isSidebarOpen ? 'lg:translate-x-0' : ''} ${isSidebarOpen ? '' : '-translate-x-full lg:translate-x-0'}`}>
+      <motion.div 
+        className={`fixed inset-y-0 left-0 z-50 bg-white shadow-lg border-r border-gray-200`}
+        initial={false}
+        animate={{ 
+          width: isSidebarOpen ? 256 : 80,
+          x: 0
+        }}
+        transition={{ 
+          type: "spring",
+          stiffness: 300,
+          damping: 30
+        }}
+      >
         <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-end h-21 px-4 border-b border-gray-200 bg-white">
-            <button
+          {/* Logo & Toggle Header */}
+          <motion.div 
+            className="flex items-center justify-between h-20 px-4 border-b border-gray-200 bg-white"
+            initial={false}
+            animate={{ opacity: 1 }}
+          >
+            {/* Logo */}
+            <AnimatePresence mode="wait">
+              {isSidebarOpen ? (
+                <motion.div 
+                  key="logo-open"
+                  className="flex items-center gap-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <motion.img 
+                    src="/logo.svg" 
+                    alt="Aloqa AI Logo" 
+                    className="h-20 w-30 object-contain"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </motion.div>
+              ) : (
+                <motion.img 
+                  key="logo-closed"
+                  src="/logo.png" 
+                  alt="Logo" 
+                  className="h-10 w-10 object-contain mx-auto"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              )}
+            </AnimatePresence>
+            
+            {/* Toggle Button */}
+            <motion.button
               onClick={toggleSidebar}
-              className="hidden lg:flex items-center justify-center p-2.5 rounded-xl text-gray-700 hover:bg-gray-100 transition-all duration-300 hover:scale-110 active:scale-95 group"
+              className="hidden lg:flex items-center justify-center p-2.5 rounded-xl text-gray-700 hover:bg-gray-100"
               title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+              whileHover={{ scale: 1.1, rotate: 180 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400 }}
             >
               <div className="relative w-5 h-5">
                 {isSidebarOpen ? (
@@ -107,109 +168,186 @@ export default function Sidebar() {
                   </svg>
                 )}
                 {/* Pulse effect on hover */}
-                <div className="absolute inset-0 rounded-full bg-gray-300/30 scale-0 group-hover:scale-150 transition-transform duration-300 opacity-0 group-hover:opacity-100"></div>
+                <motion.div 
+                  className="absolute inset-0 rounded-full bg-green-300/30"
+                  initial={{ scale: 0, opacity: 0 }}
+                  whileHover={{ scale: 1.5, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                ></motion.div>
               </div>
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
 
-          {/* User Profile Section */}
-          <div className="p-4 border-b border-gray-200 bg-white">
-            <div className="flex items-center">
-              <div className="relative">
-                <div className="h-10 w-10 bg-gray-800 rounded-full flex items-center justify-center shadow-md">
-                  <span className="text-sm font-semibold text-white">
-                    {user?.name?.charAt(0)?.toUpperCase() || 'A'}
-                  </span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-400 rounded-full border-2 border-white"></div>
-              </div>
-              {isSidebarOpen && (
-                <div className="ml-3 min-w-0 flex-1">
-                  <div className="text-sm font-semibold text-gray-900 truncate">{user?.name || 'Admin User'}</div>
-                  <div className="text-xs text-gray-500 truncate">{user?.email || 'admin@admin.com'}</div>
-                  <div className="mt-1">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      Super Admin
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+     
 
           {/* Navigation */}
           <nav className="flex-1 px-3 py-6 space-y-2">
-            {navigationItems.map((item) => (
-              <NavLink
+            {navigationItems.map((item, index) => (
+              <motion.div
                 key={item.name}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ 
+                  delay: index * 0.1,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 25
+                }}
+              >
+              <NavLink
                 to={item.href}
                 end={item.href === '/'}
                 title={!isSidebarOpen ? item.name : ''}
               >
                 {({ isActive }) => (
-                  <div className={`group flex items-center ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium rounded-xl transition-all duration-200 relative ${
-                    isActive
-                      ? 'bg-gray-800 text-white shadow-lg scale-105'
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 hover:scale-105'
-                  }`}>
-                    <div className={`transition-colors ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-gray-900'}`}>
+                  <motion.div 
+                    className={`group flex items-center ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium rounded-xl relative ${
+                      isActive
+                        ? 'text-white shadow-lg shadow-green-500/30'
+                        : 'text-gray-700 hover:text-gray-900 hover:bg-green-50'
+                    }`}
+                    style={isActive ? {
+                      background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
+                    } : {}}
+                    whileHover={{ scale: 1.05, x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <motion.div 
+                      className={`transition-colors ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-[#5DD149]'}`}
+                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                      transition={{ duration: 0.5 }}
+                    >
                       {item.icon}
-                    </div>
-                    {isSidebarOpen && (
-                      <span className="ml-3">{item.name}</span>
-                    )}
+                    </motion.div>
+                    <AnimatePresence>
+                      {isSidebarOpen && (
+                        <motion.span 
+                          className="ml-3"
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "auto" }}
+                          exit={{ opacity: 0, width: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {item.name}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                     {!isSidebarOpen && (
-                      <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg">
+                      <motion.div 
+                        className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-50 shadow-lg"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileHover={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
                         {item.name}
-                      </div>
+                      </motion.div>
                     )}
-                  </div>
+                  </motion.div>
                 )}
               </NavLink>
+              </motion.div>
             ))}
           </nav>
 
           {/* Logout Button */}
-          <div className="p-3 border-t border-gray-200 bg-white">
-            <button
+          <motion.div 
+            className="p-3 border-t border-gray-200 bg-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <motion.button
               onClick={handleLogout}
-              className={`w-full flex items-center ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200 group relative`}
+              className={`w-full flex items-center ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl group relative`}
               title={!isSidebarOpen ? 'Logout' : ''}
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(254, 226, 226, 0.5)" }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400 }}
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <motion.svg 
+                className="h-5 w-5" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                whileHover={{ rotate: 20 }}
+                transition={{ duration: 0.3 }}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              {isSidebarOpen && <span className="ml-3">Logout</span>}
+              </motion.svg>
+              <AnimatePresence>
+                {isSidebarOpen && (
+                  <motion.span 
+                    className="ml-3"
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    Logout
+                  </motion.span>
+                )}
+              </AnimatePresence>
               {!isSidebarOpen && (
-                <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg">
+                <motion.div 
+                  className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-50 shadow-lg"
+                  initial={{ opacity: 0, x: -10 }}
+                  whileHover={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
                   Logout
-                </div>
+                </motion.div>
               )}
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Mobile overlay */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 lg:hidden bg-gray-600/75 backdrop-blur-sm"
-          onClick={toggleSidebar}
-        />
-      )}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            className="fixed inset-0 z-40 lg:hidden bg-gray-600/75 backdrop-blur-sm"
+            onClick={toggleSidebar}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col transition-all duration-500 ease-in-out ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <motion.div 
+        className="flex-1 flex flex-col"
+        initial={false}
+        animate={{ 
+          marginLeft: isSidebarOpen ? 256 : 80 
+        }}
+        transition={{ 
+          type: "spring",
+          stiffness: 300,
+          damping: 30
+        }}
+      >
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
+        <motion.header 
+          className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30"
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        >
           <div className="px-4 sm:px-6 py-4">
             <div className="flex items-center justify-between">
               {/* Mobile menu button and Page title */}
               <div className="flex items-center space-x-4">
-                <button
+                <motion.button
                   onClick={toggleSidebar}
-                  className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
                   title="Toggle Menu"
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 400 }}
                 >
                   <svg 
                     className="w-6 h-6" 
@@ -233,69 +371,111 @@ export default function Sidebar() {
                       />
                     )}
                   </svg>
-                </button>
+                </motion.button>
                 {/* Page title */}
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{pageHeader.title}</h1>
-                  <p className="text-sm text-gray-500 hidden sm:block">{pageHeader.subtitle}</p>
-                </div>
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
+                >
+                  <motion.h1 
+                    className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent" 
+                    style={{
+                      backgroundImage: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    {pageHeader.title}
+                  </motion.h1>
+                  <motion.p 
+                    className="text-sm text-gray-500 hidden sm:block"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    {pageHeader.subtitle}
+                  </motion.p>
+                </motion.div>
               </div>
               
               {/* Header actions */}
               <div className="flex items-center space-x-2 sm:space-x-4">
-                {/* Search */}
-                <div className="hidden md:block">
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                </div>
-                
                 {/* Notifications */}
-                <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-5-5M10 7A7 7 0 1017 7v3a3 3 0 11-6 0V7z" />
-                  </svg>
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                </button>
+                <motion.button 
+                  className="relative p-2 text-gray-400 hover:text-[#5DD149] hover:bg-green-50 rounded-lg"
+                  whileHover={{ scale: 1.1, rotate: [0, -10, 10, 0] }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <motion.svg 
+                    className="h-6 w-6" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </motion.svg>
+                  <motion.span 
+                    className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                  ></motion.span>
+                </motion.button>
                 
                 {/* User menu */}
-                <div className="flex items-center space-x-3">
+                <motion.div 
+                  className="flex items-center space-x-3"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
                   <div className="hidden sm:block text-right">
                     <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
                     <div className="text-xs text-gray-500">Online</div>
                   </div>
-                  <div className="relative">
+                  <motion.div 
+                    className="relative"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
                     <div className="h-8 w-8 sm:h-10 sm:w-10 bg-gray-800 rounded-full flex items-center justify-center shadow-md cursor-pointer hover:bg-gray-700 transition-colors">
                       <span className="text-sm font-semibold text-white">
                         {user?.name?.charAt(0)?.toUpperCase() || 'A'}
                       </span>
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-white"></div>
-                  </div>
-                </div>
+                    <motion.div 
+                      className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-white"
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    ></motion.div>
+                  </motion.div>
+                </motion.div>
               </div>
             </div>
           </div>
-        </header>
+        </motion.header>
 
         {/* Main Content */}
-        <main className="flex-1 p-6 lg:p-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[calc(100vh-200px)]">
+        <motion.main 
+          className="flex-1 p-6 lg:p-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+        >
+          <motion.div 
+            className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[calc(100vh-200px)]"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+          >
             <div className="p-6 lg:p-8">
               <Outlet />
             </div>
-          </div>
-        </main>
-      </div>
+          </motion.div>
+        </motion.main>
+      </motion.div>
 
       {/* Floating Toggle Button for Collapsed Sidebar */}
  

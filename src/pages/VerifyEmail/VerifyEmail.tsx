@@ -45,7 +45,7 @@ export default function VerifyEmail() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 via-white to-emerald-50">
       <div className="max-w-md w-full mx-4">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Logo/Brand */}
@@ -56,7 +56,7 @@ export default function VerifyEmail() {
           {/* Loading State */}
           {status === 'loading' && (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mb-4"></div>
+              <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-[#5DD149] mb-4"></div>
               <p className="text-gray-600 text-lg">Verifying your email...</p>
             </div>
           )}
@@ -124,7 +124,7 @@ export default function VerifyEmail() {
               <div className="space-y-3">
                 <button
                   onClick={() => navigate('/resend-verification')}
-                  className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                  className="w-full px-6 py-3 bg-[#5DD149] text-white rounded-lg hover:bg-[#306B25] transition-colors font-medium"
                 >
                   Request New Verification Email
                 </button>

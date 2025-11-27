@@ -37,7 +37,7 @@ export default function UserModal({
       <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm animate-fadeIn">
         <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col animate-slideUp">
           {/* Header */}
-          <div className="bg-linear-to-r from-purple-600 to-purple-700 p-6 rounded-t-2xl shrink-0">
+          <div className="bg-linear-to-r from-[#5DD149] to-[#306B25] p-6 rounded-t-2xl shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-12 w-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
@@ -47,7 +47,7 @@ export default function UserModal({
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-white">User Details</h3>
-                  <p className="text-purple-100 text-sm">Complete user information</p>
+                  <p className="text-green-100 text-sm">Complete user information</p>
                 </div>
               </div>
               <button
@@ -65,7 +65,7 @@ export default function UserModal({
             {/* User Avatar & Status */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="h-20 w-20 rounded-full bg-linear-to-br from-purple-500 to-blue-600 flex items-center justify-center shadow-lg">
+                <div className="h-20 w-20 rounded-full bg-linear-to-br from-[#5DD149] to-[#306B25] flex items-center justify-center shadow-lg">
                   <span className="text-3xl font-bold text-white">
                     {(selectedUser.firstName?.[0] || '').toUpperCase()}{(selectedUser.lastName?.[0] || '').toUpperCase()}
                   </span>
@@ -112,16 +112,16 @@ export default function UserModal({
 
             {/* Activity Info */}
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <label className="text-xs font-semibold text-blue-600 uppercase tracking-wider block mb-1">Last Login</label>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <label className="text-xs font-semibold text-[#5DD149] uppercase tracking-wider block mb-1">Last Login</label>
                 <p className="text-sm font-medium text-gray-900">{formatDate(selectedUser.lastLogin)}</p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg">
                 <label className="text-xs font-semibold text-green-600 uppercase tracking-wider block mb-1">Created At</label>
                 <p className="text-sm font-medium text-gray-900">{formatDate(selectedUser.createdAt)}</p>
               </div>
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <label className="text-xs font-semibold text-purple-600 uppercase tracking-wider block mb-1">Updated At</label>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <label className="text-xs font-semibold text-[#306B25] uppercase tracking-wider block mb-1">Updated At</label>
                 <p className="text-sm font-medium text-gray-900">{formatDate(selectedUser.updatedAt)}</p>
               </div>
             </div>
@@ -138,7 +138,12 @@ export default function UserModal({
             {onEditClick && (
               <button
                 onClick={onEditClick}
-                className="px-8 py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="px-8 py-3 text-white rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                style={{
+                  background: 'linear-gradient(to right, #5DD149, #306B25)',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #4BC13B, #255A1D)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #5DD149, #306B25)'}
               >
                 Edit User
               </button>
@@ -153,7 +158,9 @@ export default function UserModal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col animate-slideUp">
-        <div className="bg-linear-to-r from-blue-600 to-blue-700 p-6 rounded-t-2xl shrink-0">
+        <div className="p-6 rounded-t-2xl shrink-0" style={{
+          background: 'linear-gradient(to right, #5DD149, #306B25)'
+        }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
@@ -165,7 +172,7 @@ export default function UserModal({
                 <h3 className="text-2xl font-bold text-white">
                   {mode === 'create' ? 'Create New User' : 'Edit User'}
                 </h3>
-                <p className="text-blue-100 text-sm">
+                <p className="text-green-100 text-sm">
                   {mode === 'create' ? 'Fill in the user details below' : 'Update user information'}
                 </p>
               </div>
@@ -196,7 +203,7 @@ export default function UserModal({
                 className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   validationErrors.firstName 
                     ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                    : 'border-gray-300 focus:border-blue-500'
+                    : 'border-gray-300 focus:border-[#5DD149]'
                 }`}
                 placeholder="Enter first name"
               />
@@ -221,7 +228,7 @@ export default function UserModal({
                 className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   validationErrors.lastName 
                     ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                    : 'border-gray-300 focus:border-blue-500'
+                    : 'border-gray-300 focus:border-[#5DD149]'
                 }`}
                 placeholder="Enter last name"
               />
@@ -249,7 +256,7 @@ export default function UserModal({
               className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                 validationErrors.email 
                   ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  : 'border-gray-300 focus:border-[#5DD149]'
               }`}
               placeholder="user@example.com"
             />
@@ -276,7 +283,7 @@ export default function UserModal({
               className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                 validationErrors.mobile 
                   ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  : 'border-gray-300 focus:border-[#5DD149]'
               }`}
               placeholder="1234567890"
             />
@@ -303,7 +310,7 @@ export default function UserModal({
               className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                 validationErrors.companyName 
                   ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  : 'border-gray-300 focus:border-[#5DD149]'
               }`}
               placeholder="Enter company name"
             />
@@ -330,7 +337,7 @@ export default function UserModal({
               className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors resize-none ${
                 validationErrors.companyAddress 
                   ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  : 'border-gray-300 focus:border-[#5DD149]'
               }`}
               placeholder="Enter complete company address"
             />
@@ -359,7 +366,7 @@ export default function UserModal({
                 className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   validationErrors.password 
                     ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                    : 'border-gray-300 focus:border-blue-500'
+                    : 'border-gray-300 focus:border-[#5DD149]'
                 }`}
                 placeholder="Min. 6 characters"
               />
@@ -384,7 +391,7 @@ export default function UserModal({
                 className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
                   validationErrors.confirmPassword 
                     ? 'border-red-500 focus:border-red-600 bg-red-50' 
-                    : 'border-gray-300 focus:border-blue-500'
+                    : 'border-gray-300 focus:border-[#5DD149]'
                 }`}
                 placeholder="Re-enter password"
               />
@@ -411,7 +418,12 @@ export default function UserModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-8 py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="px-8 py-3 text-white rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              style={{
+                background: 'linear-gradient(to right, #5DD149, #306B25)',
+              }}
+              onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.background = 'linear-gradient(to right, #4BC13B, #255A1D)')}
+              onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.background = 'linear-gradient(to right, #5DD149, #306B25)')}
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">

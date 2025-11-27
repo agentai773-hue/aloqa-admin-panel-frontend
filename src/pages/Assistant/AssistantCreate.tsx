@@ -12,7 +12,7 @@ import {
   Step4TranscriberIO,
   Step5TaskConfig,
   NavigationButtons
-} from '../../components/AssistantComponents';
+} from '../../components/assistant';
 
 export default function AssistantCreate() {
   const navigate = useNavigate();

@@ -14,9 +14,9 @@ export default function LoadingSpinner({
   };
 
   const colorClasses = {
-    indigo: 'border-indigo-500',
+    indigo: 'border-green-500',
     gray: 'border-gray-500',
-    blue: 'border-blue-500',
+    blue: 'border-green-500',
     green: 'border-green-500'
   };
 

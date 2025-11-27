@@ -26,13 +26,13 @@ export default function ConfirmDialog({
   const iconColors = {
     danger: 'text-red-600',
     warning: 'text-yellow-600',
-    info: 'text-blue-600'
+    info: 'text-[#5DD149]'
   };
 
   const buttonColors = {
     danger: 'bg-red-600 hover:bg-red-700 focus:ring-red-500',
     warning: 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500',
-    info: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+    info: 'bg-[#5DD149] hover:bg-[#306B25] focus:ring-[#5DD149]'
   };
 
   return (

@@ -202,7 +202,7 @@ export default function AssistantEdit() {
   if (isLoading || loadingUsers) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
+        <Loader2 className="h-12 w-12 animate-spin text-[#5DD149]" />
       </div>
     );
   }
@@ -213,7 +213,7 @@ export default function AssistantEdit() {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Assistant Not Found</h2>
         <button
           onClick={() => navigate('/assistant')}
-          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="mt-4 px-6 py-2 bg-[#5DD149] text-white rounded-lg hover:bg-[#306B25]"
         >
           Back to Assistants
         </button>
@@ -224,7 +224,7 @@ export default function AssistantEdit() {
   const selectedUser = approvedUsersWithToken.find((u: User) => u._id === formData.userId);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-md border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-6">
@@ -235,14 +235,14 @@ export default function AssistantEdit() {
                 className="group p-3 hover:bg-gray-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-gray-300"
               >
                 <div className="flex items-center gap-2">
-                  <div className="p-2 bg-linear-to-r from-blue-600 to-indigo-600 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
+                  <div className="p-2 bg-linear-to-r from-[#5DD149] to-[#306B25] rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
                     <ArrowLeft className="h-5 w-5 text-white" />
                   </div>
                   <span className="font-medium text-gray-700 group-hover:text-gray-900">Back</span>
                 </div>
               </button>
               <div>
-                <h1 className="text-4xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <h1 className="text-4xl font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
                   Edit Assistant
                 </h1>
                 <p className="text-gray-600 mt-1 font-medium">{assistant.agentName}</p>
@@ -264,10 +264,10 @@ export default function AssistantEdit() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* User & Basic Information Card */}
           <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden">
-            <div className="p-8 md:p-10 border-b-2 border-gray-100 bg-linear-to-r from-blue-50/30 to-indigo-50/30">
+            <div className="p-8 md:p-10 border-b-2 border-gray-100 bg-linear-to-r from-green-50/30 to-emerald-50/30">
               <div className="flex items-center gap-4 mb-2">
-                <div className="bg-blue-100 p-3 rounded-xl">
-                  <svg className="h-7 w-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-green-100 p-3 rounded-xl">
+                  <svg className="h-7 w-7 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
@@ -323,7 +323,7 @@ export default function AssistantEdit() {
                     required
                     value={formData.agentName}
                     onChange={(e) => setFormData({ ...formData, agentName: e.target.value })}
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-[#5DD149] hover:border-gray-400 focus:ring-4 focus:ring-green-100 rounded-xl focus:outline-none transition-all duration-200"
                     placeholder="My Assistant"
                   />
                 </div>
@@ -349,8 +349,8 @@ export default function AssistantEdit() {
                           | 'other',
                       })
                     }
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 
-                               focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-[#5DD149] hover:border-gray-400 
+                               focus:ring-4 focus:ring-green-100 rounded-xl focus:outline-none transition-all duration-200"
                   >
                     <option value="conversation">Conversation</option>
                     <option value="webhook">Webhook</option>
@@ -377,7 +377,7 @@ export default function AssistantEdit() {
                         agentWelcomeMessage: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-[#5DD149] hover:border-gray-400 focus:ring-4 focus:ring-green-100 rounded-xl focus:outline-none transition-all duration-200"
                     placeholder="Hello! How can I help you?"
                   />
                 </div>
@@ -396,7 +396,7 @@ export default function AssistantEdit() {
                         webhookUrl: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-[#5DD149] hover:border-gray-400 focus:ring-4 focus:ring-green-100 rounded-xl focus:outline-none transition-all duration-200"
                     placeholder="https://example.com/webhook"
                   />
                 </div>
@@ -416,7 +416,7 @@ export default function AssistantEdit() {
                         systemPrompt: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100 rounded-xl focus:outline-none transition-all duration-200"
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-[#5DD149] hover:border-gray-400 focus:ring-4 focus:ring-green-100 rounded-xl focus:outline-none transition-all duration-200"
                     placeholder="You are a helpful assistant..."
                   />
                 </div>
@@ -437,7 +437,7 @@ export default function AssistantEdit() {
                       ...formData,
                       llmConfig: { ...formData.llmConfig, provider: e.target.value }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   >
                     <option value="openai">OpenAI</option>
                     <option value="anthropic">Anthropic</option>
@@ -453,7 +453,7 @@ export default function AssistantEdit() {
                       ...formData,
                       llmConfig: { ...formData.llmConfig, model: e.target.value }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
               </div>
@@ -470,7 +470,7 @@ export default function AssistantEdit() {
                       ...formData,
                       llmConfig: { ...formData.llmConfig, temperature: parseFloat(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
                 <div>
@@ -482,7 +482,7 @@ export default function AssistantEdit() {
                       ...formData,
                       llmConfig: { ...formData.llmConfig, max_tokens: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
               </div>
@@ -499,7 +499,7 @@ export default function AssistantEdit() {
                       ...formData,
                       llmConfig: { ...formData.llmConfig, top_p: parseFloat(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
                 <div>
@@ -510,7 +510,7 @@ export default function AssistantEdit() {
                       ...formData,
                       llmConfig: { ...formData.llmConfig, agent_flow_type: e.target.value }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   >
                     <option value="streaming">Streaming</option>
                     <option value="default">Default</option>
@@ -533,7 +533,7 @@ export default function AssistantEdit() {
                       ...formData,
                       synthesizerConfig: { ...formData.synthesizerConfig, provider: e.target.value }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   >
                     <option value="polly">Amazon Polly</option>
                     <option value="elevenlabs">ElevenLabs</option>
@@ -555,7 +555,7 @@ export default function AssistantEdit() {
                         }
                       }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
               </div>
@@ -575,7 +575,7 @@ export default function AssistantEdit() {
                         }
                       }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
                 <div>
@@ -593,7 +593,7 @@ export default function AssistantEdit() {
                         }
                       }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
               </div>
@@ -613,7 +613,7 @@ export default function AssistantEdit() {
                       ...formData,
                       transcriberConfig: { ...formData.transcriberConfig, provider: e.target.value }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   >
                     <option value="deepgram">Deepgram</option>
                     <option value="whisper">Whisper</option>
@@ -628,7 +628,7 @@ export default function AssistantEdit() {
                       ...formData,
                       transcriberConfig: { ...formData.transcriberConfig, model: e.target.value }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
               </div>
@@ -642,7 +642,7 @@ export default function AssistantEdit() {
                       ...formData,
                       transcriberConfig: { ...formData.transcriberConfig, language: e.target.value }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
                 <div>
@@ -654,7 +654,7 @@ export default function AssistantEdit() {
                       ...formData,
                       transcriberConfig: { ...formData.transcriberConfig, endpointing: parseInt(e.target.value) }
                     })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                   />
                 </div>
               </div>
@@ -674,7 +674,7 @@ export default function AssistantEdit() {
                     ...formData,
                     inputConfig: { ...formData.inputConfig, provider: e.target.value }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 >
                   <option value="plivo">Plivo</option>
                   <option value="twilio">Twilio</option>
@@ -689,7 +689,7 @@ export default function AssistantEdit() {
                     ...formData,
                     inputConfig: { ...formData.inputConfig, format: e.target.value }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 >
                   <option value="wav">WAV</option>
                   <option value="mp3">MP3</option>
@@ -703,7 +703,7 @@ export default function AssistantEdit() {
                     ...formData,
                     outputConfig: { ...formData.outputConfig, provider: e.target.value }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 >
                   <option value="plivo">Plivo</option>
                   <option value="twilio">Twilio</option>
@@ -718,7 +718,7 @@ export default function AssistantEdit() {
                     ...formData,
                     outputConfig: { ...formData.outputConfig, format: e.target.value }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 >
                   <option value="wav">WAV</option>
                   <option value="mp3">MP3</option>
@@ -740,7 +740,7 @@ export default function AssistantEdit() {
                     ...formData,
                     taskConfig: { ...formData.taskConfig, hangup_after_silence: parseInt(e.target.value) }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 />
               </div>
               <div>
@@ -752,7 +752,7 @@ export default function AssistantEdit() {
                     ...formData,
                     taskConfig: { ...formData.taskConfig, incremental_delay: parseInt(e.target.value) }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 />
               </div>
               <div>
@@ -764,7 +764,7 @@ export default function AssistantEdit() {
                     ...formData,
                     taskConfig: { ...formData.taskConfig, number_of_words_for_interruption: parseInt(e.target.value) }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 />
               </div>
               <div>
@@ -776,7 +776,7 @@ export default function AssistantEdit() {
                     ...formData,
                     taskConfig: { ...formData.taskConfig, call_terminate: parseInt(e.target.value) }
                   })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 />
               </div>
               <div className="flex items-center gap-3">
@@ -788,7 +788,7 @@ export default function AssistantEdit() {
                     ...formData,
                     taskConfig: { ...formData.taskConfig, backchanneling: e.target.checked }
                   })}
-                  className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                  className="w-5 h-5 rounded border-gray-300 text-[#5DD149] focus:ring-2 focus:ring-[#5DD149]"
                 />
                 <label htmlFor="backchanneling" className="text-sm font-semibold text-gray-700">
                   Enable Backchanneling
@@ -810,7 +810,12 @@ export default function AssistantEdit() {
               <button
                 type="submit"
                 disabled={updateMutation.isPending}
-                className="flex items-center gap-2 px-8 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-8 py-3 text-white rounded-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: 'linear-gradient(to right, #5DD149, #306B25)',
+                }}
+                onMouseEnter={(e) => !updateMutation.isPending && (e.currentTarget.style.background = 'linear-gradient(to right, #4BC13B, #255A1D)')}
+                onMouseLeave={(e) => !updateMutation.isPending && (e.currentTarget.style.background = 'linear-gradient(to right, #5DD149, #306B25)')}
               >
                 {updateMutation.isPending ? (
                   <>
@@ -829,8 +834,8 @@ export default function AssistantEdit() {
         </form>
 
         {/* Info Note */}
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800">
+        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+          <p className="text-sm text-[#306B25]">
             <strong>Note:</strong> Changes will be saved to both the database and Bolna AI. 
             The assigned user cannot be changed after creation.
           </p>

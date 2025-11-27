@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { usersAPI, type User } from '../../api';
-import Modal from '../../components/ui/Modal';
+import Modal from '../../components/modals/Modal';
 
 export default function Users() {
   const navigate = useNavigate();
@@ -229,7 +229,7 @@ export default function Users() {
       {loading && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
             <p className="mt-4 text-gray-600 font-medium">Loading users...</p>
           </div>
         </div>
@@ -255,16 +255,16 @@ export default function Users() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {users.map((user, index) => (
-                  <tr key={user._id} className="hover:bg-blue-50 transition-colors duration-150">
-                    <td className="px-3 py-3 whitespace-nowrap sticky left-0 bg-white hover:bg-blue-50 z-10">
-                      <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-linear-to-br from-blue-100 to-indigo-100 text-sm font-bold text-blue-700">
+                  <tr key={user._id} className="hover:bg-green-50 transition-colors duration-150">
+                    <td className="px-3 py-3 whitespace-nowrap sticky left-0 bg-white hover:bg-green-50 z-10">
+                      <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-linear-to-br from-green-100 to-emerald-100 text-sm font-bold text-[#306B25]">
                         {index + 1}
                       </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                          <div className="h-10 w-10 rounded-full bg-linear-to-br from-green-500 to-green-600 flex items-center justify-center">
                             <span className="text-sm font-bold text-white">
                               {(user.firstName?.[0] || '').toUpperCase()}{(user.lastName?.[0] || '').toUpperCase()}
                             </span>
@@ -305,7 +305,7 @@ export default function Users() {
                             </span>
                             <button
                               onClick={() => handleManualVerification(user._id, user.email)}
-                              className="p-1.5 text-white bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+                              className="p-1.5 text-white bg-linear-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-[#306B25] rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
                               title="Manually verify this user's email"
                             >
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +357,7 @@ export default function Users() {
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => handleViewUser(user)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-[#5DD149] hover:bg-green-50 rounded-lg transition-colors"
                           title="View Details"
                         >
                           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -421,7 +421,7 @@ export default function Users() {
             <button
               onClick={confirmManualVerification}
               disabled={isVerifying}
-              className="px-6 py-2.5 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="px-6 py-2.5 bg-linear-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-[#306B25] text-white rounded-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               {isVerifying ? (
                 <>
@@ -456,15 +456,15 @@ export default function Users() {
           </h3>
           
           {/* Email Display */}
-          <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-4 mb-4 border-2 border-blue-100">
+          <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-4 mb-4 border-2 border-green-100">
             <div className="flex items-center gap-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-green-100 p-2 rounded-lg">
+                <svg className="h-5 w-5 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Email Address</p>
+                <p className="text-xs font-semibold text-[#5DD149] uppercase tracking-wide">Email Address</p>
                 <p className="text-sm font-bold text-gray-900 mt-0.5">{verifyUserEmail}</p>
               </div>
             </div>
@@ -522,7 +522,7 @@ export default function Users() {
           <div className="flex justify-end">
             <button
               onClick={() => setShowSuccessModal(false)}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              className="px-6 py-2 bg-[#5DD149] text-white rounded-lg hover:bg-[#306B25] transition-colors"
             >
               OK
             </button>
@@ -648,8 +648,8 @@ export default function Users() {
               {/* Assistants */}
               <div className="flex items-center justify-between bg-white rounded-md px-3 py-2 border border-gray-200">
                 <div className="flex items-center">
-                  <div className="bg-indigo-100 rounded-full p-2 mr-3">
-                    <svg className="h-4 w-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-green-100 rounded-full p-2 mr-3">
+                    <svg className="h-4 w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -663,8 +663,8 @@ export default function Users() {
               {/* Phone Numbers */}
               <div className="flex items-center justify-between bg-white rounded-md px-3 py-2 border border-gray-200">
                 <div className="flex items-center">
-                  <div className="bg-blue-100 rounded-full p-2 mr-3">
-                    <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-green-100 rounded-full p-2 mr-3">
+                    <svg className="h-4 w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
@@ -678,11 +678,11 @@ export default function Users() {
           </div>
 
           {/* Info Note */}
-          <div className="mt-4 flex items-start bg-blue-50 rounded-lg p-3 border border-blue-200">
-            <svg className="h-5 w-5 text-blue-600 mt-0.5 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="mt-4 flex items-start bg-green-50 rounded-lg p-3 border border-green-200">
+            <svg className="h-5 w-5 text-[#5DD149] mt-0.5 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-xs text-blue-800">
+            <p className="text-xs text-[#306B25]">
               All related data including assistants, phone numbers, and user records have been permanently removed. This action cannot be undone.
             </p>
           </div>

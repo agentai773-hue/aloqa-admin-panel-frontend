@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, WifiOff, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 interface NoInternetPageProps {
@@ -102,13 +102,7 @@ export default function NoInternetPage({ onBack }: NoInternetPageProps) {
     }
   };
 
-  const handleGoBack = () => {
-    if (onBack) {
-      onBack();
-    } else {
-      navigate(-1);
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
@@ -247,18 +241,7 @@ export default function NoInternetPage({ onBack }: NoInternetPageProps) {
               )}
             </AnimatePresence>
 
-            <motion.button
-              onClick={handleGoBack}
-              className="w-full flex items-center justify-center space-x-2 bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Go Back</span>
-            </motion.button>
+       
           </div>
 
           {/* Tips */}

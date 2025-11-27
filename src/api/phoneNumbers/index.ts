@@ -1,4 +1,4 @@
-import { axios } from './client';
+import { axios } from '../client';
 
 export interface PhoneNumberSearch {
   region: string;
@@ -72,6 +72,13 @@ export interface AssignPhoneNumberParams {
   userId: string;
 }
 
+export interface GetAllPhoneNumbersParams {
+  userId?: string;
+  status?: 'available' | 'assigned' | 'deleted';
+  page?: number;
+  limit?: number;
+}
+
 export const phoneNumbersAPI = {
   // Get purchased phone numbers from backend (using Aloqa_TOKEN)
   getPurchasedNumbers: async (): Promise<PurchasedNumber[]> => {
@@ -102,4 +109,10 @@ export const phoneNumbersAPI = {
     const response = await axios.get<{ success: boolean; data: AssignedPhoneNumber[] }>('/phone-numbers/assigned');
     return response.data.data;
   },
+
+  // Get all phone numbers with optional filters
+  getAllPhoneNumbers: async (params: GetAllPhoneNumbersParams): Promise<PhoneNumber[]> => {
+    const response = await axios.get<{ success: boolean; data: PhoneNumber[] }>('/phone-numbers', { params });
+    return response.data.data;
+  }
 };

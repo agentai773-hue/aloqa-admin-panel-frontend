@@ -2,9 +2,8 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { phoneNumbersAPI } from '../../api/phoneNumbers';
-import type { PurchasedNumber } from '../../api/phoneNumbers';
-import { usersAPI } from '../../api/users';
+import { phoneNumbersAPI, usersAPI } from '../../api';
+import type { PurchasedNumber } from '../../api';
 import toast from 'react-hot-toast';
 
 export default function PhoneNumberList() {

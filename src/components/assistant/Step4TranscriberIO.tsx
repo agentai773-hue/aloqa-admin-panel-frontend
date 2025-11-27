@@ -1,4 +1,4 @@
-import type { CreateAssistantData } from '../../api/assistants';
+import type { CreateAssistantData } from '../../api';
 import {
   TRANSCRIBER_PROVIDERS,
   TRANSCRIBER_MODELS,

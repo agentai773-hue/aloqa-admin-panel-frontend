@@ -1,6 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import type { User } from '../../api/users';
-import type { CreateAssistantData } from '../../api/assistants';
+import type { User, CreateAssistantData } from '../../api';
 import { AGENT_TYPES, SYSTEM_PROMPT_TEMPLATES } from '../../data/assistantOptions';
 
 interface Step1Props {

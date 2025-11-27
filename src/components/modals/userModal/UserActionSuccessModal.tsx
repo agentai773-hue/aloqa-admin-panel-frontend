@@ -49,8 +49,13 @@ export default function UserActionSuccessModal({
                 <div className="relative">
                   <motion.div 
                     className="absolute inset-0 bg-white/30 rounded-full"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    animate={{ scale: [1, 1.2] }}
+                    transition={{ 
+                      duration: 1, 
+                      repeat: Infinity, 
+                      repeatType: "reverse",
+                      ease: "easeInOut"
+                    }}
                   />
                   <div className="relative bg-white/20 backdrop-blur-sm rounded-full p-4">
                     <motion.svg 

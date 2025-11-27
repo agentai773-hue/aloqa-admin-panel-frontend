@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import type { User } from '../../api/users';
+import type { User } from '../../api';
 
 interface ModalHeaderProps {
   selectedUser: User | null;

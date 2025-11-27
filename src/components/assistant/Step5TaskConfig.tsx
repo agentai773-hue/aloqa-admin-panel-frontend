@@ -1,5 +1,4 @@
-import type { CreateAssistantData } from '../../api/assistants';
-import type { User } from '../../api/users';
+import type { CreateAssistantData, User } from '../../api';
 import { SLIDER_CONFIGS } from '../../data/assistantOptions';
 
 interface Step5Props {

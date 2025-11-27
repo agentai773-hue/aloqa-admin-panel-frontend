@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router';
-import { useAuth } from '../../hooks/useAuth';
+import { useState, useEffect, useRef } from 'react';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router';
 import { navigationItems } from '../../config/navlinks';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function Sidebar() {
-  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     // Check if user previously had sidebar open (localStorage)
@@ -16,6 +19,28 @@ export default function Sidebar() {
     }
     return true; // Default to true (open)
   });
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowProfileDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setShowProfileDropdown(false);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   // Get page header based on current route
  const getPageHeader = () => {
@@ -43,16 +68,14 @@ export default function Sidebar() {
     return { title: 'Buy Phone Number', subtitle: 'Purchase phone number' };
   } else if (path === '/phone-numbers-assign') {
     return { title: 'Assign Phone Number', subtitle: 'Assign purchased numbers to users' };
+  } else if (path === '/admin/profile') {
+    return { title: 'Admin Profile', subtitle: 'Manage your account settings and preferences' };
   }
 
   return { title: 'Dashboard', subtitle: 'Welcome back! Here\'s what\'s happening.' };
 };
 
   const pageHeader = getPageHeader();
-
-  const handleLogout = () => {
-    logout();
-  };
 
   const toggleSidebar = () => {
     const newState = !isSidebarOpen;
@@ -181,125 +204,126 @@ export default function Sidebar() {
      
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-6 space-y-2">
-            {navigationItems.map((item, index) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  delay: index * 0.1,
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 25
-                }}
-              >
-              <NavLink
-                to={item.href}
-                end={item.href === '/'}
-                title={!isSidebarOpen ? item.name : ''}
-              >
-                {({ isActive }) => (
-                  <motion.div 
-                    className={`group flex items-center ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium rounded-xl relative ${
-                      isActive
-                        ? 'text-white shadow-lg shadow-green-500/30'
-                        : 'text-gray-700 hover:text-gray-900 hover:bg-green-50'
-                    }`}
-                    style={isActive ? {
-                      background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
-                    } : {}}
-                    whileHover={{ scale: 1.05, x: 5 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  >
+          <nav className="flex-1 flex flex-col px-3 py-6">
+            <div className="space-y-2">
+              {navigationItems.map((item, index) => (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ 
+                    delay: index * 0.1,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25
+                  }}
+                >
+                <NavLink
+                  to={item.href}
+                  end={item.href === '/'}
+                  title={!isSidebarOpen ? item.name : ''}
+                >
+                  {({ isActive }) => (
                     <motion.div 
-                      className={`transition-colors ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-[#5DD149]'}`}
-                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                      transition={{ duration: 0.5 }}
+                      className={`group flex items-center ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium rounded-xl relative ${
+                        isActive
+                          ? 'text-white shadow-lg shadow-green-500/30'
+                          : 'text-gray-700 hover:text-gray-900 hover:bg-green-50'
+                      }`}
+                      style={isActive ? {
+                        background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
+                      } : {}}
+                      whileHover={{ scale: 1.05, x: 5 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: "spring", stiffness: 400 }}
                     >
-                      {item.icon}
-                    </motion.div>
-                    <AnimatePresence>
-                      {isSidebarOpen && (
-                        <motion.span 
-                          className="ml-3"
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "auto" }}
-                          exit={{ opacity: 0, width: 0 }}
+                      <motion.div 
+                        className={`transition-colors ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-[#5DD149]'}`}
+                        whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        {item.icon}
+                      </motion.div>
+                      <AnimatePresence>
+                        {isSidebarOpen && (
+                          <motion.span 
+                            className="ml-3"
+                            initial={{ opacity: 0, width: 0 }}
+                            animate={{ opacity: 1, width: "auto" }}
+                            exit={{ opacity: 0, width: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {item.name}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                      {!isSidebarOpen && (
+                        <motion.div 
+                          className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-50 shadow-lg"
+                          initial={{ opacity: 0, x: -10 }}
+                          whileHover={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.2 }}
                         >
                           {item.name}
-                        </motion.span>
+                        </motion.div>
                       )}
-                    </AnimatePresence>
-                    {!isSidebarOpen && (
-                      <motion.div 
-                        className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-50 shadow-lg"
-                        initial={{ opacity: 0, x: -10 }}
-                        whileHover={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {item.name}
-                      </motion.div>
-                    )}
-                  </motion.div>
-                )}
-              </NavLink>
-              </motion.div>
-            ))}
-          </nav>
+                    </motion.div>
+                  )}
+                </NavLink>
+                </motion.div>
+              ))}
+            </div>
 
-          {/* Logout Button */}
-          <motion.div 
-            className="p-3 border-t border-gray-200 bg-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <motion.button
-              onClick={handleLogout}
-              className={`w-full flex items-center ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl group relative`}
-              title={!isSidebarOpen ? 'Logout' : ''}
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(254, 226, 226, 0.5)" }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400 }}
+            {/* Logout Button at Bottom */}
+            <motion.div
+              className="mt-auto pt-4 border-t border-gray-200"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
             >
-              <motion.svg 
-                className="h-5 w-5" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-                whileHover={{ rotate: 20 }}
-                transition={{ duration: 0.3 }}
+              <motion.button
+                onClick={handleLogout}
+                title={!isSidebarOpen ? 'Logout' : ''}
+                className={`group flex items-center w-full ${isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'} text-sm font-medium rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors`}
+                whileHover={{ scale: 1.05, x: 5 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400 }}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </motion.svg>
-              <AnimatePresence>
-                {isSidebarOpen && (
-                  <motion.span 
-                    className="ml-3"
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: "auto" }}
-                    exit={{ opacity: 0, width: 0 }}
+                <motion.div 
+                  className="transition-colors"
+                  whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </motion.div>
+                <AnimatePresence>
+                  {isSidebarOpen && (
+                    <motion.span 
+                      className="ml-3"
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: "auto" }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      Logout
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                {!isSidebarOpen && (
+                  <motion.div 
+                    className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-50 shadow-lg"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileHover={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.2 }}
                   >
                     Logout
-                  </motion.span>
+                  </motion.div>
                 )}
-              </AnimatePresence>
-              {!isSidebarOpen && (
-                <motion.div 
-                  className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-50 shadow-lg"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileHover={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Logout
-                </motion.div>
-              )}
-            </motion.button>
-          </motion.div>
+              </motion.button>
+            </motion.div>
+          </nav>
         </div>
       </motion.div>
 
@@ -419,39 +443,93 @@ export default function Sidebar() {
                   </motion.svg>
                   <motion.span 
                     className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
+                    animate={{ scale: [1, 1.2] }}
+                    transition={{ 
+                      repeat: Infinity, 
+                      duration: 1,
+                      repeatType: "reverse",
+                      ease: "easeInOut"
+                    }}
                   ></motion.span>
                 </motion.button>
                 
-                {/* User menu */}
-                <motion.div 
-                  className="flex items-center space-x-3"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <div className="hidden sm:block text-right">
-                    <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
-                    <div className="text-xs text-gray-500">Online</div>
-                  </div>
+                {/* Admin label */}
+                <div className="relative" ref={dropdownRef}>
                   <motion.div 
-                    className="relative"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400 }}
+                    className="flex items-center space-x-3 cursor-pointer"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                   >
-                    <div className="h-8 w-8 sm:h-10 sm:w-10 bg-gray-800 rounded-full flex items-center justify-center shadow-md cursor-pointer hover:bg-gray-700 transition-colors">
-                      <span className="text-sm font-semibold text-white">
-                        {user?.name?.charAt(0)?.toUpperCase() || 'A'}
-                      </span>
+                    <div className="hidden sm:block text-right">
+                      <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
+                      <div className="text-xs text-gray-500">Online</div>
                     </div>
                     <motion.div 
-                      className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-white"
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                    ></motion.div>
+                      className="relative"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
+                      <div className="h-8 w-8 sm:h-10 sm:w-10 bg-gray-800 rounded-full flex items-center justify-center shadow-md hover:bg-gray-700 transition-colors">
+                        <span className="text-sm font-semibold text-white">
+                          {user?.name?.charAt(0).toUpperCase() || 'A'}
+                        </span>
+                      </div>
+                      <motion.div 
+                        className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-white"
+                        animate={{ scale: [1, 1.2] }}
+                        transition={{ 
+                          repeat: Infinity, 
+                          duration: 1,
+                          repeatType: "reverse",
+                          ease: "easeInOut"
+                        }}
+                      ></motion.div>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
+
+                  {/* Profile Dropdown */}
+                  <AnimatePresence>
+                    {showProfileDropdown && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+                      >
+                        <div className="py-1">
+                          <div className="px-4 py-2 border-b border-gray-100">
+                            <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
+                            <div className="text-xs text-gray-500">{user?.email || 'admin@example.com'}</div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              navigate('/admin/profile');
+                              setShowProfileDropdown(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center space-x-2"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span>Profile</span>
+                          </button>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors flex items-center space-x-2"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            <span>Logout</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
           </div>

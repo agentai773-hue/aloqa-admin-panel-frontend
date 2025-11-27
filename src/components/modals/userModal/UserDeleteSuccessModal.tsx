@@ -50,8 +50,13 @@ export default function UserDeleteSuccessModal({
                 <div className="relative">
                   <motion.div
                     className="absolute inset-0 bg-white/30 rounded-full"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    animate={{ scale: [1, 1.2] }}
+                    transition={{ 
+                      duration: 1, 
+                      repeat: Infinity, 
+                      repeatType: "reverse",
+                      ease: "easeInOut"
+                    }}
                   />
                   <div className="relative bg-white/20 p-4 rounded-full">
                     <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

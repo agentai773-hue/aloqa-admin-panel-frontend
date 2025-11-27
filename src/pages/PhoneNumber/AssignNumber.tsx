@@ -2,8 +2,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { phoneNumbersAPI } from '../../api/phoneNumbers';
-import { usersAPI } from '../../api/users';
+import { phoneNumbersAPI, usersAPI } from '../../api';
 import toast from 'react-hot-toast';
 import AssignNumberModal from '../../components/modals/phoneNumberModal/AssignNumberModal';
 import AssignSuccessModal from '../../components/modals/phoneNumberModal/AssignSuccessModal';

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { usersAPI } from '../../api/users';
+import { usersAPI } from '../../api';
 import toast from 'react-hot-toast';
 
 export default function ViewUser() {

@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { assistantsAPI } from '../../api/assistants';
-import { usersAPI } from '../../api/users';
+import { assistantsAPI, usersAPI } from '../../api';
 import { AssistantTable } from '../../components/assistant';
 
 export default function Assistant() {

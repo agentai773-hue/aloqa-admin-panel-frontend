@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { assistantsAPI, type CreateAssistantData } from '../../api/assistants';
-import { usersAPI, type User } from '../../api/users';
+import { assistantsAPI, usersAPI } from '../../api';
+import type { CreateAssistantData, User } from '../../api';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import {

@@ -1,5 +1,5 @@
 // User API functions
-import { apiClient } from './client';
+import { apiClient } from '../client';
 
 export interface User {
   _id: string;
@@ -96,6 +96,11 @@ export const usersAPI = {
     return apiClient.patch<{ user: User }>(`/users/${id}/approval`, { isApproval });
   },
 
+  // Verify user email manually by admin
+  async verifyUserEmail(id: string) {
+    return apiClient.patch<{ user: User }>(`/users/${id}/verify-email`, {});
+  },
+
   // Delete user
   async deleteUser(id: string) {
     return apiClient.delete<DeleteUserResponse>(`/users/${id}`);
@@ -104,10 +109,5 @@ export const usersAPI = {
   // Get user statistics
   async getUserStats() {
     return apiClient.get<UserStatsResponse>('/users/stats');
-  },
-
-  // Manually verify user email (admin only)
-  async verifyUserEmail(id: string) {
-    return apiClient.patch<{ user: User }>(`/users/${id}/verify-email`, {});
   }
 };

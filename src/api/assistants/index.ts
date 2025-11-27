@@ -1,4 +1,4 @@
-import { apiClient } from './client';
+import { apiClient } from '../client';
 
 export interface Route {
   routeName: string;
@@ -116,12 +116,10 @@ export interface Assistant {
 }
 
 export const assistantsAPI = {
-  // Create a new assistant
   createAssistant: async (data: CreateAssistantData) => {
     return apiClient.post<Assistant>('/assistants', data as unknown as Record<string, unknown>);
   },
 
-  // Get all assistants with optional filters
   getAllAssistants: async (userId?: string, status?: string) => {
     let endpoint = '/assistants';
     const queryParams = new URLSearchParams();
@@ -136,28 +134,22 @@ export const assistantsAPI = {
     return apiClient.get<Assistant[]>(endpoint);
   },
 
-  // Get assistant by ID
   getAssistantById: async (id: string) => {
     return apiClient.get<Assistant>(`/assistants/${id}`);
   },
 
-  // Update assistant (database only)
   updateAssistant: async (id: string, data: Partial<CreateAssistantData>) => {
     return apiClient.put<Assistant>(`/assistants/${id}`, data as unknown as Record<string, unknown>);
   },
 
-
-  // Patch update assistant (partial update to Bolna AI)
   patchAssistant: async (id: string, data: Partial<CreateAssistantData>) => {
     return apiClient.patch<Assistant>(`/assistants/${id}`, data as unknown as Record<string, unknown>);
   },
 
-  // Delete assistant (hard delete from DB + Bolna AI)
   deleteAssistant: async (id: string) => {
     return apiClient.delete<void>(`/assistants/${id}`);
   },
 
-  // Get assistants by user
   getAssistantsByUser: async (userId: string) => {
     return apiClient.get<Assistant[]>(`/assistants/user/${userId}`);
   },

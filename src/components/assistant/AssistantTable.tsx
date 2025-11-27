@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { assistantsAPI, type Assistant } from '../../api/assistants';
-import { type User } from '../../api/users';
+import { assistantsAPI } from '../../api';
+import { type User, type Assistant } from '../../api';
 import { Eye, Edit, Trash2, Search, X, AlertTriangle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 

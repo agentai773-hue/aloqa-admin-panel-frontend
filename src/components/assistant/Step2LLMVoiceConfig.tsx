@@ -1,4 +1,4 @@
-import type { CreateAssistantData } from '../../api/assistants';
+import type { CreateAssistantData } from '../../api';
 import { 
   AGENT_FLOW_TYPES, 
   LLM_PROVIDERS, 

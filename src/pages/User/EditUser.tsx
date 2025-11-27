@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersAPI, type UpdateUserData } from '../../api/users';
+import { usersAPI } from '../../api';
+import type { UpdateUserData } from '../../api';
 import toast from 'react-hot-toast';
 
 export default function EditUser() {

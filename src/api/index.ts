@@ -1,10 +1,37 @@
-// API exports
-export { apiClient } from './client';
-export { authApi } from './auth';
+// Consolidated API exports
+export { apiClient, axios } from './client';
+export type { ApiResponse, ValidationError } from './client';
+
+// Auth module
+export { adminAuthAPI } from './auth';
+export type { LoginCredentials, AdminUser, AuthResponse, VerifyTokenResponse } from './auth';
+
+// Users module
 export { usersAPI } from './users';
-export { phoneNumbersAPI } from './phoneNumbers';
-export { verifyAPI } from './verify';
-export type { LoginCredentials, AuthResponse, RefreshTokenResponse } from './auth';
 export type { User, CreateUserData, UpdateUserData, UsersListResponse, UserStatsResponse, DeleteUserResponse } from './users';
-export type { PhoneNumber, PhoneNumberSearch, SearchPhoneNumbersParams, BuyPhoneNumberParams, AssignPhoneNumberParams, GetAllPhoneNumbersParams } from './phoneNumbers';
-export type { VerifyEmailResponse, ResendVerificationRequest, ResendVerificationResponse } from './verify';
+
+// Assistants module
+export { assistantsAPI } from './assistants';
+export type { 
+  Assistant, 
+  CreateAssistantData, 
+  Route, 
+  LLMConfig, 
+  SynthesizerConfig, 
+  SynthesizerProviderConfig, 
+  TranscriberConfig, 
+  TaskConfig, 
+  InputOutputConfig 
+} from './assistants';
+
+// Phone Numbers module
+export { phoneNumbersAPI } from './phoneNumbers';
+export type { 
+  PhoneNumber, 
+  PhoneNumberSearch, 
+  SearchPhoneNumbersParams, 
+  BuyPhoneNumberParams, 
+  AssignPhoneNumberParams,
+  PurchasedNumber,
+  AssignedPhoneNumber
+} from './phoneNumbers';

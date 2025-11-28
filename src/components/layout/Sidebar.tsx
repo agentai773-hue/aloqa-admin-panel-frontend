@@ -179,7 +179,7 @@ function SidebarContent() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileHover={{ scale: 1.05, rotate: 5 }}
                   transition={{ type: "spring", stiffness: 400 }}
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
@@ -193,7 +193,7 @@ function SidebarContent() {
               onClick={toggleSidebar}
               className="hidden lg:flex items-center justify-center p-2.5 rounded-xl text-gray-700 hover:bg-gray-100"
               title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
-              whileHover={{ scale: 1.1, rotate: 180 }}
+              whileHover={{ scale: 1.05, rotate: 90 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
@@ -280,7 +280,7 @@ function SidebarContent() {
                       style={isActive ? {
                         background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
                       } : {}}
-                      whileHover={{ scale: 1.05, x: 5 }}
+                      whileHover={{ scale: 1.05, x: 2 }}
                       whileTap={{ scale: 0.98 }}
                       transition={{ type: "spring", stiffness: 400 }}
                     >
@@ -407,9 +407,13 @@ function SidebarContent() {
       >
         {/* Header */}
         <motion.header 
-          className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30"
+          className="bg-white shadow-sm border-b border-gray-200 fixed top-0 right-0 z-40 h-16 sm:h-18 lg:h-20"
           initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          animate={{ 
+            y: 0, 
+            opacity: 1,
+            left: windowWidth >= 1024 ? `${getSidebarWidth()}px` : '0'
+          }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
         >
           <div className="px-3 sm:px-6 py-3 sm:py-4">
@@ -420,7 +424,7 @@ function SidebarContent() {
                   onClick={toggleSidebar}
                   className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
                   title="Toggle Menu"
-                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileHover={{ scale: 1.05, rotate: 45 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ type: "spring", stiffness: 400 }}
                 >
@@ -513,7 +517,7 @@ function SidebarContent() {
                 {/* Notifications */}
                 <motion.button 
                   className="relative p-1.5 sm:p-2 text-gray-400 hover:text-[#5DD149] hover:bg-green-50 rounded-lg"
-                  whileHover={{ scale: 1.1, rotate: [0, -10, 10, 0] }}
+                  whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400 }}
                 >
@@ -522,7 +526,7 @@ function SidebarContent() {
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.05 }}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </motion.svg>
@@ -547,7 +551,7 @@ function SidebarContent() {
                     transition={{ delay: 0.4 }}
                     onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                   >
-                    <div className="hidden md:block text-right">
+                    <div className="hidden sm:block text-right">
                       <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
                       <div className="text-xs text-gray-500">Online</div>
                     </div>
@@ -622,7 +626,7 @@ function SidebarContent() {
 
         {/* Main Content Area */}
         <motion.main 
-          className="flex-1 min-w-0 overflow-auto"
+          className="flex-1 min-w-0 overflow-auto pt-16 sm:pt-18 lg:pt-20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
@@ -633,7 +637,7 @@ function SidebarContent() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
           >
-            <div className="p-3 sm:p-4 lg:p-6 xl:p-8 overflow-x-auto">
+            <div className="p-3 sm:p-4 lg:p-6 xl:p-8 overflow-x-hidden">
               <Outlet />
             </div>
           </motion.div>

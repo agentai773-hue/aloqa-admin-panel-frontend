@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { phoneNumbersAPI, usersAPI } from '../../api';
@@ -13,6 +13,11 @@ export default function AssignNumber() {
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
   const [assignedData, setAssignedData] = useState<{ phoneNumber: string; userName: string; userEmail: string } | null>(null);
+
+  // Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   // Fetch users
   const { data: usersResponse } = useQuery({
@@ -55,17 +60,23 @@ export default function AssignNumber() {
       refetchAssigned();
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Failed to assign phone number');
+      const errorMessage = error?.response?.data?.message;
+      
+      if (errorMessage?.includes('already assigned')) {
+        toast.error('This phone number is already assigned to another user. Please select a different number.');
+      } else if (errorMessage?.includes('user not found')) {
+        toast.error('Selected user was not found. Please refresh and try again.');
+      } else if (errorMessage?.includes('phone number not found')) {
+        toast.error('Selected phone number is no longer available. Please refresh and try again.');
+      } else {
+        toast.error(errorMessage || 'Failed to assign phone number. Please try again.');
+      }
     },
   });
 
-  // Get assigned phone numbers (phone_number strings)
-  const assignedPhoneNumbers = assignedNumbers.map(a => a.phoneNumber);
-
-  // Filter available numbers (not assigned)
-  const availableNumbers = purchasedNumbers.filter(
-    num => !assignedPhoneNumbers.includes(num.phone_number)
-  );
+  // All purchased numbers are available for assignment (users can have multiple numbers)
+  // Same number cannot be assigned to multiple users (handled by backend validation)
+  const availableNumbers = purchasedNumbers;
 
   // Calculate days until renewal and check if within 3 days
   const getNumbersWithRenewalAlert = () => {

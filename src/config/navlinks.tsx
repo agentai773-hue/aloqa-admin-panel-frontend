@@ -7,6 +7,7 @@ import {
   PlusCircle,
   Phone,
   PhoneOutgoing,
+  Mic,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -50,5 +51,10 @@ export const navigationItems: NavItem[] = [
     name: 'Assign Number',
     href: '/phone-numbers-assign',
     icon: <PhoneOutgoing className="h-5 w-5" />
+  },
+  {
+    name: 'Voice Library',
+    href: '/voices',
+    icon: <Mic className="h-5 w-5" />
   },
 ];

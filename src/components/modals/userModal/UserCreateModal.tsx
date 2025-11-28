@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react';
-import { usersAPI, type CreateUserData } from '../../api';
+import { usersAPI, type CreateUserData } from '../../../api/index';
 import UserSuccessModal from './UserSuccessModal';
 
 interface UserCreateModalProps {
@@ -55,14 +55,14 @@ export default function UserCreateModal({ isOpen, onClose, onSuccess }: UserCrea
     if (name === 'mobile' && !/^\d*$/.test(value)) return;
     if (name === 'mobile' && value.length > 10) return;
     
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev: CreateUserData) => ({ ...prev, [name]: value }));
     
     if (name === 'password') {
       setPasswordStrength(calculatePasswordStrength(value));
     }
     
     if (validationErrors[name]) {
-      setValidationErrors(prev => ({ ...prev, [name]: '' }));
+      setValidationErrors((prev: Record<string, string>) => ({ ...prev, [name]: '' }));
     }
   };
 

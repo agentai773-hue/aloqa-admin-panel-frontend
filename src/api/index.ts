@@ -8,6 +8,10 @@ export type { LoginCredentials, AdminUser, AuthResponse, VerifyTokenResponse } f
 
 // Users module
 export { usersAPI } from './users';
+
+// Voices module
+export { voicesAPI } from './voices';
+export type { Voice, VoiceProvider, VoiceAccent, VoiceSearchParams, VoicesResponse, VoiceAssignment, AssignVoiceRequest } from './voices';
 export type { User, CreateUserData, UpdateUserData, UsersListResponse, UserStatsResponse, DeleteUserResponse } from './users';
 
 // Assistants module
@@ -35,3 +39,12 @@ export type {
   PurchasedNumber,
   AssignedPhoneNumber
 } from './phoneNumbers';
+
+// Verification module
+export { verifyAPI } from './verify';
+export type { 
+  VerifyEmailData,
+  ResendVerificationData,
+  VerifyEmailResponse,
+  ResendVerificationResponse
+} from './verify';

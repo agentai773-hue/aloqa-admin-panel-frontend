@@ -48,16 +48,23 @@ export const loginAdmin = createAsyncThunk(
   'auth/loginAdmin',
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
+      console.log('🚀 Starting login process with credentials:', { email: credentials.email });
       const response = await adminAuthAPI.login(credentials);
+      console.log('✅ Login successful:', response);
       return response;
     } catch (error: unknown) {
+      console.error('❌ Login failed with error:', error);
       const errorMessage = (error as Error)?.message?.toLowerCase() || '';
+      console.log('🔍 Processing error message:', errorMessage);
       
-      if (errorMessage.includes('email')) {
-        return rejectWithValue({ email: 'Email not found. Please check your email.' });
-      } else if (errorMessage.includes('password')) {
-        return rejectWithValue({ password: 'Password is incorrect. Please try again.' });
+      if (errorMessage.includes('email') || errorMessage.includes('not found')) {
+        console.log('📧 Email error detected');
+        return rejectWithValue({ email: 'Email not found. Please check your email address.' });
+      } else if (errorMessage.includes('password') || errorMessage.includes('incorrect')) {
+        console.log('🔑 Password error detected');
+        return rejectWithValue({ password: 'Password is incorrect. Please check.' });
       } else {
+        console.log('⚠️ General error detected');
         return rejectWithValue({ general: (error as Error)?.message || 'Login failed. Please try again.' });
       }
     }

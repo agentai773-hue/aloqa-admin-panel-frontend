@@ -148,8 +148,8 @@ export default function PhoneNumberList() {
               </div>
             </motion.div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxWidth: '100%' }}>
+              <table className="w-full" style={{ minWidth: '800px' }}>
                 <thead className="bg-gradient-to-r from-[#5DD149]/10 to-[#306B25]/10 border-b-2 border-[#5DD149]/30">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Phone Number</th>

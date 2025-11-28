@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface DashboardStats {
   totalUsers: number;
@@ -18,6 +18,11 @@ export default function DashboardHome() {
     totalActiveBots: 23,
     totalBots: 45
   });
+
+  // Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   return (
     <div className="space-y-6 sm:space-y-8 p-2 sm:p-4 lg:p-0">

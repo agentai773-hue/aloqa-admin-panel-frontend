@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useAuthRedux } from '../../hooks/useAuthRedux';
-import { Navigate, useLocation } from 'react-router';
+import { Navigate } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AdminLogin() {
@@ -9,12 +9,9 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading, isAuthenticated, loginError, clearLoginErrors } = useAuthRedux();
-  const location = useLocation();
 
   // Get the redirect path from location state, or default to dashboard
-  const from = location.state?.from?.pathname || '/';
-
- 
+  const from = '/';
 
   // If already authenticated, redirect to the intended destination
   if (isAuthenticated) {
@@ -29,7 +26,13 @@ export default function AdminLogin() {
       return;
     }
 
-    await login(email, password);
+    console.log('🚀 Attempting login with:', { email });
+    try {
+      const result = await login(email, password);
+      console.log('✅ Login result:', result);
+    } catch (error) {
+      console.error('❌ Login error:', error);
+    }
   };
 
   return (
@@ -41,32 +44,6 @@ export default function AdminLogin() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-green-400/5 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
       </div>
 
-      {/* Mobile Header Logo */}
-      <div className="lg:hidden absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center space-x-3"
-        >
-          <div className="w-50 h-20 rounded-2xl bg-white flex items-center justify-center">
-            <img
-              src="/logo.svg"
-              alt="Aloqa Logo"
-              className="w-35 h-20 object-contain"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const fallback = target.nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = 'block';
-              }}
-            />
-          
-          </div>
-         
-        </motion.div>
-      </div>
-
       <div className="relative z-10 w-full max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 items-center min-h-[calc(100vh-2rem)] lg:min-h-0">
           {/* Left Side - Login Form */}
@@ -74,7 +51,7 @@ export default function AdminLogin() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-full max-w-md mx-auto lg:mx-0 mt-16 lg:mt-0"
+            className="w-full max-w-md mx-auto lg:mx-0"
           >
             {/* Logo and Brand - Desktop Only */}
             <div className="mb-8 hidden lg:block">
@@ -84,11 +61,11 @@ export default function AdminLogin() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="flex items-center space-x-3 mb-8"
               >
-                <div className="w-50 h-20 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-lg">
                   <img
                     src="/logo.svg"
                     alt="Aloqa Logo"
-                    className="w-35 h-20 object-contain"
+                    className="w-8 h-8 object-contain"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
@@ -97,14 +74,13 @@ export default function AdminLogin() {
                     }}
                   />
                   <svg
-                    className="w-6 h-6 text-white hidden"
+                    className="w-6 h-6 text-green-500 hidden"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-            
               </motion.div>
 
               <motion.h1
@@ -113,7 +89,7 @@ export default function AdminLogin() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="text-3xl font-bold text-white mb-2"
               >
-              Admin Portal Login
+                Admin Portal Login
               </motion.h1>
               
               <motion.p
@@ -185,15 +161,12 @@ export default function AdminLogin() {
                 <AnimatePresence>
                   {loginError?.email && (
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="text-red-400 text-sm flex items-center space-x-1"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-red-400 text-sm mt-1"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                      <span>{loginError.email}</span>
+                      {loginError.email}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -242,15 +215,12 @@ export default function AdminLogin() {
                 <AnimatePresence>
                   {loginError?.password && (
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="text-red-400 text-sm flex items-center space-x-1"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-red-400 text-sm mt-1"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                      <span>{loginError.password}</span>
+                      {loginError.password}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -303,14 +273,14 @@ export default function AdminLogin() {
               <div className="text-center">
                 <h4 className="text-sm font-medium text-green-400 mb-2">Admin Access Only</h4>
                 <div className="text-xs text-gray-400 space-y-1">
-                  <p><span className="text-gray-300">Demo Email:</span> admin@admin.com</p>
+                  <p><span className="text-gray-300">Demo Email:</span> admin@aloqa.ai</p>
                   <p><span className="text-gray-300">Demo Password:</span> admin123</p>
                 </div>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Right Side - Visual Design */}
+          {/* Right Side - Modern Dashboard Preview */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -318,152 +288,191 @@ export default function AdminLogin() {
             className="hidden lg:block relative"
           >
             <div className="relative">
-              {/* Main Visual Element */}
-              <div className="relative w-full h-96 bg-linear-to-br from-green-400/20 via-emerald-500/20 to-green-600/20 rounded-3xl overflow-hidden backdrop-blur-sm border border-green-500/20 shadow-2xl">
-                {/* Animated Background Pattern */}
-                <div className="absolute inset-0">
-                  <div className="absolute inset-0 bg-linear-to-br from-transparent via-green-500/10 to-emerald-500/20"></div>
-                  
-                  {/* Grid Pattern */}
-                  <div className="absolute inset-0 opacity-10">
-                    <div className="grid grid-cols-8 gap-4 h-full p-8">
-                      {Array.from({ length: 32 }).map((_, i) => (
+              {/* Modern Dashboard Preview */}
+              <div className="relative w-full h-[500px] bg-linear-to-br from-white/10 via-gray-800/20 to-gray-900/30 rounded-3xl overflow-hidden backdrop-blur-sm border border-white/10 shadow-2xl">
+                {/* Dashboard Header */}
+                <div className="p-6 border-b border-white/10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <motion.div
+                        initial={{ rotate: 0 }}
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        className="w-10 h-10 bg-linear-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center"
+                      >
+                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </motion.div>
+                      <div>
+                        <h3 className="text-white font-bold text-lg">Aloqa</h3>
+                        <p className="text-gray-400 text-xs">Admin Dashboard</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-4">
+                      {[
+                        { label: 'Users', value: '1,234', color: 'bg-blue-500' },
+                        { label: 'Active', value: '856', color: 'bg-green-500' },
+                        { label: 'Revenue', value: '$45K', color: 'bg-purple-500' }
+                      ].map((stat, i) => (
                         <motion.div
                           key={i}
-                          className="bg-green-400/20 rounded"
-                          animate={{
-                            opacity: [0.2, 0.5, 0.2],
-                          }}
-                          transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            delay: i * 0.1,
-                            ease: "easeInOut"
-                          }}
-                        />
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.8 + i * 0.1 }}
+                          className="text-center"
+                        >
+                          <div className={`w-2 h-2 ${stat.color} rounded-full mx-auto mb-1`}></div>
+                          <div className="text-white text-xs font-bold">{stat.value}</div>
+                          <div className="text-gray-400 text-xs">{stat.label}</div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
-                  
-                  {/* Floating Elements */}
-                  <motion.div
-                    animate={{
-                      y: [0, -20, 0],
-                      rotate: [0, 5, 0],
-                    }}
-                    transition={{
-                      duration: 6,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                    className="absolute top-1/4 left-1/4 w-16 h-16 bg-green-400/30 rounded-2xl backdrop-blur-sm border border-green-400/40 shadow-xl"
-                  ></motion.div>
-                  
-                  <motion.div
-                    animate={{
-                      y: [0, 15, 0],
-                      rotate: [0, -3, 0],
-                    }}
-                    transition={{
-                      duration: 8,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 1
-                    }}
-                    className="absolute top-1/2 right-1/3 w-12 h-12 bg-emerald-500/40 rounded-xl backdrop-blur-sm border border-emerald-400/40 shadow-xl"
-                  ></motion.div>
-                  
-                  <motion.div
-                    animate={{
-                      y: [0, -10, 0],
-                      x: [0, 5, 0],
-                    }}
-                    transition={{
-                      duration: 7,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 2
-                    }}
-                    className="absolute bottom-1/4 left-1/2 w-20 h-20 bg-green-300/25 rounded-3xl backdrop-blur-sm border border-green-300/30 shadow-xl"
-                  ></motion.div>
                 </div>
 
-                {/* Central Logo/Icon */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 1, delay: 0.5, type: "spring" }}
-                    className="relative"
-                  >
-                    <div className="w-32 h-32 bg-linear-to-br from-green-400 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white/20">
-                      <img
-                        src="/logo.svg"
-                        alt="Aloqa Logo"
-                        className="w-16 h-16 object-contain"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const fallback = target.nextElementSibling as HTMLElement;
-                          if (fallback) fallback.style.display = 'block';
-                        }}
-                      />
-                      <svg
-                        className="w-16 h-16 text-white hidden"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
+                {/* Dashboard Content */}
+                <div className="p-6 space-y-4">
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { title: 'Total Users', value: '2,847', trend: '+12%', color: 'from-blue-500/20 to-blue-600/10' },
+                      { title: 'Assistants', value: '156', trend: '+8%', color: 'from-green-500/20 to-green-600/10' }
+                    ].map((card, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1 + i * 0.1 }}
+                        className={`bg-linear-to-br ${card.color} p-4 rounded-xl border border-white/10`}
                       >
-                        <path d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
+                        <h4 className="text-gray-300 text-xs font-medium">{card.title}</h4>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-white text-lg font-bold">{card.value}</span>
+                          <span className="text-green-400 text-xs font-medium">{card.trend}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Chart Preview */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2 }}
+                    className="bg-linear-to-br from-gray-800/40 to-gray-900/20 p-4 rounded-xl border border-white/5"
+                  >
+                    <h4 className="text-gray-300 text-sm font-medium mb-3">Performance Overview</h4>
+                    <div className="flex items-end justify-between h-20 space-x-2">
+                      {Array.from({ length: 7 }).map((_, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ height: 0 }}
+                          animate={{ height: `${Math.random() * 80 + 20}%` }}
+                          transition={{ delay: 1.4 + i * 0.1, duration: 0.5 }}
+                          className="w-6 bg-linear-to-t from-green-500 to-emerald-400 rounded-t-sm"
+                        />
+                      ))}
                     </div>
-                    
-                    {/* Multiple Glow Effects */}
-                    <motion.div
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.5, 0.8, 0.5]
-                      }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                      className="absolute inset-0 w-32 h-32 bg-green-400/30 rounded-3xl blur-xl"
-                    ></motion.div>
-                    
-                    <motion.div
-                      animate={{
-                        scale: [1, 1.2],
-                        opacity: [0.3, 0.6]
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        ease: "easeInOut",
-                        delay: 1
-                      }}
-                      className="absolute inset-0 w-32 h-32 bg-emerald-400/20 rounded-3xl blur-2xl"
-                    ></motion.div>
+                  </motion.div>
+
+                  {/* User List Preview */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.6 }}
+                    className="space-y-2"
+                  >
+                    <h4 className="text-gray-300 text-sm font-medium">Recent Users</h4>
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.8 + i * 0.1 }}
+                        className="flex items-center space-x-3 p-2 bg-white/5 rounded-lg"
+                      >
+                        <div className="w-8 h-8 bg-linear-to-br from-green-400 to-emerald-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">
+                          U{i + 1}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-white text-sm font-medium">User {i + 1}</div>
+                          <div className="text-gray-400 text-xs">user{i + 1}@example.com</div>
+                        </div>
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      </motion.div>
+                    ))}
                   </motion.div>
                 </div>
+
+                {/* Floating Orbs */}
+                <motion.div
+                  animate={{
+                    x: [0, 20, 0],
+                    y: [0, -15, 0],
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute top-20 right-8 w-4 h-4 bg-green-400/60 rounded-full blur-sm"
+                />
+                
+                <motion.div
+                  animate={{
+                    x: [0, -15, 0],
+                    y: [0, 10, 0],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1
+                  }}
+                  className="absolute bottom-20 left-8 w-3 h-3 bg-emerald-500/60 rounded-full blur-sm"
+                />
+
+                <motion.div
+                  animate={{
+                    x: [0, 10, 0],
+                    y: [0, -20, 0],
+                  }}
+                  transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 2
+                  }}
+                  className="absolute top-60 left-20 w-2 h-2 bg-blue-400/60 rounded-full blur-sm"
+                />
               </div>
 
               {/* Bottom Text */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.9 }}
-                className="mt-8 text-center"
+                transition={{ duration: 0.6, delay: 2.2 }}
+                className="mt-6 text-center"
               >
-                <h3 className="text-xl font-bold text-white mb-2">Aloqa Admin Portal</h3>
-                <p className="text-gray-400 text-sm">
-                  Secure access to your administrative dashboard
+                <h3 className="text-2xl font-bold text-white mb-2">Modern Admin Experience</h3>
+                <p className="text-gray-400 text-base leading-relaxed max-w-md mx-auto">
+                  Powerful dashboard with real-time analytics, user management, and seamless performance monitoring
                 </p>
-                <div className="mt-4 flex items-center justify-center space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+                
+                {/* Feature Pills */}
+                <div className="flex flex-wrap gap-2 justify-center mt-4">
+                  {['Real-time Data', 'User Analytics', 'Secure Access', 'Mobile Ready'].map((feature, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 2.4 + i * 0.1 }}
+                      className="px-3 py-1 bg-linear-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full text-green-300 text-xs font-medium"
+                    >
+                      {feature}
+                    </motion.span>
+                  ))}
                 </div>
               </motion.div>
             </div>

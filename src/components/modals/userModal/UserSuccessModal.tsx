@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import type { CreateUserData } from '../../api';
+import type { CreateUserData } from '../../../api/index';
 
 interface UserSuccessModalProps {
   isOpen: boolean;

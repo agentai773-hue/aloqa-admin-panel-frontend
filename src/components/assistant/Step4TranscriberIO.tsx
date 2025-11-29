@@ -27,22 +27,14 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-linear-to-r from-gray-900 to-gray-800 text-white p-6 rounded-xl shadow-lg border-2 border-gray-700">
-        <h3 className="text-2xl font-bold flex items-center gap-3">
-          <span className="text-3xl">🎙️</span>
-          Step 4: Transcriber & Input/Output Configuration
-        </h3>
-        <p className="text-gray-300 mt-2">Configure speech recognition and I/O settings</p>
-      </div>
+    <div className="space-y-4 md:space-y-6">
       
       {/* Transcriber Configuration */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">📝</span> Transcriber Settings
+      <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+          Transcriber Settings
         </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           
           {/* Provider */}
           <div>
@@ -65,7 +57,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                   }
                 }));
               }}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               {TRANSCRIBER_PROVIDERS.map(provider => (
                 <option key={provider.value} value={provider.value}>{provider.label}</option>
@@ -84,7 +76,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                 ...prev,
                 transcriberConfig: { ...prev.transcriberConfig, model: e.target.value }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               {getTranscriberModels().map(model => (
                 <option key={model.value} value={model.value}>{model.label}</option>
@@ -103,7 +95,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                 ...prev,
                 transcriberConfig: { ...prev.transcriberConfig, language: e.target.value }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               {getTranscriberLanguages().map(lang => (
                 <option key={lang.value} value={lang.value}>{lang.label}</option>
@@ -140,7 +132,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                 ...prev,
                 transcriberConfig: { ...prev.transcriberConfig, sampling_rate: parseInt(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.samplingRate.description}</p>
           </div>
@@ -160,7 +152,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                 ...prev,
                 transcriberConfig: { ...prev.transcriberConfig, endpointing: parseInt(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.endpointing.description}</p>
           </div>
@@ -168,16 +160,16 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
       </div>
 
       {/* Input/Output Configuration */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">📞</span> Input/Output Providers
+      <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+           Input/Output Providers
         </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           
-          {/* Input Configuration */}
-          <div className="bg-gray-50 p-5 rounded-lg border-2 border-gray-300">
+          {/* Output Configuration */}
+          <div className="bg-gray-50 p-4 md:p-5 rounded-lg border border-gray-200">
             <h5 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <span className="text-gray-700">📥</span> Input Configuration
+               Output Configuration
             </h5>
             <div className="space-y-4">
               <div>
@@ -194,7 +186,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                       outputConfig: { ...prev.outputConfig, provider: newProvider } // Sync output with input
                     }));
                   }}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
                 >
                   {IO_PROVIDERS.map(provider => (
                     <option key={provider.value} value={provider.value}>{provider.label}</option>
@@ -211,7 +203,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                     ...prev,
                     inputConfig: { ...prev.inputConfig, format: e.target.value }
                   }))}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
                 >
                   {IO_FORMATS.map(format => (
                     <option key={format.value} value={format.value}>{format.label}</option>
@@ -221,10 +213,10 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
             </div>
           </div>
 
-          {/* Output Configuration */}
-          <div className="bg-gray-50 p-5 rounded-lg border-2 border-gray-300">
+          {/* Input Configuration */}
+          <div className="bg-gray-50 p-4 md:p-5 rounded-lg border border-gray-200">
             <h5 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <span className="text-gray-700">📤</span> Output Configuration
+        Input Configuration
             </h5>
             <div className="space-y-4">
               <div>
@@ -251,7 +243,7 @@ export default function Step4TranscriberIO({ formData, setFormData }: Step4Props
                     ...prev,
                     outputConfig: { ...prev.outputConfig, format: e.target.value }
                   }))}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
                 >
                   {IO_FORMATS.map(format => (
                     <option key={format.value} value={format.value}>{format.label}</option>

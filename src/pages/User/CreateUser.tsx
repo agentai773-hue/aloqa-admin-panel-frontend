@@ -193,36 +193,34 @@ export default function CreateUser() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-gray-50">
-
-
       {/* Form Container */}
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6">
         <form onSubmit={handleSubmit}>
           {/* Main Form Card */}
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
             
             {/* Personal Information Section */}
-            <div className="p-8 md:p-10 bg-gradient-to-r from-white to-green-50/20">
-              <div className="mb-8 pb-4 border-b-2 border-[#5DD149]/20">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-gradient-to-br from-[#5DD149] to-[#306B25] rounded-xl shadow-lg">
-                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-4 sm:p-6 md:p-8 lg:p-10 bg-linear-to-r from-white to-green-50/20">
+              <div className="mb-6 sm:mb-8 pb-3 sm:pb-4 border-b-2 border-[#5DD149]/20">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="p-2 sm:p-3 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-lg sm:rounded-xl shadow-lg">
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Personal Information</h2>
-                    <p className="text-sm text-gray-600 mt-1">Basic user details and contact information</p>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Personal Information</h2>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">Basic user details and contact information</p>
                   </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* First Name */}
                 <div className="group">
-                  <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <div className="p-1.5 bg-[#5DD149]/10 rounded-lg">
-                      <svg className="h-4 w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <label className="flex text-sm sm:text-base font-bold text-gray-700 mb-2 sm:mb-3 items-center gap-2">
+                    <div className="p-1 sm:p-1.5 bg-[#5DD149]/10 rounded-lg">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
                       </svg>
                     </div>
@@ -234,7 +232,7 @@ export default function CreateUser() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base border-2 rounded-lg sm:rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.firstName 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
                           : 'border-gray-300 focus:border-[#5DD149] hover:border-[#5DD149]/50 focus:ring-4 focus:ring-[#5DD149]/20 bg-white'
@@ -243,8 +241,8 @@ export default function CreateUser() {
                     />
                   </div>
                   {validationErrors.firstName && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-fadeIn">
-                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 animate-fadeIn">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                       </svg>
                       {validationErrors.firstName}
@@ -623,41 +621,41 @@ export default function CreateUser() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between gap-4 px-8 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             <button
               type="button"
               onClick={() => navigate('/users')}
-              className="group px-8 py-4 text-gray-700 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-xl flex items-center gap-2"
+              className="w-full sm:w-auto group px-6 sm:px-8 py-3 sm:py-4 text-gray-700 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg sm:rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-xl flex items-center justify-center gap-2"
             >
-              <svg className="h-5 w-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              Cancel
+              <span className="text-sm sm:text-base">Cancel</span>
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative px-10 py-4 text-white rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:-translate-y-1 disabled:transform-none flex items-center gap-3 overflow-hidden"
+              className="w-full sm:w-auto group relative px-8 sm:px-10 py-3 sm:py-4 text-white rounded-lg sm:rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:-translate-y-1 disabled:transform-none flex items-center justify-center gap-2 sm:gap-3 overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)',
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#4BC13B] to-[#255A1D] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center gap-3">
+              <div className="absolute inset-0 bg-linear-to-r from-[#4BC13B] to-[#255A1D] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center gap-2 sm:gap-3">
                 {isSubmitting ? (
                   <>
-                    <svg className="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span>Creating User...</span>
+                    <span className="text-sm sm:text-base">Creating User...</span>
                   </>
                 ) : (
                   <>
-                    <svg className="h-6 w-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                     </svg>
-                    <span>Create New User</span>
+                    <span className="text-sm sm:text-base">Create New User</span>
                   </>
                 )}
               </div>

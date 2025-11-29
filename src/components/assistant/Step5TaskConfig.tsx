@@ -13,19 +13,12 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
   
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-linear-to-r from-gray-900 to-gray-800 text-white p-6 rounded-xl shadow-lg border-2 border-gray-700">
-        <h3 className="text-2xl font-bold flex items-center gap-3">
-          <span className="text-3xl">⚙️</span>
-          Step 5: Task Configuration
-        </h3>
-        <p className="text-gray-300 mt-2">Configure conversation behavior and finalize settings</p>
-      </div>
+
       
       {/* Task Configuration */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">💬</span> Conversation Behavior Settings
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+        Conversation Behavior Settings
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
@@ -44,7 +37,7 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
                 ...prev,
                 taskConfig: { ...prev.taskConfig, hangup_after_silence: parseInt(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.hangupAfterSilence.description}</p>
           </div>
@@ -64,7 +57,7 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
                 ...prev,
                 taskConfig: { ...prev.taskConfig, incremental_delay: parseInt(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.incrementalDelay.description}</p>
           </div>
@@ -84,13 +77,13 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
                 ...prev,
                 taskConfig: { ...prev.taskConfig, number_of_words_for_interruption: parseInt(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.numberOfWordsForInterruption.description}</p>
           </div>
 
           {/* Backchanneling */}
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border-2 border-gray-300">
+          {/* <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <input
               type="checkbox"
               id="backchanneling"
@@ -99,12 +92,12 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
                 ...prev,
                 taskConfig: { ...prev.taskConfig, backchanneling: e.target.checked }
               }))}
-              className="w-5 h-5 text-gray-700 border-gray-300 rounded focus:ring-gray-900 cursor-pointer"
+              className="w-5 h-5 text-[#5DD149] border-gray-300 rounded focus:ring-[#5DD149] cursor-pointer"
             />
-            <label htmlFor="backchanneling" className="text-sm font-semibold text-gray-700 cursor-pointer">
+            <label htmlFor="backchanneling" className="text-sm font-semibold text-green-700 cursor-pointer">
               Enable Backchanneling
             </label>
-          </div>
+          </div> */}
 
           {/* Call Terminate */}
           <div>
@@ -119,7 +112,7 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
                 ...prev,
                 taskConfig: { ...prev.taskConfig, call_terminate: e.target.value ? parseInt(e.target.value) : undefined }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
               min={1}
               placeholder="e.g., 90 or 300"
             />
@@ -130,20 +123,20 @@ export default function Step5TaskConfig({ formData, setFormData, selectedUser, s
 
       {/* Selected Users Display */}
       {usersToShow.length > 0 && (
-        <div className="bg-gray-100 p-6 rounded-xl shadow-md border-2 border-gray-300">
-          <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <span className="text-gray-700">👤</span>
+        <div className="bg-green-50 p-6 rounded-lg shadow-sm border border-green-200">
+          <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+           
             {usersToShow.length === 1 ? 'Selected User' : `Selected Users (${usersToShow.length})`}
           </h4>
           <div className="space-y-3">
             {usersToShow.map((user) => (
-              <div key={user._id} className="flex items-center justify-between bg-white p-4 rounded-lg border-2 border-gray-300 shadow-sm hover:shadow-md transition-shadow">
+              <div key={user._id} className="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all">
                 <div>
-                  <p className="font-bold text-gray-900">{user.firstName} {user.lastName}</p>
-                  <p className="text-sm text-gray-600 mt-1">📧 {user.email}</p>
+                  <p className="font-bold text-[#306B25]">{user.firstName} {user.lastName}</p>
+                  <p className="text-sm text-green-600 mt-1"> {user.email}</p>
                 </div>
                 <div className="text-right">
-                  <span className="inline-block bg-gray-900 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-sm">
+                  <span className="inline-block bg-linear-to-r from-[#5DD149] to-[#306B25] text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-md">
                     {user.companyName}
                   </span>
                 </div>

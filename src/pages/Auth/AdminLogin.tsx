@@ -102,13 +102,50 @@ export default function AdminLogin() {
               </motion.p>
             </div>
 
-            {/* Mobile Header Text */}
+            {/* Mobile Header with Logo */}
             <div className="mb-8 lg:hidden text-center">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="flex justify-center mb-6"
+              >
+                <div className="w-32 h-16 sm:w-36 sm:h-18 rounded-xl bg-white flex items-center justify-center shadow-xl border border-gray-200">
+                  <img
+                    src="/logo.svg"
+                    alt="Aloqa Logo"
+                    className="w-24 h-12 sm:w-28 sm:h-14 object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                  <div
+                    className="w-24 h-12 sm:w-28 sm:h-14 hidden flex-col items-center justify-center"
+                  >
+                    <div className="w-8 h-8 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-lg flex items-center justify-center mb-1">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+                      ALOQA
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+
               <motion.h1
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-2xl font-bold text-white mb-2"
+                className="text-2xl sm:text-3xl font-bold text-white mb-2"
               >
                 Admin Portal Login
               </motion.h1>
@@ -117,7 +154,7 @@ export default function AdminLogin() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-gray-400 text-sm"
+                className="text-gray-400 text-sm sm:text-base"
               >
                 Welcome back to Aloqa Admin Panel
               </motion.p>

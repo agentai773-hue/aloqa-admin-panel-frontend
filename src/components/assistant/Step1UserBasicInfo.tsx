@@ -45,28 +45,21 @@ export default function Step1UserBasicInfo({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-linear-to-r from-gray-900 to-gray-800 text-white p-6 rounded-xl shadow-lg border-2 border-gray-700">
-        <h3 className="text-2xl font-bold flex items-center gap-3">
-          <span className="text-3xl">👤</span>
-          Step 1: User Selection & Basic Information
-        </h3>
-        <p className="text-gray-300 mt-2">Choose a user and configure basic assistant details</p>
-      </div>
+
       
       {/* User Selection Card */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">🔐</span> User Selection
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+          User Selection
         </h4>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Select User * <span className="text-xs font-normal text-gray-500">(Only approved users with Bearer Token)</span>
           </label>
           {loadingUsers ? (
-            <div className="flex items-center justify-center py-12 bg-gray-50 rounded-lg">
-              <Loader2 className="h-8 w-8 animate-spin text-gray-700" />
-              <span className="ml-3 text-gray-600">Loading users...</span>
+            <div className="flex items-center justify-center py-12 bg-[#5DD149]/5 rounded-lg">
+              <Loader2 className="h-8 w-8 animate-spin text-[#5DD149]" />
+              <span className="ml-3 text-[#306B25]">Loading users...</span>
             </div>
           ) : approvedUsersWithToken.length === 0 ? (
             <div className="bg-amber-50 border-l-4 border-amber-400 rounded-lg p-4">
@@ -87,7 +80,7 @@ export default function Step1UserBasicInfo({
                 value={selectedUserIds[0] || ''}
                 onChange={handleUserChange}
                 disabled={isEditMode}
-                className={`w-full px-4 py-3 rounded-lg border-2 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-base transition-all ${
+                className={`w-full px-4 py-3 rounded-lg border-2 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] text-base transition-all ${
                   isEditMode 
                     ? 'bg-gray-100 border-gray-300 cursor-not-allowed opacity-60' 
                     : 'border-gray-300 hover:border-gray-400'
@@ -110,24 +103,24 @@ export default function Step1UserBasicInfo({
               
               {/* Selected User Info Display */}
               {selectedUsers.length > 0 && selectedUsers[0] && (
-                <div className="mt-4 p-5 bg-gray-100 border-2 border-gray-300 rounded-xl">
-                  <h4 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                    <span className="text-gray-900">✓</span> Selected User
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <h4 className="text-sm font-bold text-[#306B25] mb-3 flex items-center gap-2">
+                    <span className="text-[#5DD149]">✓</span> Selected User
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                     <div>
-                      <span className="font-semibold text-gray-700">Name:</span>
-                      <p className="text-gray-900 font-medium">{selectedUsers[0].firstName} {selectedUsers[0].lastName}</p>
+                      <span className="font-semibold text-gray-600">Name:</span>
+                      <p className="text-gray-800 font-medium">{selectedUsers[0].firstName} {selectedUsers[0].lastName}</p>
                     </div>
                     <div>
-                      <span className="font-semibold text-gray-700">Email:</span>
-                      <p className="text-gray-900">{selectedUsers[0].email}</p>
+                      <span className="font-semibold text-gray-600">Email:</span>
+                      <p className="text-gray-800">{selectedUsers[0].email}</p>
                     </div>
                     <div>
-                      <span className="font-semibold text-gray-700">Company:</span>
-                      <span className="text-gray-900">{selectedUsers[0].companyName}</span>
+                      <span className="font-semibold text-gray-600">Company:</span>
+                      <span className="text-gray-800">{selectedUsers[0].companyName}</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-gray-900 text-white px-3 py-2 rounded-lg">
+                    <div className="flex items-center gap-2 bg-green-600 text-white px-3 py-2 rounded-md text-xs">
                       <span className="font-semibold">✓ Bearer Token Available</span>
                     </div>
                   </div>
@@ -139,9 +132,9 @@ export default function Step1UserBasicInfo({
       </div>
 
       {/* Basic Information Card */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">📝</span> Basic Information
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+         Basic Information
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
@@ -153,7 +146,7 @@ export default function Step1UserBasicInfo({
               required
               value={formData.agentName}
               onChange={(e) => setFormData(prev => ({ ...prev, agentName: e.target.value }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
               placeholder="e.g., Priya - Shilp Serene"
             />
           </div>
@@ -165,7 +158,7 @@ export default function Step1UserBasicInfo({
               required
               value={formData.agentType}
               onChange={(e) => setFormData(prev => ({ ...prev, agentType: e.target.value }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               {AGENT_TYPES.map(type => (
                 <option key={type.value} value={type.value}>{type.label}</option>
@@ -180,7 +173,7 @@ export default function Step1UserBasicInfo({
               type="url"
               value={formData.webhookUrl}
               onChange={(e) => setFormData(prev => ({ ...prev, webhookUrl: e.target.value }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
               placeholder="https://your-webhook-url.com"
             />
           </div>
@@ -193,7 +186,7 @@ export default function Step1UserBasicInfo({
               rows={2}
               value={formData.agentWelcomeMessage}
               onChange={(e) => setFormData(prev => ({ ...prev, agentWelcomeMessage: e.target.value }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
               placeholder="Hello! How can I assist you today?"
             />
           </div>
@@ -201,9 +194,9 @@ export default function Step1UserBasicInfo({
       </div>
 
       {/* System Prompt Card */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">🤖</span> System Prompt Configuration
+      <div className="bg-white p-6 rounded-xl shadow-lg border-2 border-[#5DD149]/30">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+          System Prompt Configuration
         </h4>
         <div className="space-y-4">
           <div>
@@ -218,7 +211,7 @@ export default function Step1UserBasicInfo({
                   setFormData(prev => ({ ...prev, systemPrompt: template.prompt }));
                 }
               }}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               <option value="">-- Choose a template or write your own --</option>
               {SYSTEM_PROMPT_TEMPLATES.map(template => (
@@ -236,7 +229,7 @@ export default function Step1UserBasicInfo({
               rows={12}
               value={formData.systemPrompt}
               onChange={(e) => setFormData(prev => ({ ...prev, systemPrompt: e.target.value }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 font-mono text-sm transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] font-mono text-sm transition-all"
               placeholder="You are a helpful AI assistant..."
             />
             <div className="flex items-center justify-between mt-2">

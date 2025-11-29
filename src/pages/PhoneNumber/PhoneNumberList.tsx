@@ -63,33 +63,33 @@ export default function PhoneNumberList() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-gray-50 p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/30 to-gray-50 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div 
-          className="bg-white border-b border-gray-200 shadow-lg rounded-2xl p-6 mb-6"
+          className="bg-white border-b border-gray-200 shadow-lg rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
                 Phone Numbers
               </h1>
-              <p className="text-gray-600 mt-2 text-lg">Manage your purchased phone numbers from Bolna AI</p>
+              <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base lg:text-lg">Manage your purchased phone numbers from Bolna AI</p>
             </div>
             <motion.button
               onClick={() => setShowBuyModal(true)}
-              className="group relative px-6 py-3 text-white font-bold rounded-xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center gap-2 overflow-hidden"
+              className="group relative px-4 sm:px-6 py-2 sm:py-3 text-white font-bold rounded-lg sm:rounded-xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center gap-2 overflow-hidden w-full sm:w-auto justify-center"
               style={{
                 background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)',
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#4BC13B] to-[#255A1D] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-[#4BC13B] to-[#255A1D] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative flex items-center gap-2">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Buy Number
@@ -148,59 +148,118 @@ export default function PhoneNumberList() {
               </div>
             </motion.div>
           ) : (
-            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxWidth: '100%' }}>
-              <table className="w-full" style={{ minWidth: '800px' }}>
-                <thead className="bg-gradient-to-r from-[#5DD149]/10 to-[#306B25]/10 border-b-2 border-[#5DD149]/30">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Phone Number</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Provider</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Price</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Status</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Purchased</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Renewal</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxWidth: '100%' }}>
+                <table className="w-full" style={{ minWidth: '800px' }}>
+                  <thead className="bg-linear-to-r from-[#5DD149]/10 to-[#306B25]/10 border-b-2 border-[#5DD149]/30">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Phone Number</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Provider</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Price</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Status</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Purchased</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">Renewal</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {purchasedNumbers.map((number: PurchasedNumber, index: number) => (
+                      <motion.tr 
+                        key={number.id} 
+                        className="hover:bg-[#5DD149]/5 transition-colors"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        whileHover={{ scale: 1.01 }}
+                      >
+                        <td className="px-6 py-4">
+                          <span className="font-mono text-sm font-semibold text-gray-900">
+                            {number.phone_number}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700 font-medium">
+                          {number.telephony_provider}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+                            {number.price}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
+                            number.rented ? 'bg-linear-to-r from-[#5DD149]/20 to-[#306B25]/20 text-[#306B25]' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {number.rented ? '● Active' : '○ Inactive'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600 font-medium">
+                          {number.humanized_created_at}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600 font-medium">
+                          {number.renewal_at}
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="lg:hidden space-y-4 p-4">
+                <AnimatePresence>
                   {purchasedNumbers.map((number: PurchasedNumber, index: number) => (
-                    <motion.tr 
-                      key={number.id} 
-                      className="hover:bg-[#5DD149]/5 transition-colors"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      whileHover={{ scale: 1.01 }}
+                    <motion.div
+                      key={number.id}
+                      className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ delay: index * 0.05, duration: 0.3 }}
                     >
-                      <td className="px-6 py-4">
-                        <span className="font-mono text-sm font-semibold text-gray-900">
-                          {number.phone_number}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-700 font-medium">
-                        {number.telephony_provider}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm font-bold bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
-                          {number.price}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
+                      {/* Phone Number Header */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="bg-linear-to-br from-[#5DD149] to-[#306B25] text-white rounded-full h-10 w-10 flex items-center justify-center text-sm font-semibold">
+                            📞
+                          </div>
+                          <div>
+                            <h3 className="font-mono font-semibold text-gray-900 text-sm">
+                              {number.phone_number}
+                            </h3>
+                            <p className="text-xs text-gray-500">{number.telephony_provider}</p>
+                          </div>
+                        </div>
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
-                          number.rented ? 'bg-gradient-to-r from-[#5DD149]/20 to-[#306B25]/20 text-[#306B25]' : 'bg-gray-100 text-gray-600'
+                          number.rented ? 'bg-linear-to-r from-[#5DD149]/20 to-[#306B25]/20 text-[#306B25]' : 'bg-gray-100 text-gray-600'
                         }`}>
                           {number.rented ? '● Active' : '○ Inactive'}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 font-medium">
-                        {number.humanized_created_at}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 font-medium">
-                        {number.renewal_at}
-                      </td>
-                    </motion.tr>
+                      </div>
+
+                      {/* Details Grid */}
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div>
+                          <p className="text-xs text-gray-500 font-medium">Price</p>
+                          <p className="text-sm font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+                            {number.price}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 font-medium">Purchased</p>
+                          <p className="text-sm text-gray-900">{number.humanized_created_at}</p>
+                        </div>
+                      </div>
+
+                      {/* Renewal Date */}
+                      <div className="pt-3 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 font-medium">Renewal Date</p>
+                        <p className="text-sm text-gray-900">{number.renewal_at}</p>
+                      </div>
+                    </motion.div>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </AnimatePresence>
+              </div>
+            </>
           )}
         </motion.div>
 

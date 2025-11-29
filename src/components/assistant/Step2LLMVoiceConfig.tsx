@@ -20,19 +20,12 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-linear-to-r from-gray-900 to-gray-800 text-white p-6 rounded-xl shadow-lg border-2 border-gray-700">
-        <h3 className="text-2xl font-bold flex items-center gap-3">
-          <span className="text-3xl">🧠</span>
-          Step 2: LLM Configuration
-        </h3>
-        <p className="text-gray-300 mt-2">Configure your AI model settings and parameters</p>
-      </div>
+
       
       {/* LLM Agent Configuration */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">⚙️</span> Language Model Settings
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+      Language Model Settings
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
@@ -47,7 +40,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                 ...prev,
                 llmConfig: { ...prev.llmConfig, agent_flow_type: e.target.value }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               {AGENT_FLOW_TYPES.map(type => (
                 <option key={type.value} value={type.value}>{type.label}</option>
@@ -75,7 +68,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                   }
                 }));
               }}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               {LLM_PROVIDERS.map(provider => (
                 <option key={provider.value} value={provider.value}>{provider.label}</option>
@@ -94,7 +87,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                 ...prev,
                 llmConfig: { ...prev.llmConfig, model: e.target.value }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             >
               {getLLMModels().map(model => (
                 <option key={model.value} value={model.value}>{model.label}</option>
@@ -105,9 +98,9 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
       </div>
 
       {/* Advanced Parameters */}
-      <div className="bg-white p-6 rounded-xl shadow-md border-2 border-gray-300">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-gray-700">🎛️</span> Advanced Parameters
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+          Advanced Parameters
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
@@ -126,7 +119,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                 ...prev,
                 llmConfig: { ...prev.llmConfig, temperature: parseFloat(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.temperature.description}</p>
           </div>
@@ -146,7 +139,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                 ...prev,
                 llmConfig: { ...prev.llmConfig, max_tokens: parseInt(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.maxTokens.description}</p>
           </div>
@@ -166,7 +159,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                 ...prev,
                 llmConfig: { ...prev.llmConfig, top_p: parseFloat(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.topP.description}</p>
           </div>
@@ -186,7 +179,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                 ...prev,
                 llmConfig: { ...prev.llmConfig, min_p: parseFloat(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.minP.description}</p>
           </div>
@@ -206,7 +199,7 @@ export default function Step2LLMVoiceConfig({ formData, setFormData }: Step2Prop
                 ...prev,
                 llmConfig: { ...prev.llmConfig, top_k: parseInt(e.target.value) }
               }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all"
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
             />
             <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.topK.description}</p>
           </div>

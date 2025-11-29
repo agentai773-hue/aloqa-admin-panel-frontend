@@ -242,3 +242,17 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 1280px;
   }
 }
+
+/* Shimmer Animation for Progress Bars */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}

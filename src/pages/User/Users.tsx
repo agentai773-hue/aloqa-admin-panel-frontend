@@ -272,7 +272,7 @@ export default function Users() {
       >
         {/* Filters Section */}
         <div className="p-4 border-b border-gray-200 bg-linear-to-r from-gray-50 to-gray-100">
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
             {/* Search Input */}
             <div className="flex-1 min-w-[250px]">
               <div className="relative">
@@ -299,36 +299,39 @@ export default function Users() {
               </div>
             </div>
 
-            {/* Email Status Filter */}
-            <div className="min-w-[160px]">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as any)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
-              >
-                <option value="all">All Status</option>
-                <option value="verified">✓ Verified</option>
-                <option value="pending">⏳ Pending</option>
-              </select>
-            </div>
+            {/* Mobile Filter Row */}
+            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+              {/* Email Status Filter */}
+              <div className="flex-1 lg:min-w-40">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as any)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
+                >
+                  <option value="all">All Status</option>
+                  <option value="verified">✓ Verified</option>
+                  <option value="pending">⏳ Pending</option>
+                </select>
+              </div>
 
-            {/* Approval Filter */}
-            <div className="min-w-40">
-              <select
-                value={approvalFilter}
-                onChange={(e) => setApprovalFilter(e.target.value as any)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
-              >
-                <option value="all">All Approval</option>
-                <option value="approved">✓ Approved</option>
-                <option value="pending">⏳ Pending</option>
-              </select>
-            </div>
+              {/* Approval Filter */}
+              <div className="flex-1 lg:min-w-40">
+                <select
+                  value={approvalFilter}
+                  onChange={(e) => setApprovalFilter(e.target.value as any)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
+                >
+                  <option value="all">All Approval</option>
+                  <option value="approved">✓ Approved</option>
+                  <option value="pending">⏳ Pending</option>
+                </select>
+              </div>
 
-            {/* Results Count */}
-            <div className="ml-auto">
-              <div className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-semibold text-sm">
-                {filteredUsers.length} of {users.length} users
+              {/* Results Count */}
+              <div className="lg:ml-auto">
+                <div className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-semibold text-sm text-center lg:text-left">
+                  {filteredUsers.length} of {users.length} users
+                </div>
               </div>
             </div>
           </div>
@@ -348,8 +351,8 @@ export default function Users() {
           </div>
         ) : (
           <>
-            {/* Table wrapper with horizontal scroll */}
-            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxWidth: '100%' }}>
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxWidth: '100%' }}>
               <table className="w-full divide-y divide-gray-200" style={{ minWidth: '1000px' }}>
                 <thead className="bg-linear-to-r from-gray-50 to-gray-100">
                 <tr>
@@ -532,6 +535,183 @@ export default function Users() {
                 </AnimatePresence>
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4">
+            <AnimatePresence>
+              {filteredUsers.length === 0 ? (
+                <motion.div
+                  className="text-center py-12"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="flex flex-col items-center gap-3">
+                    <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                    <div>
+                      <p className="text-lg font-semibold text-gray-600">No users found</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {searchQuery || statusFilter !== 'all' || approvalFilter !== 'all' 
+                          ? 'Try adjusting your filters'
+                          : 'No users available'}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                filteredUsers.map((user, index) => (
+                  <motion.div
+                    key={user._id}
+                    className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                  >
+                    {/* User Header */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-linear-to-r from-green-500 to-green-600 text-white rounded-full h-10 w-10 flex items-center justify-center text-sm font-semibold">
+                          #{index + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-sm">
+                            {user.firstName} {user.lastName}
+                          </h3>
+                          <p className="text-xs text-gray-500">{user.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <button
+                          onClick={() => handleViewUser(user)}
+                          className="p-2 text-[#5DD149] hover:bg-green-50 rounded-lg transition-colors"
+                          title="View Details"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleEditUser(user)}
+                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          title="Edit User"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(user._id, `${user.firstName} ${user.lastName}`)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete User"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Contact Info */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">Phone</p>
+                        <p className="text-sm text-gray-900">{user.mobile || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">Company</p>
+                        <p className="text-sm text-gray-900">{user.companyName || 'N/A'}</p>
+                      </div>
+                    </div>
+
+                    {/* Last Login */}
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-500 font-medium">Last Login</p>
+                      <p className="text-sm text-gray-900">
+                        {user.lastLogin 
+                          ? new Date(user.lastLogin).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })
+                          : 'Never'
+                        }
+                      </p>
+                    </div>
+
+                    {/* Status Row */}
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      {/* Email Status */}
+                      <div className="flex items-center space-x-2">
+                        <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
+                          user.isActive === 1 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          <div className={`w-2 h-2 rounded-full ${
+                            user.isActive === 1 ? 'bg-green-500' : 'bg-yellow-500'
+                          }`}></div>
+                          <span>{user.isActive === 1 ? 'Verified' : 'Pending'}</span>
+                        </div>
+                        {user.isActive === 0 && (
+                          <button
+                            onClick={() => handleManualVerification(user._id, user.email)}
+                            className="text-green-600 hover:text-green-700 text-xs font-medium"
+                            title="Manually verify this user's email"
+                          >
+                            Verify
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Approval Status */}
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-500">Approval:</span>
+                        <button
+                          onClick={() => handleToggleApproval(user._id, user.isApproval, user.isActive)}
+                          disabled={user.isActive === 0}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                            user.isActive === 0 
+                              ? 'bg-gray-200 cursor-not-allowed opacity-50' 
+                              : user.isApproval === 1 
+                                ? 'bg-green-500 cursor-pointer' 
+                                : 'bg-gray-300 cursor-pointer'
+                          }`}
+                          title={
+                            user.isActive === 0 
+                              ? 'Email verification required before approval' 
+                              : user.isApproval === 1 
+                                ? 'Approved - Click to unapprove' 
+                                : 'Not Approved - Click to approve'
+                          }
+                        >
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                              user.isApproval === 1 ? 'translate-x-6' : 'translate-x-1'
+                            }`}
+                          />
+                        </button>
+                        <span className={`text-xs font-medium ${
+                          user.isActive === 0 
+                            ? 'text-gray-400' 
+                            : user.isApproval === 1 
+                              ? 'text-green-600' 
+                              : 'text-gray-500'
+                        }`}>
+                          {user.isActive === 0 ? 'Locked' : user.isApproval === 1 ? 'Approved' : 'Pending'}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
           </div>
           </>
         )}

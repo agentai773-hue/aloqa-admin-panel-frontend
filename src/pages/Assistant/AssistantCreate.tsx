@@ -125,21 +125,7 @@ export default function AssistantCreate() {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.userId || selectedUserIds.length === 0) {
-      toast.error('Please select a user');
-      return;
-    }
-    
-    if (!formData.agentName.trim()) {
-      toast.error('Please enter agent name');
-      return;
-    }
 
-    createMutation.mutate(formData);
-  };
 
   // Step validation
   const validateStep = (step: number): boolean => {
@@ -152,7 +138,72 @@ export default function AssistantCreate() {
         toast.error('Please enter agent name');
         return false;
       }
+      if (!formData.agentType.trim()) {
+        toast.error('Please select agent type');
+        return false;
+      }
+      if (!formData.agentWelcomeMessage.trim()) {
+        toast.error('Please enter welcome message');
+        return false;
+      }
+      if (!formData.systemPrompt.trim()) {
+        toast.error('Please enter system prompt');
+        return false;
+      }
     }
+    
+    if (step === 2) {
+      if (!formData.llmConfig.model.trim()) {
+        toast.error('Please select a model');
+        return false;
+      }
+    }
+    
+    if (step === 3) {
+      if (!formData.synthesizerConfig.provider.trim()) {
+        toast.error('Please select a synthesizer provider');
+        return false;
+      }
+      if (!formData.synthesizerConfig.provider_config.voice.trim()) {
+        toast.error('Please select a voice');
+        return false;
+      }
+      if (!formData.synthesizerConfig.provider_config.language.trim()) {
+        toast.error('Please select a language');
+        return false;
+      }
+    }
+    
+    if (step === 4) {
+      if (!formData.transcriberConfig.provider.trim()) {
+        toast.error('Please select transcriber provider');
+        return false;
+      }
+      if (!formData.transcriberConfig.model.trim()) {
+        toast.error('Please select transcriber model');
+        return false;
+      }
+      if (!formData.transcriberConfig.language.trim()) {
+        toast.error('Please select transcriber language');
+        return false;
+      }
+      if (!formData.inputConfig.provider.trim()) {
+        toast.error('Please select input provider');
+        return false;
+      }
+      if (!formData.outputConfig.provider.trim()) {
+        toast.error('Please select output provider');
+        return false;
+      }
+    }
+    
+    if (step === 5) {
+      if (formData.taskConfig.call_terminate === undefined || formData.taskConfig.call_terminate === null) {
+        toast.error('Please set call termination duration');
+        return false;
+      }
+    }
+    
     return true;
   };
 
@@ -169,26 +220,96 @@ export default function AssistantCreate() {
   const selectedUser = selectedUsers.length > 0 ? selectedUsers[0] : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-linear-to-br from-[#f0fdf4] via-[#dcfce7] to-[#f0fdf4] p-2 sm:p-4 lg:p-6 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 25% 25%, #5DD149 1px, transparent 1px),
+              radial-gradient(circle at 75% 75%, #306B25 1px, transparent 1px),
+              linear-gradient(45deg, transparent 49%, #5DD149 50%, transparent 51%)
+            `,
+            backgroundSize: '40px 40px, 40px 40px, 80px 80px'
+          }}
+        />
+      </div>
+      
+      <div className="max-w-4xl xl:max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <motion.div 
-          className="bg-white border-b border-gray-200 shadow-lg rounded-2xl p-6 mb-6"
+          className="bg-white border-b border-gray-200 shadow-xl rounded-lg lg:rounded-xl p-3 sm:p-4 lg:p-6 mb-3 sm:mb-4 lg:mb-6 overflow-hidden relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
-                Create New Assistant
-              </h1>
-              <p className="text-gray-600 mt-2 text-lg">Configure your AI voice assistant step by step</p>
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div 
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `radial-gradient(circle at 20% 50%, #5DD149 2px, transparent 2px), radial-gradient(circle at 80% 20%, #306B25 2px, transparent 2px)`,
+                backgroundSize: '50px 50px'
+              }}
+            />
+          </div>
+          
+          <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="p-2 sm:p-3 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-lg sm:rounded-xl shadow-lg">
+                <svg className="h-6 w-6 sm:h-8 sm:w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+                  Create New Assistant
+                </h1>
+                <p className="text-gray-600 mt-1 text-xs sm:text-sm md:text-base font-medium">
+                  Configure your AI voice assistant step by step
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#5DD149]/10 to-[#306B25]/10 rounded-xl border-2 border-[#5DD149]/30">
-              <span className="text-sm font-bold text-gray-700">Step</span>
-              <span className="text-2xl font-bold bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
-                {currentStep}/{totalSteps}
-              </span>
+            
+            <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
+              {/* Progress Ring */}
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                    fill="none"
+                    stroke="#e5e7eb"
+                    strokeWidth="3"
+                  />
+                  <path
+                    d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                    fill="none"
+                    stroke="url(#gradient)"
+                    strokeWidth="3"
+                    strokeDasharray={`${(currentStep / totalSteps) * 100}, 100`}
+                    strokeLinecap="round"
+                  />
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#5DD149" />
+                      <stop offset="100%" stopColor="#306B25" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs sm:text-sm font-bold text-gray-700">
+                    {currentStep}/{totalSteps}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Step Info */}
+              <div className="flex flex-col items-start px-3 sm:px-4 py-2 bg-linear-to-r from-[#5DD149]/10 to-[#306B25]/10 rounded-lg sm:rounded-xl border-2 border-[#5DD149]/30">
+                <span className="text-xs font-medium text-gray-600">Current Step</span>
+                <span className="text-sm sm:text-base font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+                  Step {currentStep}
+                </span>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -205,12 +326,83 @@ export default function AssistantCreate() {
 
         {/* Form Container */}
         <motion.div 
-          className="bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-200"
+          className="bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-2xl border-2 border-[#5DD149]/20 p-3 sm:p-4 md:p-6 lg:p-8 relative overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <form onSubmit={handleSubmit}>
+          {/* Enhanced decorative background elements */}
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-linear-to-br from-[#5DD149]/15 to-[#306B25]/10 rounded-full blur-2xl" />
+          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-linear-to-tr from-[#5DD149]/10 to-[#306B25]/15 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-linear-to-bl from-[#5DD149]/8 to-[#306B25]/5 rounded-full blur-xl" />
+          
+          {/* Subtle grid pattern overlay */}
+          <div className="absolute inset-0 opacity-5">
+            <div 
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `
+                  linear-gradient(90deg, #5DD149 1px, transparent 1px),
+                  linear-gradient(180deg, #5DD149 1px, transparent 1px)
+                `,
+                backgroundSize: '40px 40px'
+              }}
+            />
+          </div>
+          
+          <div className="relative">
+            {/* Step Title */}
+            <motion.div 
+              className="mb-6 sm:mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                <div className="relative">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
+                    <span className="text-white font-bold text-base sm:text-lg drop-shadow-sm">{currentStep}</span>
+                  </div>
+                  <div className="absolute inset-0 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-xl sm:rounded-2xl opacity-30 blur-md"></div>
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-[#306B25] to-[#5DD149] bg-clip-text text-transparent">
+                    {currentStep === 1 && "User Selection & Basic Info"}
+                    {currentStep === 2 && "LLM & Voice Configuration"}
+                    {currentStep === 3 && "Voice Synthesizer Settings"}
+                    {currentStep === 4 && "Transcriber & I/O Config"}
+                    {currentStep === 5 && "Task Configuration & Review"}
+                  </h2>
+                  <p className="text-sm sm:text-base text-gray-600 mt-1 font-medium">
+                    {currentStep === 1 && "Select users and configure basic assistant information"}
+                    {currentStep === 2 && "Configure language model and voice settings"}
+                    {currentStep === 3 && "Setup voice synthesis and audio output"}
+                    {currentStep === 4 && "Configure speech recognition and input/output"}
+                    {currentStep === 5 && "Review configuration and finalize assistant setup"}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Enhanced Progress Bar */}
+              <div className="relative">
+                <div className="w-full bg-gray-200/50 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
+                  <motion.div 
+                    className="bg-linear-to-r from-[#5DD149] via-[#4BC13B] to-[#306B25] h-full rounded-full relative overflow-hidden shadow-sm"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                  >
+                    {/* Animated shimmer effect */}
+                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-shimmer"></div>
+                  </motion.div>
+                </div>
+                <div className="flex justify-between mt-2">
+                  <span className="text-xs font-medium text-gray-500">Step {currentStep}</span>
+                  <span className="text-xs font-medium text-gray-500">{Math.round((currentStep / totalSteps) * 100)}% Complete</span>
+                </div>
+              </div>
+            </motion.div>
+
             <AnimatePresence mode="wait">
               {/* Step 1: User Selection & Basic Info */}
               {currentStep === 1 && (
@@ -310,8 +502,28 @@ export default function AssistantCreate() {
               onPrevious={goToPreviousStep}
               onNext={goToNextStep}
               onCancel={() => navigate('/assistant')}
+              onSubmit={() => {
+                // Validate all steps before submission
+                for (let step = 1; step <= totalSteps; step++) {
+                  if (!validateStep(step)) {
+                    // If validation fails, go to that step and add helpful message
+                    if (step !== currentStep) {
+                      setCurrentStep(step);
+                      toast.error(`Please complete all required fields in Step ${step} before submitting`);
+                    }
+                    return;
+                  }
+                }
+
+                // Ensure userId is set from selected user
+                if (selectedUserIds.length > 0) {
+                  setFormData(prev => ({ ...prev, userId: selectedUserIds[0] }));
+                }
+
+                createMutation.mutate({ ...formData, userId: selectedUserIds[0] });
+              }}
             />
-          </form>
+          </div>
         </motion.div>
       </div>
 
@@ -367,7 +579,7 @@ export default function AssistantCreate() {
               {/* Content */}
               <div className="px-6 py-6">
                 {/* Assistant Details Card */}
-                <div className="bg-gradient-to-br from-[#5DD149]/10 to-[#306B25]/10 rounded-xl p-5 mb-6 border-2 border-[#5DD149]/30">
+                <div className="bg-linear-to-br from-[#5DD149]/10 to-[#306B25]/10 rounded-xl p-5 mb-6 border-2 border-[#5DD149]/30">
                   <div className="flex items-start gap-3 mb-4">
                     <div className="p-2 bg-[#5DD149]/20 rounded-lg">
                       <svg className="h-5 w-5 text-[#306B25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -378,7 +590,7 @@ export default function AssistantCreate() {
                       <h4 className="text-sm font-bold text-[#306B25] uppercase tracking-wide mb-1">
                         Assistant Name
                       </h4>
-                      <p className="text-xl font-bold bg-gradient-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
+                      <p className="text-xl font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
                         {createdAssistantName}
                       </p>
                     </div>

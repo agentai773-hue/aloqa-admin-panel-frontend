@@ -105,7 +105,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
       >
         {/* Filters Section */}
         <div className="p-4 border-b border-gray-200 bg-linear-to-r from-gray-50 to-gray-100">
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
             {/* Search Input */}
             <div className="flex-1 min-w-[250px]">
               <div className="relative">
@@ -128,38 +128,41 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
               </div>
             </div>
 
-            {/* User Filter */}
-            <div className="min-w-[200px]">
-              <select
-                value={selectedUserId}
-                onChange={(e) => setSelectedUserId(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
-              >
-                <option value="">All Users</option>
-                {users.map((user) => {
-                  const userAssistantsCount = assistants.filter(
-                    (assistant) => typeof assistant.userId === 'object' && assistant.userId._id === user._id
-                  ).length;
-                  return (
-                    <option key={user._id} value={user._id}>
-                      {user.firstName} {user.lastName} ({userAssistantsCount})
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+            {/* Mobile Filter Row */}
+            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+              {/* User Filter */}
+              <div className="flex-1 lg:min-w-[200px]">
+                <select
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
+                >
+                  <option value="">All Users</option>
+                  {users.map((user) => {
+                    const userAssistantsCount = assistants.filter(
+                      (assistant) => typeof assistant.userId === 'object' && assistant.userId._id === user._id
+                    ).length;
+                    return (
+                      <option key={user._id} value={user._id}>
+                        {user.firstName} {user.lastName} ({userAssistantsCount})
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
 
-            {/* Results Count */}
-            <div className="ml-auto">
-              <div className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-semibold text-sm">
-                {filteredAssistants.length} of {assistants.length} assistants
+              {/* Results Count */}
+              <div className="lg:ml-auto">
+                <div className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-semibold text-sm text-center lg:text-left">
+                  {filteredAssistants.length} of {assistants.length} assistants
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxWidth: '100%' }}>
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxWidth: '100%' }}>
           <table className="w-full divide-y divide-gray-200" style={{ minWidth: '1200px' }}>
             <thead className="bg-linear-to-r from-gray-50 to-gray-100">
               <tr>
@@ -296,6 +299,116 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="lg:hidden space-y-4 p-4">
+          <AnimatePresence>
+            {filteredAssistants.length === 0 ? (
+              <motion.div
+                className="text-center py-12"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex flex-col items-center">
+                  <Search className="h-12 w-12 text-gray-400 mb-3" />
+                  <p className="text-gray-600 font-bold text-lg">No assistants found</p>
+                  <p className="text-gray-500 text-sm mt-1">
+                    {searchQuery ? 'Try adjusting your search' : 'Create your first assistant to get started'}
+                  </p>
+                </div>
+              </motion.div>
+            ) : (
+              filteredAssistants.map((assistant, index) => {
+                const user = typeof assistant.userId === 'object' ? assistant.userId : null;
+                return (
+                  <motion.div
+                    key={assistant._id}
+                    className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                  >
+                    {/* Assistant Header */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-linear-to-br from-[#5DD149] to-[#306B25] text-white rounded-full h-10 w-10 flex items-center justify-center text-sm font-semibold">
+                          #{index + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-sm">
+                            {assistant.agentName}
+                          </h3>
+                          <p className="text-xs text-gray-500">{assistant.agentType}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <button
+                          onClick={() => navigate(`/assistant/${assistant._id}/view`)}
+                          className="p-2 text-[#5DD149] hover:bg-green-50 rounded-lg transition-colors"
+                          title="View Details"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/assistant/${assistant._id}/edit`)}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Edit Assistant"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(assistant)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete Assistant"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Assistant Details */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">Assigned User</p>
+                        <p className="text-sm text-gray-900">
+                          {user ? `${user.firstName} ${user.lastName}` : 'No User Assigned'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium">LLM Model</p>
+                        <p className="text-sm text-gray-900">{assistant.llmConfig?.model || 'Not Set'}</p>
+                      </div>
+                    </div>
+
+                    {/* Created Date */}
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-500 font-medium">Created</p>
+                      <p className="text-sm text-gray-900">
+                        {new Date(assistant.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    </div>
+
+                    {/* Status Row */}
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-500">Status:</span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadge(assistant.status)}`}>
+                          {assistant.status.charAt(0).toUpperCase() + assistant.status.slice(1)}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
 

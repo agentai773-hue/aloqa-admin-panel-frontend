@@ -129,7 +129,7 @@ function SidebarContent() {
     <div className="min-h-screen bg-gray-50 flex overflow-hidden">
       {/* Sidebar */}
       <motion.div 
-        className="fixed top-0 left-0 z-50 h-full bg-white shadow-lg border-r border-gray-200 lg:z-30 lg:translate-x-0"
+        className="fixed top-0 left-0 z-50 h-full bg-white shadow-lg border-r border-gray-200 lg:z-30 lg:translate-x-0 overflow-hidden"
         initial={false}
         animate={{ 
           width: getSidebarWidth(),
@@ -139,6 +139,9 @@ function SidebarContent() {
           type: "spring",
           stiffness: 300,
           damping: 30
+        }}
+        style={{
+          visibility: windowWidth < 1024 && !isSidebarOpen ? 'hidden' : 'visible'
         }}
       >
         <div className="flex flex-col h-full">
@@ -171,20 +174,23 @@ function SidebarContent() {
                   />
                 </motion.div>
               ) : (
-                <motion.img 
-                  key="logo-closed"
-                  src="/logo.png" 
-                  alt="Logo" 
-                  className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 object-contain mx-auto"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
+                // Only show logo on desktop when sidebar is closed, hide on mobile
+                windowWidth >= 1024 && (
+                  <motion.img 
+                    key="logo-closed"
+                    src="/logo.png" 
+                    alt="Logo" 
+                    className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 object-contain mx-auto"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    whileHover={{ scale: 1.05, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                )
               )}
             </AnimatePresence>
             
@@ -270,9 +276,9 @@ function SidebarContent() {
                     <motion.div 
                       className={`group flex items-center ${
                         isSidebarOpen 
-                          ? 'px-2 sm:px-3 lg:px-4 py-2 sm:py-3' 
+                          ? 'px-3 sm:px-4 lg:px-4 py-3 sm:py-3' 
                           : 'px-1 sm:px-2 lg:px-3 py-2 sm:py-3 justify-center'
-                      } text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl relative ${
+                      } text-sm sm:text-base font-medium rounded-lg sm:rounded-xl relative ${
                         isActive
                           ? 'text-white shadow-lg shadow-green-500/30'
                           : 'text-gray-700 hover:text-gray-900 hover:bg-green-50'
@@ -289,12 +295,12 @@ function SidebarContent() {
                         whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                         transition={{ duration: 0.5 }}
                       >
-                        <div className="h-4 w-4 sm:h-5 sm:w-5">{item.icon}</div>
+                        <div className="h-6 w-6 sm:h-7 sm:w-7">{item.icon}</div>
                       </motion.div>
                       <AnimatePresence>
                         {isSidebarOpen && (
                           <motion.span 
-                            className="ml-2 sm:ml-3 text-xs sm:text-sm truncate"
+                            className="ml-3 sm:ml-4 text-sm sm:text-base truncate"
                             initial={{ opacity: 0, width: 0 }}
                             animate={{ opacity: 1, width: "auto" }}
                             exit={{ opacity: 0, width: 0 }}
@@ -333,9 +339,9 @@ function SidebarContent() {
                 title={!isSidebarOpen ? 'Logout' : ''}
                 className={`group flex items-center w-full ${
                   isSidebarOpen 
-                    ? 'px-2 sm:px-3 lg:px-4 py-2 sm:py-3' 
+                    ? 'px-3 sm:px-4 lg:px-4 py-3 sm:py-3' 
                     : 'px-1 sm:px-2 lg:px-3 py-2 sm:py-3 justify-center'
-                } text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors`}
+                } text-sm sm:text-base font-medium rounded-lg sm:rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors`}
                 whileHover={{ scale: 1.05, x: 5 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400 }}
@@ -345,14 +351,14 @@ function SidebarContent() {
                   whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                   transition={{ duration: 0.5 }}
                 >
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-6 w-6 sm:h-7 sm:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
                 </motion.div>
                 <AnimatePresence>
                   {isSidebarOpen && (
                     <motion.span 
-                      className="ml-2 sm:ml-3 text-xs sm:text-sm"
+                      className="ml-3 sm:ml-4 text-sm sm:text-base"
                       initial={{ opacity: 0, width: 0 }}
                       animate={{ opacity: 1, width: "auto" }}
                       exit={{ opacity: 0, width: 0 }}

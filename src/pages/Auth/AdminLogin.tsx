@@ -61,11 +61,11 @@ export default function AdminLogin() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="flex items-center space-x-3 mb-8"
               >
-                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                <div className="w-40 h-20 rounded-2xl bg-white flex items-center justify-center shadow-lg">
                   <img
                     src="/logo.svg"
                     alt="Aloqa Logo"
-                    className="w-8 h-8 object-contain"
+                    className="w-30 h-20 object-contain"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';

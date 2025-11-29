@@ -9,9 +9,6 @@ export type { LoginCredentials, AdminUser, AuthResponse, VerifyTokenResponse } f
 // Users module
 export { usersAPI } from './users';
 
-// Voices module
-export { voicesAPI } from './voices';
-export type { Voice, VoiceProvider, VoiceAccent, VoiceSearchParams, VoicesResponse, VoiceAssignment, AssignVoiceRequest } from './voices';
 export type { User, CreateUserData, UpdateUserData, UsersListResponse, UserStatsResponse, DeleteUserResponse } from './users';
 
 // Assistants module

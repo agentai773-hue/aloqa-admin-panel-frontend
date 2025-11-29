@@ -17,7 +17,7 @@ const AssistantView = lazy(() => import('./pages/Assistant/AssistantView'));
 const AssistantEdit = lazy(() => import('./pages/Assistant/AssistantEdit'));
 const PhoneNumberList = lazy(() => import('./pages/PhoneNumber/PhoneNumberList'));
 const AssignNumber = lazy(() => import('./pages/PhoneNumber/AssignNumber'));
-const Voice = lazy(() => import('./pages/Voice'));
+const Voice = lazy(() => import('./pages/Voice/Voice'));
 const AdminProfile = lazy(() => import('./pages/Admin/AdminProfile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 

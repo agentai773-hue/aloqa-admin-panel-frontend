@@ -18,6 +18,7 @@ const AssistantEdit = lazy(() => import('./pages/Assistant/AssistantEdit'));
 const PhoneNumberList = lazy(() => import('./pages/PhoneNumber/PhoneNumberList'));
 const AssignNumber = lazy(() => import('./pages/PhoneNumber/AssignNumber'));
 const Voice = lazy(() => import('./pages/Voice/Voice'));
+const VoiceAssignments = lazy(() => import('./pages/Voice/VoiceAssignments'));
 const AdminProfile = lazy(() => import('./pages/Admin/AdminProfile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -131,6 +132,14 @@ export const routes: RouteObject[] = [
         element: (
           <Suspense fallback={<PageLoader />}>
             <Voice />
+          </Suspense>
+        ),
+      },
+      {
+        path: "voice-assignments",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <VoiceAssignments />
           </Suspense>
         ),
       },

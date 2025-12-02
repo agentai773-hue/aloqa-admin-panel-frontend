@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { phoneNumbersAPI, usersAPI } from '../../api';
 import type { PurchasedNumber } from '../../api';
+import { TableSkeleton, CardSkeleton } from '../../components/ui/SkeletonLoader';
 import toast from 'react-hot-toast';
 
 export default function PhoneNumberList() {
@@ -116,14 +117,7 @@ export default function PhoneNumberList() {
           </div>
 
           {isPurchasedLoading ? (
-            <div className="p-12 text-center">
-              <motion.div 
-                className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              />
-              <p className="mt-4 text-gray-600 font-medium">Loading purchased numbers...</p>
-            </div>
+            <TableSkeleton rows={3} />
           ) : purchasedNumbers.length === 0 ? (
             <motion.div 
               className="p-12 text-center"
@@ -369,13 +363,10 @@ export default function PhoneNumberList() {
             {/* Modal Content - Available Numbers */}
             <div className="flex-1 overflow-y-auto p-6">
               {isAvailableLoading ? (
-                <div className="py-12 text-center">
-                  <motion.div 
-                    className="animate-spin rounded-full h-12 w-12 border-b-4 border-t-4 border-[#5DD149] mx-auto"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  />
-                  <p className="mt-4 text-gray-600 font-medium">Loading available numbers...</p>
+                <div className="space-y-4">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <CardSkeleton key={index} />
+                  ))}
                 </div>
               ) : availableNumbers.length === 0 ? (
                 <motion.div 

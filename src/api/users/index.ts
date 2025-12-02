@@ -59,15 +59,27 @@ export interface DeleteUserResponse {
   deletedPhoneNumbers: number;
 }
 
+export interface GetUsersParams {
+  page?: number;
+  limit?: number;
+  isApproval?: 0 | 1;
+  search?: string;
+  status?: 'verified' | 'pending';
+  approval?: 'approved' | 'pending';
+}
+
 export const usersAPI = {
-  // Get all users
-  async getUsers(params?: { page?: number; limit?: number; isApproval?: 0 | 1 }) {
+  // Get all users with pagination and search
+  async getUsers(params?: GetUsersParams) {
     let endpoint = '/users';
     const queryParams = new URLSearchParams();
     
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.isApproval !== undefined) queryParams.append('isApproval', params.isApproval.toString());
+    if (params?.search) queryParams.append('search', params.search);
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.approval) queryParams.append('approval', params.approval);
     
     if (queryParams.toString()) {
       endpoint += `?${queryParams.toString()}`;

@@ -1,57 +1,80 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersAPI, type User } from '../../api';
 import UserVerificationModal from "../../components/modals/userModal/UserVerificationModal";
 import UserActionSuccessModal from "../../components/modals/userModal/UserActionSuccessModal";
 import UserDeleteModal from "../../components/modals/userModal/UserDeleteModal";
 import UserDeleteSuccessModal from "../../components/modals/userModal/UserDeleteSuccessModal";
+import { useUsers } from '../../hooks/useUsers';
+import { useSearchDebounce } from '../../hooks/useDebounce';
+import { TableSkeleton } from '../../components/ui/SkeletonLoader';
+import Pagination from '../../components/ui/Pagination';
+import toast from 'react-hot-toast';
 
 export default function Users() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  
+  // Pagination and search states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(() => {
+    // Calculate default page size based on screen height
+    const screenHeight = window.innerHeight;
+    if (screenHeight < 768) return 7; // Mobile
+    if (screenHeight < 1024) return 7; // Tablet  
+    return 10; // Desktop
+  });
+  const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'pending'>('all');
+  const [approvalFilter, setApprovalFilter] = useState<'all' | 'approved' | 'pending'>('all');
+  
+  // Debounced search
+  const { searchValue, debouncedValue: searchQuery, setSearchValue } = useSearchDebounce('', 500);
+
+  // Use the custom users hook with pagination and search
+  const { 
+    users, 
+    pagination,
+    isLoading: loading, 
+    error,
+    toggleApproval: toggleApprovalMutation,
+    deleteUser: deleteUserHook
+  } = useUsers({
+    enabled: true,
+    page: currentPage,
+    limit: itemsPerPage,
+    search: searchQuery,
+    status: statusFilter === 'all' ? undefined : statusFilter,
+    approval: approvalFilter === 'all' ? undefined : approvalFilter
+  });
+
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [verifyUserId, setVerifyUserId] = useState<string | null>(null);
   const [verifyUserEmail, setVerifyUserEmail] = useState<string>('');
-  const [isVerifying, setIsVerifying] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [deleteUserName, setDeleteUserName] = useState<string>('');
-  const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteSuccessModal, setShowDeleteSuccessModal] = useState(false);
   const [deletedDataStats, setDeletedDataStats] = useState({ assistants: 0, phoneNumbers: 0 });
 
-  // Filter states
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'pending'>('all');
-  const [approvalFilter, setApprovalFilter] = useState<'all' | 'approved' | 'pending'>('all');
-
-  // Load users
-  const loadUsers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await usersAPI.getUsers();
-      console.log(response);
-      if (response.success && response.data) {
-        setUsers(response.data.users);
-      }
-    } catch (err: unknown) {
-      console.error('Error loading users:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load users';
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
+  // Manual email verification mutation (not in hook)
+  const verifyEmailMutation = useMutation({
+    mutationFn: (userId: string) => usersAPI.verifyUserEmail(userId),
+    onSuccess: () => {
+      setSuccessMessage('User email verified successfully!');
+      setShowSuccessModal(true);
+      setVerifyUserId(null);
+      setVerifyUserEmail('');
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to verify user email');
     }
-  };
+  });
 
   useEffect(() => {
-    loadUsers();
-    
     // Check for success message from navigation state
     const state = location.state as { successMessage?: string };
     if (state?.successMessage) {
@@ -63,66 +86,34 @@ export default function Users() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filtered users
-  const filteredUsers = users.filter(user => {
-    const searchLower = searchQuery.toLowerCase();
-    const matchesSearch = !searchQuery || 
-      user.firstName.toLowerCase().includes(searchLower) ||
-      user.lastName.toLowerCase().includes(searchLower) ||
-      user.email.toLowerCase().includes(searchLower) ||
-      user.mobile.includes(searchQuery) ||
-      user.companyName?.toLowerCase().includes(searchLower);
-    
-    const matchesStatus = statusFilter === 'all' || 
-      (statusFilter === 'verified' && user.isActive === 1) ||
-      (statusFilter === 'pending' && user.isActive === 0);
-    
-    const matchesApproval = approvalFilter === 'all' || 
-      (approvalFilter === 'approved' && user.isApproval === 1) ||
-      (approvalFilter === 'pending' && user.isApproval === 0);
-    
-    return matchesSearch && matchesStatus && matchesApproval;
-  });
+  // Pagination handlers
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
+  const handleFilterChange = (filterType: 'status' | 'approval', value: string) => {
+    if (filterType === 'status') {
+      setStatusFilter(value as 'all' | 'verified' | 'pending');
+    } else {
+      setApprovalFilter(value as 'all' | 'approved' | 'pending');
+    }
+    setCurrentPage(1); // Reset to first page when filtering
+  };
 
   const handleToggleApproval = async (userId: string, currentStatus: 0 | 1, isActive: 0 | 1) => {
     // Check if email is verified
     if (isActive === 0) {
-      setError('Cannot approve user until email is verified');
-      setTimeout(() => setError(null), 3000);
+      toast.error('Cannot approve user until email is verified');
       return;
     }
 
     const newStatus = currentStatus === 1 ? 0 : 1;
-    
-    // Optimistic update
-    setUsers(prevUsers => 
-      prevUsers.map(user => 
-        user._id === userId ? { ...user, isApproval: newStatus } : user
-      )
-    );
-
-    try {
-      const response = await usersAPI.toggleApproval(userId, newStatus);
-      if (!response.success) {
-        // Revert on failure
-        setUsers(prevUsers => 
-          prevUsers.map(user => 
-            user._id === userId ? { ...user, isApproval: currentStatus } : user
-          )
-        );
-        setError('Failed to update status');
-      }
-    } catch (err: unknown) {
-      // Revert on error
-      setUsers(prevUsers => 
-        prevUsers.map(user => 
-          user._id === userId ? { ...user, isApproval: currentStatus } : user
-        )
-      );
-      console.error('Error toggling approval:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to toggle approval';
-      setError(errorMessage);
-    }
+    toggleApprovalMutation.mutate({ id: userId, status: newStatus });
   };
 
   // Manual email verification by admin
@@ -133,32 +124,7 @@ export default function Users() {
 
   const confirmManualVerification = async () => {
     if (!verifyUserId) return;
-
-    setIsVerifying(true);
-    try {
-      const response = await usersAPI.verifyUserEmail(verifyUserId);
-      
-      if (response.success) {
-        // Update local state
-        setUsers(prevUsers => 
-          prevUsers.map(user => 
-            user._id === verifyUserId ? { ...user, isActive: 1 } : user
-          )
-        );
-        setSuccessMessage(`User email verified successfully!`);
-        setShowSuccessModal(true);
-        setVerifyUserId(null);
-        setVerifyUserEmail('');
-      } else {
-        setError('Failed to verify user email');
-      }
-    } catch (err: unknown) {
-      console.error('Error verifying user:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to verify user';
-      setError(errorMessage);
-    } finally {
-      setIsVerifying(false);
-    }
+    verifyEmailMutation.mutate(verifyUserId);
   };
 
   const cancelManualVerification = () => {
@@ -174,31 +140,17 @@ export default function Users() {
 
   const confirmDeleteUser = async () => {
     if (!deleteUserId) return;
-
-    setIsDeleting(true);
-    try {
-      const response = await usersAPI.deleteUser(deleteUserId);
-      if (response.success) {
-        await loadUsers();
-        // Store deleted data stats
+    deleteUserHook.mutate(deleteUserId, {
+      onSuccess: () => {
         setDeletedDataStats({
-          assistants: response.data?.deletedAssistants || 0,
-          phoneNumbers: response.data?.deletedPhoneNumbers || 0
+          assistants: 0,
+          phoneNumbers: 0
         });
-        // Show delete success modal (separate from regular success modal)
         setShowDeleteSuccessModal(true);
         setDeleteUserId(null);
         setDeleteUserName('');
-      } else {
-        setError('Failed to delete user');
       }
-    } catch (err: unknown) {
-      console.error('Error deleting user:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete user';
-      setError(errorMessage);
-    } finally {
-      setIsDeleting(false);
-    }
+    });
   };
 
   const cancelDeleteUser = () => {
@@ -251,13 +203,8 @@ export default function Users() {
               </div>
               <div className="ml-3">
                 <h3 className="text-sm font-semibold text-red-800">Error</h3>
-                <p className="text-sm text-red-700 mt-1">{error}</p>
+                <p className="text-sm text-red-700 mt-1">{error?.message || 'An error occurred'}</p>
               </div>
-              <button onClick={() => setError(null)} className="ml-auto">
-                <svg className="h-5 w-5 text-red-500 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
             </div>
           </motion.div>
         )}
@@ -282,13 +229,13 @@ export default function Users() {
                 <input
                   type="text"
                   placeholder="Search by name, email, phone, company..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                 />
-                {searchQuery && (
+                {searchValue && (
                   <button
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => setSearchValue('')}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,7 +252,7 @@ export default function Users() {
               <div className="flex-1 lg:min-w-40">
                 <select
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as any)}
+                  onChange={(e) => handleFilterChange('status', e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
                 >
                   <option value="all">All Status</option>
@@ -318,7 +265,7 @@ export default function Users() {
               <div className="flex-1 lg:min-w-40">
                 <select
                   value={approvalFilter}
-                  onChange={(e) => setApprovalFilter(e.target.value as any)}
+                  onChange={(e) => handleFilterChange('approval', e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
                 >
                   <option value="all">All Approval</option>
@@ -330,7 +277,7 @@ export default function Users() {
               {/* Results Count */}
               <div className="lg:ml-auto">
                 <div className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-semibold text-sm text-center lg:text-left">
-                  {filteredUsers.length} of {users.length} users
+                  {pagination.total} users
                 </div>
               </div>
             </div>
@@ -339,16 +286,7 @@ export default function Users() {
 
         {/* Loading State Inside Table */}
         {loading ? (
-          <div className="p-12">
-            <div className="text-center">
-              <motion.div 
-                className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              />
-              <p className="mt-4 text-gray-600 font-medium">Loading users...</p>
-            </div>
-          </div>
+          <TableSkeleton rows={8} />
         ) : (
           <>
             {/* Desktop Table View */}
@@ -356,7 +294,7 @@ export default function Users() {
               <table className="w-full divide-y divide-gray-200" style={{ minWidth: '1000px' }}>
                 <thead className="bg-linear-to-r from-gray-50 to-gray-100">
                 <tr>
-                  <th className="px-3 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap sticky left-0 bg-gray-50 z-10" style={{ minWidth: '50px' }}>No.</th>
+                  <th className="px-3 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap sticky left-0 bg-gray-50 z-10" style={{ minWidth: '20px' }}>No.</th>
                   <th className="px-4 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '180px' }}>Name</th>
                   <th className="px-4 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '220px' }}>Contact</th>
                   <th className="px-4 py-6 text-center text-sm font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap" style={{ minWidth: '200px' }}>Company</th>
@@ -368,7 +306,7 @@ export default function Users() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 <AnimatePresence>
-                  {filteredUsers.length === 0 ? (
+                  {users.length === 0 ? (
                     <motion.tr
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -391,7 +329,7 @@ export default function Users() {
                       </td>
                     </motion.tr>
                   ) : (
-                    filteredUsers.map((user, index) => (
+                    users.map((user, index) => (
                     <motion.tr 
                       key={user._id} 
                       className="hover:bg-green-50 transition-colors duration-150"
@@ -401,7 +339,7 @@ export default function Users() {
                       transition={{ delay: index * 0.05, duration: 0.3 }}
                     >
                     <td className="px-3 py-3 whitespace-nowrap sticky left-0 bg-white hover:bg-green-50 z-10">
-                      <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-linear-to-br from-green-100 to-emerald-100 text-sm font-bold text-[#306B25]">
+                      <span className="inline-flex items-center justify-center text-sm font-bold">
                         {index + 1}
                       </span>
                     </td>
@@ -540,7 +478,7 @@ export default function Users() {
           {/* Mobile Card View */}
           <div className="lg:hidden space-y-4">
             <AnimatePresence>
-              {filteredUsers.length === 0 ? (
+              {users.length === 0 ? (
                 <motion.div
                   className="text-center py-12"
                   initial={{ opacity: 0 }}
@@ -562,7 +500,7 @@ export default function Users() {
                   </div>
                 </motion.div>
               ) : (
-                filteredUsers.map((user, index) => (
+                users.map((user, index) => (
                   <motion.div
                     key={user._id}
                     className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
@@ -715,6 +653,17 @@ export default function Users() {
           </div>
           </>
         )}
+        
+        {/* Pagination */}
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.total}
+          itemsPerPage={pagination.limit}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+          loading={loading}
+        />
       </motion.div>
 
       {/* User Verification Modal */}
@@ -723,7 +672,7 @@ export default function Users() {
         onClose={cancelManualVerification}
         onConfirm={confirmManualVerification}
         userEmail={verifyUserEmail}
-        isVerifying={isVerifying}
+        isVerifying={verifyEmailMutation.isPending}
       />
  {/* Success Modal */}
       <UserActionSuccessModal 
@@ -738,7 +687,7 @@ export default function Users() {
         onClose={cancelDeleteUser}
         onConfirm={confirmDeleteUser}
         userName={deleteUserName}
-        isDeleting={isDeleting}
+        isDeleting={deleteUserHook.isPending}
       />
  {/* Delete Success Modal */}
       <UserDeleteSuccessModal 

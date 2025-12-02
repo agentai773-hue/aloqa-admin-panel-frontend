@@ -1,47 +1,84 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { assistantsAPI } from '../../api';
 import { type User, type Assistant } from '../../api';
-import { Eye, Edit, Trash2, Search, X, AlertTriangle, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useSearchDebounce } from '../../hooks/useDebounce';
+import { useAssistants } from '../../hooks/useAssistants';
+import { Eye, Edit, Trash2, Search, X, AlertTriangle } from 'lucide-react';
+import { TableSkeleton } from '../ui/SkeletonLoader';
+import Pagination from '../ui/Pagination';
 
 interface AssistantTableProps {
-  assistants: Assistant[];
   users: User[];
-  isLoading: boolean;
 }
 
-export default function AssistantTable({ assistants, users, isLoading }: AssistantTableProps) {
+export default function AssistantTable({ users }: AssistantTableProps) {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Pagination and search states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(() => {
+    const screenHeight = window.innerHeight;
+    if (screenHeight < 768) return 7; // Mobile
+    if (screenHeight < 1024) return 7; // Tablet  
+    return 10; // Desktop - can handle up to 100 items
+  });
   const [selectedUserId, setSelectedUserId] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [agentTypeFilter, setAgentTypeFilter] = useState<string>('');
+
+  // Debounced search
+  const { searchValue, debouncedValue: searchQuery, setSearchValue } = useSearchDebounce('', 500);
+
+  // Use the new useAssistants hook with pagination
+  const {
+    assistants,
+    pagination,
+    isLoading,
+    deleteAssistant: deleteAssistantHook
+  } = useAssistants({
+    enabled: true,
+    page: currentPage,
+    limit: itemsPerPage,
+    search: searchQuery,
+    userId: selectedUserId || undefined,
+    status: statusFilter || undefined,
+    agentType: agentTypeFilter || undefined,
+  });
+
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; assistant: Assistant | null }>({
     open: false,
     assistant: null
   });
 
-  // Delete mutation
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => assistantsAPI.deleteAssistant(id),
-    onSuccess: () => {
-      toast.success('Assistant deleted successfully from database and Bolna AI!');
-      queryClient.invalidateQueries({ queryKey: ['assistants'] });
-      setDeleteModal({ open: false, assistant: null });
-    },
-    onError: (error: unknown) => {
-      const message = (error as { response?: { data?: { message?: string } }; message?: string })?.response?.data?.message 
-        || (error as { message?: string })?.message 
-        || 'Failed to delete assistant';
-      toast.error(message);
+  // Pagination handlers
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (filterType: 'user' | 'status' | 'agentType', value: string) => {
+    if (filterType === 'user') {
+      setSelectedUserId(value);
+    } else if (filterType === 'status') {
+      setStatusFilter(value);
+    } else {
+      setAgentTypeFilter(value);
     }
-  });
+    setCurrentPage(1); // Reset to first page when filtering
+  };
 
   const handleDelete = () => {
     if (deleteModal.assistant) {
-      deleteMutation.mutate(deleteModal.assistant._id);
+      deleteAssistantHook.mutate(deleteModal.assistant._id, {
+        onSuccess: () => {
+          setDeleteModal({ open: false, assistant: null });
+        }
+      });
     }
   };
 
@@ -52,29 +89,6 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
   const closeDeleteModal = () => {
     setDeleteModal({ open: false, assistant: null });
   };
-
-  // Filter assistants based on search and user selection
-  const filteredAssistants = assistants.filter((assistant) => {
-    const query = searchQuery.toLowerCase();
-    const user = typeof assistant.userId === 'object' ? assistant.userId : null;
-    const userName = user ? `${user.firstName} ${user.lastName}`.toLowerCase() : '';
-    const userEmail = user?.email.toLowerCase() || '';
-    
-    // Search filter
-    const matchesSearch = !searchQuery || (
-      assistant.agentName.toLowerCase().includes(query) ||
-      assistant.agentType.toLowerCase().includes(query) ||
-      assistant.status.toLowerCase().includes(query) ||
-      userName.includes(query) ||
-      userEmail.includes(query) ||
-      assistant.agentId?.toLowerCase().includes(query)
-    );
-    
-    // User filter
-    const matchesUser = !selectedUserId || (user && user._id === selectedUserId);
-    
-    return matchesSearch && matchesUser;
-  });
 
   const getStatusBadge = (status: string) => {
     const statusColors = {
@@ -87,11 +101,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#5DD149]" />
-      </div>
-    );
+    return <TableSkeleton rows={6} />;
   }
 
   return (
@@ -113,13 +123,13 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                 <input
                   type="text"
                   placeholder="Search by name, type, status, user, email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                 />
-                {searchQuery && (
+                {searchValue && (
                   <button
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => setSearchValue('')}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     <X className="h-5 w-5" />
@@ -134,27 +144,36 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
               <div className="flex-1 lg:min-w-[200px]">
                 <select
                   value={selectedUserId}
-                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  onChange={(e) => handleFilterChange('user', e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
                 >
                   <option value="">All Users</option>
-                  {users.map((user) => {
-                    const userAssistantsCount = assistants.filter(
-                      (assistant) => typeof assistant.userId === 'object' && assistant.userId._id === user._id
-                    ).length;
-                    return (
-                      <option key={user._id} value={user._id}>
-                        {user.firstName} {user.lastName} ({userAssistantsCount})
-                      </option>
-                    );
-                  })}
+                  {users.map((user) => (
+                    <option key={user._id} value={user._id}>
+                      {user.firstName} {user.lastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex-1 lg:min-w-[150px]">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => handleFilterChange('status', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white"
+                >
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
+                  <option value="inactive">Inactive</option>
                 </select>
               </div>
 
               {/* Results Count */}
               <div className="lg:ml-auto">
                 <div className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-semibold text-sm text-center lg:text-left">
-                  {filteredAssistants.length} of {assistants.length} assistants
+                  {pagination.total} assistants
                 </div>
               </div>
             </div>
@@ -177,7 +196,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredAssistants.length === 0 ? (
+              {assistants.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-6 py-12 text-center">
                     <motion.div 
@@ -194,7 +213,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                   </td>
                 </tr>
               ) : (
-                filteredAssistants.map((assistant, index) => {
+                assistants.map((assistant, index) => {
                   const user = typeof assistant.userId === 'object' ? assistant.userId : null;
                   return (
                     <motion.tr 
@@ -206,7 +225,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                       whileHover={{ scale: 1.001 }}
                     >
                       <td className="px-4 py-3 whitespace-nowrap text-center">
-                        <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gradient-to-br from-[#5DD149]/20 to-[#306B25]/20 text-sm font-bold text-[#306B25]">
+                        <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-linear-to-br from-[#5DD149]/20 to-[#306B25]/20 text-sm font-bold text-[#306B25]">
                           {index + 1}
                         </span>
                       </td>
@@ -304,7 +323,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
         {/* Mobile Card View */}
         <div className="lg:hidden space-y-4 p-4">
           <AnimatePresence>
-            {filteredAssistants.length === 0 ? (
+            {assistants.length === 0 ? (
               <motion.div
                 className="text-center py-12"
                 initial={{ opacity: 0 }}
@@ -320,7 +339,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                 </div>
               </motion.div>
             ) : (
-              filteredAssistants.map((assistant, index) => {
+              assistants.map((assistant, index) => {
                 const user = typeof assistant.userId === 'object' ? assistant.userId : null;
                 return (
                   <motion.div
@@ -410,6 +429,17 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
             )}
           </AnimatePresence>
         </div>
+        
+        {/* Pagination */}
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.total}
+          itemsPerPage={pagination.limit}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+          loading={isLoading}
+        />
       </motion.div>
 
       {/* Delete Confirmation Modal */}
@@ -429,7 +459,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               {/* Header */}
-              <div className="p-6 bg-gradient-to-r from-red-500 to-red-600 text-white">
+              <div className="p-6 bg-linear-to-r from-red-500 to-red-600 text-white">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
                     <AlertTriangle className="h-8 w-8 text-white" />
@@ -444,7 +474,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                   Are you sure you want to delete <strong className="text-gray-900">"{deleteModal.assistant.agentName}"</strong>?
                 </p>
                 
-                <div className="bg-gradient-to-r from-red-50 to-red-100/50 border-2 border-red-300 rounded-xl p-4 mb-6">
+                <div className="bg-linear-to-r from-red-50 to-red-100/50 border-2 border-red-300 rounded-xl p-4 mb-6">
                   <p className="text-sm text-red-800 font-bold flex items-center gap-2">
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -460,7 +490,7 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                 <div className="flex gap-3">
                   <motion.button
                     onClick={closeDeleteModal}
-                    disabled={deleteMutation.isPending}
+                    disabled={deleteAssistantHook.isPending}
                     className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-all disabled:opacity-50"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -469,14 +499,14 @@ export default function AssistantTable({ assistants, users, isLoading }: Assista
                   </motion.button>
                   <motion.button
                     onClick={handleDelete}
-                    disabled={deleteMutation.isPending}
+                    disabled={deleteAssistantHook.isPending}
                     className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {deleteMutation.isPending ? (
+                    {deleteAssistantHook.isPending ? (
                       <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Deleting...
                       </>
                     ) : (

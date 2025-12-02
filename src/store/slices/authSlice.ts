@@ -48,23 +48,17 @@ export const loginAdmin = createAsyncThunk(
   'auth/loginAdmin',
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      console.log('🚀 Starting login process with credentials:', { email: credentials.email });
       const response = await adminAuthAPI.login(credentials);
-      console.log('✅ Login successful:', response);
       return response;
     } catch (error: unknown) {
       console.error('❌ Login failed with error:', error);
       const errorMessage = (error as Error)?.message?.toLowerCase() || '';
-      console.log('🔍 Processing error message:', errorMessage);
       
       if (errorMessage.includes('email') || errorMessage.includes('not found')) {
-        console.log('📧 Email error detected');
         return rejectWithValue({ email: 'Email not found. Please check your email address.' });
       } else if (errorMessage.includes('password') || errorMessage.includes('incorrect')) {
-        console.log('🔑 Password error detected');
         return rejectWithValue({ password: 'Password is incorrect. Please check.' });
       } else {
-        console.log('⚠️ General error detected');
         return rejectWithValue({ general: (error as Error)?.message || 'Login failed. Please try again.' });
       }
     }
@@ -90,16 +84,10 @@ export const initializeAuth = createAsyncThunk(
     try {
       const state = getState() as { auth: AuthState };
       
-      console.log('🚀 Initializing auth...', {
-        isInitialized: state.auth.isInitialized,
-        isLoading: state.auth.isLoading,
-        isAuthenticated: state.auth.isAuthenticated,
-        hasUser: !!state.auth.user
-      });
+ 
       
       // Don't initialize if already initialized or currently loading
       if (state.auth.isInitialized || state.auth.isLoading) {
-        console.log('⏩ Skipping auth init - already initialized or loading');
         return state.auth.user;
       }
       
@@ -107,19 +95,15 @@ export const initializeAuth = createAsyncThunk(
       const hasStoredAuth = adminAuthAPI.isAuthenticated();
       const storedAdmin = adminAuthAPI.getStoredAdmin();
       
-      console.log('🔍 Has stored auth:', hasStoredAuth, 'Stored admin:', !!storedAdmin);
       
       // If we have both cookie and stored admin data
       if (hasStoredAuth && storedAdmin) {
         try {
           // Verify the token is still valid
-          console.log('🔍 Verifying stored token...');
           const verifyResult = await adminAuthAPI.verifyToken();
-          console.log('✅ Verification result:', verifyResult);
           
           if (verifyResult.valid && verifyResult.admin) {
             // Token valid, return updated admin data
-            console.log('✅ Token valid, user authenticated');
             return verifyResult.admin;
           } else {
             // Token invalid, clear auth data
@@ -135,13 +119,11 @@ export const initializeAuth = createAsyncThunk(
         }
       } else {
         // No cookies or incomplete data - clear everything
-        console.log('❌ No complete auth data found - clearing state');
         if (hasStoredAuth) {
           adminAuthAPI.clearAuth(); // Clear cookies if they exist
         }
       }
       
-      console.log('📤 Auth initialization complete - no user authenticated');
       return null;
     } catch (error: unknown) {
       console.error('💥 Auth initialization error:', error);

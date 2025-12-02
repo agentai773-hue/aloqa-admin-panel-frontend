@@ -35,15 +35,11 @@ export function useAuth() {
 
   const login = async (email: string, password: string) => {
     try {
-      console.log('🚀 useAuth: Starting login with:', { email });
       const result = await dispatch(loginAdmin({ email, password }));
-      console.log('🔍 useAuth: Login dispatch result:', result);
       
       if (loginAdmin.fulfilled.match(result)) {
-        console.log('✅ useAuth: Login successful');
         return true;
       } else {
-        console.log('❌ useAuth: Login failed', result);
         return false;
       }
     } catch (error) {

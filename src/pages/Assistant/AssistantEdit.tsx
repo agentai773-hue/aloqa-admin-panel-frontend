@@ -4,7 +4,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { assistantsAPI, usersAPI } from '../../api';
 import type { CreateAssistantData, User } from '../../api';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Loader2, Save, Eye } from 'lucide-react';
+import { ArrowLeft, Save, Eye } from 'lucide-react';
+import { FormSkeleton } from '../../components/ui/SkeletonLoader';
 
 export default function AssistantEdit() {
   const { id } = useParams<{ id: string }>();
@@ -157,7 +158,6 @@ export default function AssistantEdit() {
         routes: assistant.routes || []
       });
       
-      console.log('✅ Assistant data loaded from database:', assistant);
     }
   }, [assistant]);
 
@@ -201,8 +201,12 @@ export default function AssistantEdit() {
 
   if (isLoading || loadingUsers) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-12 w-12 animate-spin text-[#5DD149]" />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <FormSkeleton />
+          </div>
+        </div>
       </div>
     );
   }
@@ -819,7 +823,7 @@ export default function AssistantEdit() {
               >
                 {updateMutation.isPending ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Updating...
                   </>
                 ) : (

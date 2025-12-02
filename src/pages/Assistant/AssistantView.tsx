@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { assistantsAPI } from '../../api';
-import { ArrowLeft, Loader2, Edit, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Edit, CheckCircle2 } from 'lucide-react';
+import { FormSkeleton } from '../../components/ui/SkeletonLoader';
 import type { User } from '../../api';
 
 export default function AssistantView() {
@@ -18,8 +19,12 @@ export default function AssistantView() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-12 w-12 animate-spin text-[#5DD149]" />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <FormSkeleton />
+          </div>
+        </div>
       </div>
     );
   }

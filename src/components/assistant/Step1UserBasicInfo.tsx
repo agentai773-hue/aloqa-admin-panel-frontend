@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react';
+import { ListItemSkeleton } from '../ui/SkeletonLoader';
 import type { User, CreateAssistantData } from '../../api';
 import { AGENT_TYPES, SYSTEM_PROMPT_TEMPLATES } from '../../data/assistantOptions';
 
@@ -57,9 +57,10 @@ export default function Step1UserBasicInfo({
             Select User * <span className="text-xs font-normal text-gray-500">(Only approved users with Bearer Token)</span>
           </label>
           {loadingUsers ? (
-            <div className="flex items-center justify-center py-12 bg-[#5DD149]/5 rounded-lg">
-              <Loader2 className="h-8 w-8 animate-spin text-[#5DD149]" />
-              <span className="ml-3 text-[#306B25]">Loading users...</span>
+            <div className="space-y-2">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <ListItemSkeleton key={index} />
+              ))}
             </div>
           ) : approvedUsersWithToken.length === 0 ? (
             <div className="bg-amber-50 border-l-4 border-amber-400 rounded-lg p-4">

@@ -115,23 +115,43 @@ export interface Assistant {
   updatedAt: string;
 }
 
+export interface AssistantsListResponse {
+  assistants: Assistant[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface GetAssistantsParams {
+  page?: number;
+  limit?: number;
+  userId?: string;
+  status?: string;
+  search?: string;
+  agentType?: string;
+}
+
 export const assistantsAPI = {
   createAssistant: async (data: CreateAssistantData) => {
     return apiClient.post<Assistant>('/assistants', data as unknown as Record<string, unknown>);
   },
 
-  getAllAssistants: async (userId?: string, status?: string) => {
+  getAllAssistants: async (params?: GetAssistantsParams) => {
     let endpoint = '/assistants';
     const queryParams = new URLSearchParams();
     
-    if (userId) queryParams.append('userId', userId);
-    if (status) queryParams.append('status', status);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.userId) queryParams.append('userId', params.userId);
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.search) queryParams.append('search', params.search);
+    if (params?.agentType) queryParams.append('agentType', params.agentType);
     
     if (queryParams.toString()) {
       endpoint += `?${queryParams.toString()}`;
     }
     
-    return apiClient.get<Assistant[]>(endpoint);
+    return apiClient.get<AssistantsListResponse>(endpoint);
   },
 
   getAssistantById: async (id: string) => {

@@ -97,7 +97,6 @@ export default function AssistantCreate() {
       call_terminate: undefined // Optional - user must select
     }
   });
-  console.log('Form Data:', formData);
 
   // Create mutation
   const createMutation = useMutation({

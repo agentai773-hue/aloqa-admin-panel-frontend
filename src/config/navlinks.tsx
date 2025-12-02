@@ -8,6 +8,7 @@ import {
   Phone,
   PhoneOutgoing,
   Mic,
+  UserCheck,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -56,5 +57,10 @@ export const navigationItems: NavItem[] = [
     name: 'Voice Library',
     href: '/voices',
     icon: <Mic className="h-5 w-5" />
+  },
+  {
+    name: 'Voice Assignments',
+    href: '/voice-assignments',
+    icon: <UserCheck className="h-5 w-5" />
   },
 ];

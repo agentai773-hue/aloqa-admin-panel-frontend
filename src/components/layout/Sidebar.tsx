@@ -166,8 +166,6 @@ function SidebarContent() {
                     src="/logo.svg" 
                     alt="Aloqa AI Logo" 
                     className="h-12 sm:h-16 lg:h-20 w-20 sm:w-25 lg:w-30 object-contain"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400 }}
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
@@ -176,16 +174,11 @@ function SidebarContent() {
               ) : (
                 // Only show logo on desktop when sidebar is closed, hide on mobile
                 windowWidth >= 1024 && (
-                  <motion.img 
+                  <img 
                     key="logo-closed"
                     src="/logo.png" 
                     alt="Logo" 
-                    className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 object-contain mx-auto"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    whileHover={{ scale: 1.05, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 400 }}
+                    className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 object-contain mx-auto transition-opacity duration-300"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
@@ -197,16 +190,13 @@ function SidebarContent() {
             {/* Toggle Button */}
             <motion.button
               onClick={toggleSidebar}
-              className="hidden lg:flex items-center justify-center p-2.5 rounded-xl text-gray-700 hover:bg-gray-100"
+              className="hidden lg:flex items-center justify-center p-2.5 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors"
               title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
-              whileHover={{ scale: 1.05, rotate: 90 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400 }}
             >
               <div className="relative w-5 h-5">
                 {isSidebarOpen ? (
                   <svg 
-                    className="w-5 h-5 transition-all duration-300 group-hover:scale-110" 
+                    className="w-5 h-5 transition-colors duration-300" 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -220,7 +210,7 @@ function SidebarContent() {
                   </svg>
                 ) : (
                   <svg 
-                    className="w-5 h-5 transition-all duration-300 group-hover:scale-110" 
+                    className="w-5 h-5 transition-colors duration-300" 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -233,13 +223,10 @@ function SidebarContent() {
                     />
                   </svg>
                 )}
-                {/* Pulse effect on hover */}
-                <motion.div 
-                  className="absolute inset-0 rounded-full bg-green-300/30"
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileHover={{ scale: 1.5, opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                ></motion.div>
+                {/* Simple hover effect instead of pulse */}
+                <div 
+                  className="absolute inset-0 rounded-full bg-green-300/30 opacity-0 hover:opacity-100 transition-opacity"
+                ></div>
               </div>
             </motion.button>
           </motion.div>
@@ -281,22 +268,17 @@ function SidebarContent() {
                       } text-sm sm:text-base font-medium rounded-lg sm:rounded-xl relative ${
                         isActive
                           ? 'text-white shadow-lg shadow-green-500/30'
-                          : 'text-gray-700 hover:text-gray-900 hover:bg-green-50'
+                          : 'text-gray-700 hover:text-gray-900 hover:bg-green-50 transition-colors'
                       }`}
                       style={isActive ? {
                         background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
                       } : {}}
-                      whileHover={{ scale: 1.05, x: 2 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: "spring", stiffness: 400 }}
                     >
-                      <motion.div 
+                      <div 
                         className={`transition-colors ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-[#5DD149]'}`}
-                        whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                        transition={{ duration: 0.5 }}
                       >
                         <div className="h-6 w-6 sm:h-7 sm:w-7">{item.icon}</div>
-                      </motion.div>
+                      </div>
                       <AnimatePresence>
                         {isSidebarOpen && (
                           <motion.span 
@@ -342,19 +324,14 @@ function SidebarContent() {
                     ? 'px-3 sm:px-4 lg:px-4 py-3 sm:py-3' 
                     : 'px-1 sm:px-2 lg:px-3 py-2 sm:py-3 justify-center'
                 } text-sm sm:text-base font-medium rounded-lg sm:rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors`}
-                whileHover={{ scale: 1.05, x: 5 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400 }}
               >
-                <motion.div 
+                <div 
                   className="transition-colors"
-                  whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                  transition={{ duration: 0.5 }}
                 >
                   <svg className="h-6 w-6 sm:h-7 sm:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                </motion.div>
+                </div>
                 <AnimatePresence>
                   {isSidebarOpen && (
                     <motion.span 
@@ -428,11 +405,8 @@ function SidebarContent() {
               <div className="flex items-center space-x-2 sm:space-x-4">
                 <motion.button
                   onClick={toggleSidebar}
-                  className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
+                  className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   title="Toggle Menu"
-                  whileHover={{ scale: 1.05, rotate: 45 }}
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400 }}
                 >
                   <svg 
                     className="w-6 h-6" 
@@ -463,16 +437,14 @@ function SidebarContent() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
                 >
-                  <motion.h1 
+                  <h1 
                     className="text-lg sm:text-xl lg:text-2xl font-bold bg-clip-text text-transparent" 
                     style={{
                       backgroundImage: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
                     }}
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 400 }}
                   >
                     {pageHeader.title}
-                  </motion.h1>
+                  </h1>
                   <motion.p 
                     className="text-xs sm:text-sm text-gray-500 hidden sm:block"
                     initial={{ opacity: 0 }}
@@ -487,24 +459,14 @@ function SidebarContent() {
               {/* Header actions */}
               <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
                 {/* Connection Status Indicator */}
-                <motion.div 
-                  className={`hidden md:flex items-center space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg ${
+                <div 
+                  className={`hidden md:flex items-center space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-colors duration-300 ${
                     isOnline 
                       ? 'bg-green-50 text-green-700' 
                       : 'bg-red-50 text-red-700'
                   }`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
                 >
-                  <motion.div
-                    animate={isOnline ? { scale: [1, 1.1, 1] } : { scale: [1, 0.9, 1] }}
-                    transition={{ 
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
+                  <div>
                     {isOnline ? (
                       <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
@@ -514,39 +476,28 @@ function SidebarContent() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636L5.636 18.364M8.111 16.404a5.5 5.5 0 010-7.778M12 20h.01M1.394 9.393L18.364 5.636" />
                       </svg>
                     )}
-                  </motion.div>
+                  </div>
                   <span className="text-xs font-medium hidden sm:inline">
                     {isOnline ? 'Online' : 'Offline'}
                   </span>
-                </motion.div>
+                </div>
 
                 {/* Notifications */}
-                <motion.button 
-                  className="relative p-1.5 sm:p-2 text-gray-400 hover:text-[#5DD149] hover:bg-green-50 rounded-lg"
-                  whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400 }}
+                <button 
+                  className="relative p-1.5 sm:p-2 text-gray-400 hover:text-[#5DD149] hover:bg-green-50 rounded-lg transition-colors"
                 >
-                  <motion.svg 
+                  <svg 
                     className="h-5 w-5 sm:h-6 sm:w-6" 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
-                    whileHover={{ scale: 1.05 }}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </motion.svg>
-                  <motion.span 
+                  </svg>
+                  <span 
                     className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 h-2 w-2 bg-red-500 rounded-full"
-                    animate={{ scale: [1, 1.2] }}
-                    transition={{ 
-                      repeat: Infinity, 
-                      duration: 1,
-                      repeatType: "reverse",
-                      ease: "easeInOut"
-                    }}
-                  ></motion.span>
-                </motion.button>
+                  ></span>
+                </button>
                 
                 {/* Admin label */}
                 <div className="relative" ref={dropdownRef}>
@@ -561,27 +512,18 @@ function SidebarContent() {
                       <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
                       <div className="text-xs text-gray-500">Online</div>
                     </div>
-                    <motion.div 
+                    <div 
                       className="relative"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 400 }}
                     >
                       <div className="h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 bg-gray-800 rounded-full flex items-center justify-center shadow-md hover:bg-gray-700 transition-colors">
                         <span className="text-xs sm:text-sm font-semibold text-white">
                           {user?.name?.charAt(0).toUpperCase() || 'A'}
                         </span>
                       </div>
-                      <motion.div 
+                      <div 
                         className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 bg-green-400 rounded-full border-2 border-white"
-                        animate={{ scale: [1, 1.2] }}
-                        transition={{ 
-                          repeat: Infinity, 
-                          duration: 1,
-                          repeatType: "reverse",
-                          ease: "easeInOut"
-                        }}
-                      ></motion.div>
-                    </motion.div>
+                      ></div>
+                    </div>
                   </motion.div>
 
                   {/* Profile Dropdown */}
@@ -637,16 +579,13 @@ function SidebarContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
         >
-          <motion.div 
+          <div 
             className="bg-white min-h-[calc(100vh-120px)] sm:min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-200px)] rounded-lg lg:rounded-xl m-3 sm:m-4 lg:m-6 xl:m-8"
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
           >
             <div className="p-3 sm:p-4 lg:p-6 xl:p-8 overflow-x-hidden">
               <Outlet />
             </div>
-          </motion.div>
+          </div>
         </motion.main>
       </motion.div>
 

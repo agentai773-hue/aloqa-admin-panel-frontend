@@ -63,9 +63,7 @@ export const adminAuthAPI = {
     }
 
     try {
-      console.log('🔍 Making verification request to /admin/auth/verify');
       const response = await apiClient.get<VerifyTokenResponse>('/admin/auth/verify');
-      console.log('✅ Verification response:', response);
       return response.data || { valid: false };
     } catch (error) {
       console.error('❌ Token verification failed:', error);

@@ -9,5 +9,11 @@ export default defineConfig({
     host: '0.0.0.0', // Allow access from network
     port: 5173,
     strictPort: true,
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080',
+        changeOrigin: true,
+      }
+    }
   }
 })

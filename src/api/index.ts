@@ -9,7 +9,7 @@ export type { LoginCredentials, AdminUser, AuthResponse, VerifyTokenResponse } f
 // Users module
 export { usersAPI } from './users';
 
-export type { User, CreateUserData, UpdateUserData, UsersListResponse, UserStatsResponse, DeleteUserResponse } from './users';
+export type { User, CreateUserData, UpdateUserData, UsersListResponse, UserStatsResponse, DeleteUserResponse, GetUsersParams } from './users';
 
 // Assistants module
 export { assistantsAPI } from './assistants';
@@ -18,6 +18,8 @@ export type {
   CreateAssistantData, 
   Route, 
   LLMConfig, 
+  AssistantsListResponse,
+  GetAssistantsParams, 
   SynthesizerConfig, 
   SynthesizerProviderConfig, 
   TranscriberConfig, 
@@ -36,6 +38,14 @@ export type {
   PurchasedNumber,
   AssignedPhoneNumber
 } from './phoneNumbers';
+
+// Voices module
+export { voiceApi } from './voices';
+export type { 
+  Voice,
+  VoiceResponse,
+  VoiceDetailResponse
+} from './voices';
 
 // Verification module
 export { verifyAPI } from './verify';

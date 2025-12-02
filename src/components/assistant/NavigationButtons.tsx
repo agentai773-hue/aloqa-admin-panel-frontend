@@ -1,4 +1,4 @@
-import { Loader2, Check, ChevronRight } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 
 interface NavigationButtonsProps {
   currentStep: number;
@@ -72,7 +72,7 @@ export default function NavigationButtons({
               <div className="relative flex items-center gap-2">
                 {isPending ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     <span className="hidden sm:inline">Creating Assistant...</span>
                     <span className="sm:hidden">Creating...</span>
                   </>

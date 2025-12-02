@@ -9,6 +9,9 @@ Your admin panel was showing a 404 NOT_FOUND error on Vercel because React SPAs 
 #### 1. **vercel.json** - Main Vercel Configuration
 ```json
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",
@@ -42,15 +45,13 @@ Your admin panel was showing a 404 NOT_FOUND error on Vercel because React SPAs 
         }
       ]
     }
-  ],
-  "functions": {
-    "src/**": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
 ```
-**Purpose**: Tells Vercel to serve `index.html` for all routes so React Router can handle client-side navigation.
+**Purpose**: 
+- Tells Vercel to serve `index.html` for all routes so React Router can handle client-side navigation
+- Specifies correct build command and output directory
+- Removes invalid `functions` configuration that was causing build errors
 
 #### 2. **public/_redirects** - Fallback Configuration
 ```

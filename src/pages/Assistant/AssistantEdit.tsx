@@ -6,11 +6,16 @@ import type { CreateAssistantData, User } from '../../api';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
 import { FormSkeleton } from '../../components/ui/SkeletonLoader';
+import { AssistantUpdateSuccessModal } from '../../components/modals/assistantModals';
+import { Step3VoiceSynthesizer } from '../../components/assistant';
 
 export default function AssistantEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  // Modal state
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Fetch assistant data
   const { data: assistantResponse, isLoading } = useQuery({
@@ -20,6 +25,11 @@ export default function AssistantEdit() {
   });
 
   const assistant = assistantResponse?.data;
+
+  // Create selectedUserIds array from current assistant user
+  const selectedUserIds: string[] = assistant?.userId 
+    ? [typeof assistant.userId === 'string' ? assistant.userId : assistant.userId._id]
+    : [];
 
   // Fetch approved users
   const { data: usersResponse, isLoading: loadingUsers } = useQuery({
@@ -174,7 +184,7 @@ export default function AssistantEdit() {
       toast.success('Assistant updated successfully!');
       queryClient.invalidateQueries({ queryKey: ['assistants'] });
       queryClient.invalidateQueries({ queryKey: ['assistant', id] });
-      navigate(`/assistants/${id}/view`);
+      setShowSuccessModal(true);
     },
     onError: (error: unknown) => {
       const errorResponse = (error as { response?: { data?: { message?: string; errorDetail?: string } } })?.response?.data;
@@ -418,17 +428,35 @@ export default function AssistantEdit() {
                   </label>
                   <textarea
                     required
-                    rows={100}
                     value={formData.systemPrompt}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setFormData({
                         ...formData,
                         systemPrompt: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-[#5DD149] hover:border-gray-400 focus:ring-4 focus:ring-green-100 rounded-xl focus:outline-none transition-all duration-200"
+                      });
+                      // Auto-resize textarea based on content
+                      const textarea = e.target;
+                      textarea.style.height = 'auto';
+                      textarea.style.height = Math.max(120, Math.min(400, textarea.scrollHeight)) + 'px';
+                    }}
+                    onInput={(e) => {
+                      // Auto-resize on any input
+                      const textarea = e.target as HTMLTextAreaElement;
+                      textarea.style.height = 'auto';
+                      textarea.style.height = Math.max(120, Math.min(400, textarea.scrollHeight)) + 'px';
+                    }}
+                    style={{
+                      minHeight: '120px',
+                      maxHeight: '400px',
+                      height: 'auto',
+                      resize: 'vertical'
+                    }}
+                    className="w-full px-4 py-3.5 border-2 border-gray-300 focus:border-[#5DD149] hover:border-gray-400 focus:ring-4 focus:ring-green-100 rounded-xl focus:outline-none transition-all duration-200 overflow-y-auto"
                     placeholder="You are a helpful assistant..."
                   />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Textarea automatically adjusts height based on content (min: 120px, max: 400px)
+                  </p>
                 </div>
               </div>
             </div>
@@ -531,84 +559,11 @@ export default function AssistantEdit() {
           </div>
 
           {/* Voice Synthesizer */}
-          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Voice Synthesizer</h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
-                  <select
-                    value={formData.synthesizerConfig.provider}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      synthesizerConfig: { ...formData.synthesizerConfig, provider: e.target.value }
-                    })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
-                  >
-                    <option value="polly">Amazon Polly</option>
-                    <option value="elevenlabs">ElevenLabs</option>
-                    <option value="deepgram">Deepgram</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Voice</label>
-                  <input
-                    type="text"
-                    value={formData.synthesizerConfig.provider_config?.voice || ''}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      synthesizerConfig: {
-                        ...formData.synthesizerConfig,
-                        provider_config: {
-                          ...(formData.synthesizerConfig.provider_config || {}),
-                          voice: e.target.value
-                        }
-                      }
-                    })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Language</label>
-                  <input
-                    type="text"
-                    value={formData.synthesizerConfig.provider_config?.language || ''}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      synthesizerConfig: {
-                        ...formData.synthesizerConfig,
-                        provider_config: {
-                          ...(formData.synthesizerConfig.provider_config || {}),
-                          language: e.target.value
-                        }
-                      }
-                    })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Sampling Rate</label>
-                  <input
-                    type="text"
-                    value={formData.synthesizerConfig.provider_config?.sampling_rate || ''}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      synthesizerConfig: {
-                        ...formData.synthesizerConfig,
-                        provider_config: {
-                          ...(formData.synthesizerConfig.provider_config || {}),
-                          sampling_rate: e.target.value
-                        }
-                      }
-                    })}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <Step3VoiceSynthesizer 
+            formData={formData} 
+            setFormData={setFormData}
+            selectedUserIds={selectedUserIds}
+          />
 
           {/* Transcriber */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
@@ -789,7 +744,7 @@ export default function AssistantEdit() {
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#5DD149]"
                 />
               </div>
-              <div className="flex items-center gap-3">
+              {/* <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   id="backchanneling"
@@ -803,7 +758,7 @@ export default function AssistantEdit() {
                 <label htmlFor="backchanneling" className="text-sm font-semibold text-gray-700">
                   Enable Backchanneling
                 </label>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -851,6 +806,14 @@ export default function AssistantEdit() {
           </p>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <AssistantUpdateSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        assistantName={formData.agentName}
+        formData={formData}
+      />
     </div>
   );
 }

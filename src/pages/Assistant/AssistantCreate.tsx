@@ -14,6 +14,7 @@ import {
   Step5TaskConfig,
   NavigationButtons
 } from '../../components/assistant';
+import { AssistantCreateSuccessModal } from '../../components/modals/assistantModals';
 
 export default function AssistantCreate() {
   const navigate = useNavigate();
@@ -361,12 +362,7 @@ export default function AssistantCreate() {
               transition={{ delay: 0.3 }}
             >
               <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="relative">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
-                    <span className="text-white font-bold text-base sm:text-lg drop-shadow-sm">{currentStep}</span>
-                  </div>
-                  <div className="absolute inset-0 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-xl sm:rounded-2xl opacity-30 blur-md"></div>
-                </div>
+        
                 <div className="flex-1">
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-[#306B25] to-[#5DD149] bg-clip-text text-transparent">
                     {currentStep === 1 && "User Selection & Basic Info"}
@@ -531,119 +527,12 @@ export default function AssistantCreate() {
       </div>
 
       {/* Success Modal */}
-      <AnimatePresence>
-        {showSuccessModal && (
-          <motion.div 
-            className="fixed inset-0 z-50 overflow-y-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-              {/* Background overlay */}
-              <motion.div 
-                className="fixed inset-0 transition-opacity bg-black bg-opacity-50"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => {
-                  setShowSuccessModal(false);
-                  navigate('/assistant');
-                }}
-              />
-
-              {/* Modal panel */}
-              <motion.div 
-                className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                initial={{ scale: 0.9, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 20 }}
-              >
-                {/* Green gradient header */}
-                <div className="px-6 py-8 text-center" style={{ background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)' }}>
-                  <motion.div 
-                    className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-white/20 backdrop-blur-sm mb-4 border-4 border-white/30 shadow-lg"
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ delay: 0.2, type: "spring" }}
-                  >
-                    <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </motion.div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                  Assistant Created Successfully!
-                </h3>
-                <p className="text-white/90 text-sm">
-                  Your AI assistant is now ready to use
-                </p>
-              </div>
-
-              {/* Content */}
-              <div className="px-6 py-6">
-                {/* Assistant Details Card */}
-                <div className="bg-linear-to-br from-[#5DD149]/10 to-[#306B25]/10 rounded-xl p-5 mb-6 border-2 border-[#5DD149]/30">
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="p-2 bg-[#5DD149]/20 rounded-lg">
-                      <svg className="h-5 w-5 text-[#306B25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-bold text-[#306B25] uppercase tracking-wide mb-1">
-                        Assistant Name
-                      </h4>
-                      <p className="text-xl font-bold bg-linear-to-r from-[#5DD149] to-[#306B25] bg-clip-text text-transparent">
-                        {createdAssistantName}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-[#5DD149]/30">
-                    <div className="flex items-center gap-2 text-[#306B25] mb-2">
-                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-sm font-bold">What's Next?</span>
-                    </div>
-                    <ul className="space-y-2 text-sm text-gray-700">
-                      <li className="flex items-center gap-2">
-                        <span className="text-[#5DD149] font-bold">•</span>
-                        <span className="font-medium">Test your assistant in the dashboard</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-[#5DD149] font-bold">•</span>
-                        <span className="font-medium">Configure additional settings if needed</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-[#5DD149] font-bold">•</span>
-                        <span className="font-medium">Start making calls with your AI assistant</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <motion.button
-                    onClick={() => {
-                      setShowSuccessModal(false);
-                      navigate('/assistant');
-                    }}
-                    className="flex-1 px-6 py-3 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#5DD149] focus:ring-offset-2"
-                    style={{ background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)' }}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    View All Assistants
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-        )}
-      </AnimatePresence>
+      <AssistantCreateSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        assistantName={createdAssistantName}
+        formData={formData}
+      />
     </div>
   );
 }

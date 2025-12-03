@@ -227,10 +227,27 @@ export default function Step1UserBasicInfo({
             </label>
             <textarea
               required
-              rows={12}
               value={formData.systemPrompt}
-              onChange={(e) => setFormData(prev => ({ ...prev, systemPrompt: e.target.value }))}
-              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] font-mono text-sm transition-all"
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, systemPrompt: e.target.value }));
+                // Auto-resize textarea based on content
+                const textarea = e.target;
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.max(120, Math.min(400, textarea.scrollHeight)) + 'px';
+              }}
+              onInput={(e) => {
+                // Auto-resize on any input
+                const textarea = e.target as HTMLTextAreaElement;
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.max(120, Math.min(400, textarea.scrollHeight)) + 'px';
+              }}
+              style={{
+                minHeight: '120px',
+                maxHeight: '400px',
+                height: 'auto',
+                resize: 'vertical'
+              }}
+              className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] font-mono text-sm transition-all overflow-y-auto"
               placeholder="You are a helpful AI assistant..."
             />
             <div className="flex items-center justify-between mt-2">
@@ -239,6 +256,9 @@ export default function Step1UserBasicInfo({
               </p>
               <p className="text-xs text-gray-500">
                 ~{Math.round(formData.systemPrompt.split(' ').length)} words
+              </p>
+              <p className="text-xs text-blue-500">
+                Auto-resize enabled (min: 120px, max: 400px)
               </p>
             </div>
           </div>

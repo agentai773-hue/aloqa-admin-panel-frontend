@@ -38,6 +38,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
   // Fetch all available voices for ElevenLabs dropdown
   const { data: allVoices = [], isLoading: loadingAllVoices } = useVoices();
 
+  // Fetch all available voices for ElevenLabs dropdown
   // Handle different response structures - simple approach
   const userVoices: VoiceAssignment[] = Array.isArray(userVoicesData?.data)
     ? userVoicesData.data
@@ -113,7 +114,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
         voiceName: undefined,
         synthesizerConfig: {
           ...prev.synthesizerConfig,
-          provider: 'polly',           // ✅ Always use Polly for manual
+          provider: 'polly',           // ✅ Always use Polly for manual (DEFAULT)
           provider_config: {
             ...prev.synthesizerConfig.provider_config,
             voice: 'Kajal',           // ✅ Always default to Kajal
@@ -172,58 +173,65 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
           <Mic className="h-5 w-5" />
           Voice Selection Mode
         </h4>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Manual Voice Selection */}
-          <div
-            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-              voiceSelectionMode === 'manual'
-                ? 'border-[#5DD149] bg-green-50'
-                : 'border-gray-300 hover:border-gray-400'
-            }`}
-            onClick={() => handleVoiceModeChange('manual')}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <input
-                type="radio"
-                name="voiceMode"
-                value="manual"
-                checked={voiceSelectionMode === 'manual'}
-                onChange={() => handleVoiceModeChange('manual')}
-                className="text-[#5DD149] focus:ring-[#5DD149]"
-              />
-              <Settings className="h-5 w-5 text-[#306B25]" />
-              <span className="font-semibold text-gray-900">Manual Selection</span>
+          <label className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${
+            voiceSelectionMode === 'manual' 
+              ? 'border-[#5DD149] bg-green-50' 
+              : 'border-gray-200 hover:border-gray-300'
+          }`}>
+            <input
+              type="radio"
+              value="manual"
+              checked={voiceSelectionMode === 'manual'}
+              onChange={(e) => handleVoiceModeChange(e.target.value as 'manual' | 'dynamic')}
+              className="sr-only"
+            />
+            <div className="flex items-center space-x-3">
+              <div className={`w-4 h-4 rounded-full border-2 ${
+                voiceSelectionMode === 'manual' 
+                  ? 'border-[#5DD149] bg-[#5DD149]' 
+                  : 'border-gray-300'
+              }`}>
+                {voiceSelectionMode === 'manual' && (
+                  <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5" />
+                )}
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900">Manual Selection</h4>
+                <p className="text-sm text-gray-500">Choose from all available voices in our voice library</p>
+              </div>
             </div>
-            <p className="text-sm text-gray-600 ml-8">
-              Choose from all available voices in our voice library
-            </p>
-          </div>
+          </label>
 
-          {/* Dynamic Voice Selection */}
-          <div
-            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-              voiceSelectionMode === 'dynamic'
-                ? 'border-[#5DD149] bg-green-50'
-                : 'border-gray-300 hover:border-gray-400'
-            }`}
-            onClick={() => handleVoiceModeChange('dynamic')}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <input
-                type="radio"
-                name="voiceMode"
-                value="dynamic"
-                checked={voiceSelectionMode === 'dynamic'}
-                onChange={() => handleVoiceModeChange('dynamic')}
-                className="text-[#5DD149] focus:ring-[#5DD149]"
-              />
-              <User className="h-5 w-5 text-[#306B25]" />
-              <span className="font-semibold text-gray-900">User Assigned Voices</span>
+          <label className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${
+            voiceSelectionMode === 'dynamic' 
+              ? 'border-[#5DD149] bg-green-50' 
+              : 'border-gray-200 hover:border-gray-300'
+          }`}>
+            <input
+              type="radio"
+              value="dynamic"
+              checked={voiceSelectionMode === 'dynamic'}
+              onChange={(e) => handleVoiceModeChange(e.target.value as 'manual' | 'dynamic')}
+              className="sr-only"
+            />
+            <div className="flex items-center space-x-3">
+              <div className={`w-4 h-4 rounded-full border-2 ${
+                voiceSelectionMode === 'dynamic' 
+                  ? 'border-[#5DD149] bg-[#5DD149]' 
+                  : 'border-gray-300'
+              }`}>
+                {voiceSelectionMode === 'dynamic' && (
+                  <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5" />
+                )}
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900">User Assigned Voices</h4>
+                <p className="text-sm text-gray-500">Select from voices assigned to the selected user</p>
+              </div>
             </div>
-            <p className="text-sm text-gray-600 ml-8">
-              Select from voices assigned to the selected user
-            </p>
-          </div>
+          </label>
         </div>
       </div>
 
@@ -265,34 +273,35 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
               {userVoices.map((voiceAssignment) => (
                 <div
                   key={voiceAssignment._id}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  onClick={() => handleDynamicVoiceSelect(voiceAssignment.voiceId, voiceAssignment.voiceName)}
+                  className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${
                     formData.voiceId === voiceAssignment.voiceId
                       ? 'border-[#5DD149] bg-green-50'
-                      : 'border-gray-300 hover:border-gray-400'
+                      : 'border-gray-200 hover:border-[#5DD149] hover:bg-green-50'
                   }`}
-                  onClick={() => handleDynamicVoiceSelect(voiceAssignment.voiceId, voiceAssignment.voiceName)}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <input
-                      type="radio"
-                      name="dynamicVoice"
-                      value={voiceAssignment.voiceId}
-                      checked={formData.voiceId === voiceAssignment.voiceId}
-                      onChange={() => handleDynamicVoiceSelect(voiceAssignment.voiceId, voiceAssignment.voiceName)}
-                      className="text-[#5DD149] focus:ring-[#5DD149]"
-                    />
-                    <div className="w-8 h-8 rounded-full bg-[#5DD149] flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">
+                  <div className="text-center">
+                    <div className={`w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center ${
+                      formData.voiceId === voiceAssignment.voiceId
+                        ? 'bg-[#5DD149] text-white'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      <span className="text-2xl font-bold">
                         {voiceAssignment.voiceName.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                  </div>
-                  <div className="ml-11">
-                    <h5 className="font-semibold text-gray-900">{voiceAssignment.voiceName}</h5>
-                    <p className="text-sm text-gray-600">
-                      {voiceAssignment.voiceAccent} • {voiceAssignment.voiceModel}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">{voiceAssignment.projectName}</p>
+                    <h4 className="font-semibold text-gray-900 mb-1">{voiceAssignment.voiceName}</h4>
+                    <p className="text-sm text-gray-600 mb-1">{voiceAssignment.voiceAccent}</p>
+                    <p className="text-sm text-gray-600">{voiceAssignment.voiceModel}</p>
+                    <p className="text-xs text-gray-500 mt-2">{voiceAssignment.projectName}</p>
+                    
+                    {formData.voiceId === voiceAssignment.voiceId && (
+                      <div className="mt-2 flex justify-center">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          ✓ Selected
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -358,14 +367,14 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
                 className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149] transition-all"
                 disabled={loadingAllVoices && formData.synthesizerConfig.provider === 'elevenlabs'}
               >
-                {loadingAllVoices && formData.synthesizerConfig.provider === 'elevenlabs' ? (
-                  <option value="">Loading voices...</option>
-                ) : (
-                  getVoiceOptions().map(voice => (
-                    <option key={voice.value} value={voice.value}>{voice.label}</option>
-                  ))
-                )}
+                <option value="">
+                  {loadingAllVoices && formData.synthesizerConfig.provider === 'elevenlabs' ? 'Loading voices...' : 'Select a voice'}
+                </option>
+                {getVoiceOptions().map(voice => (
+                  <option key={voice.value} value={voice.value}>{voice.label}</option>
+                ))}
               </select>
+
               {formData.synthesizerConfig.provider === 'elevenlabs' && formData.voiceId && (
                 <p className="text-xs text-gray-500 mt-2">
                   🎯 Voice ID: {formData.voiceId} | Model: eleven_turbo_v2_5

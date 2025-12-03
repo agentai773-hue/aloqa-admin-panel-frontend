@@ -1,38 +1,34 @@
-import { useState, useEffect, useRef } from 'react';
-import { Outlet, NavLink, useLocation, useNavigate } from 'react-router';
-import { navigationItems } from '../../config/navlinks';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router';
+import { navigationSections } from '../../config/navigationSections';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../hooks/useAuth';
 import { InternetProvider } from '../providers/InternetProvider';
 import { useInternetContext } from '../../hooks/useInternetContext';
+import { SidebarSection } from './SidebarSection';
+import { ProfileDropdown } from './ProfileDropdown';
+import { HeaderProfileDropdown } from './HeaderProfileDropdown';
 
 function SidebarContent() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { logout, user } = useAuth();
   const { isOnline } = useInternetContext();
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-    // Check if user previously had sidebar open (localStorage)
     if (typeof window !== 'undefined') {
-      // On mobile, sidebar should be closed by default
       if (window.innerWidth < 1024) {
         return false;
       }
       const saved = localStorage.getItem('sidebarOpen');
-      return saved !== null ? JSON.parse(saved) : true; // Default to true (open) on desktop
+      return saved !== null ? JSON.parse(saved) : true;
     }
-    return true; // Default to true (open)
+    return true;
   });
 
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
-      // Close sidebar on mobile when resizing to mobile view
       if (window.innerWidth < 1024) {
         setIsSidebarOpen(false);
       }
@@ -42,84 +38,59 @@ function SidebarContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowProfileDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      setShowProfileDropdown(false);
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
   // Get page header based on current route
- const getPageHeader = () => {
-  const path = location.pathname;
+  const getPageHeader = () => {
+    const path = location.pathname;
 
-  if (path === '/') {
+    if (path === '/') {
+      return { title: 'Dashboard', subtitle: 'Welcome back! Here\'s what\'s happening.' };
+    } else if (path === '/users') {
+      return { title: 'Users', subtitle: 'Manage user accounts and permissions' };
+    } else if(path === '/user/create'){
+      return { title: 'Create User', subtitle: 'Add a new user to the system' };
+    } else if (path.startsWith('/users/') && path.includes('/view')) {
+      return { title: 'User Details', subtitle: 'View user information and activity' };
+    } else if (path.startsWith('/users/') && path.includes('/edit')) {
+      return { title: 'Edit User', subtitle: 'Update user information and settings' };
+    } else if (path === '/assistant') {
+      return { title: 'Assistants', subtitle: 'Manage your AI assistants' };
+    } else if (path === '/assistants/create') {
+      return { title: 'Create Assistant', subtitle: 'Configure your new AI assistant' };
+    } else if (path.startsWith('/assistants/') && path.includes('/view')) {
+      return { title: 'Assistant Details', subtitle: 'View assistant configuration' };
+    } else if (path.startsWith('/assistants/') && path.includes('/edit')) {
+      return { title: 'Edit Assistant', subtitle: 'Update assistant configuration' };
+    } else if (path === '/phone-numbers') {
+      return { title: 'Buy Phone Number', subtitle: 'Purchase phone number' };
+    } else if (path === '/phone-numbers-assign') {
+      return { title: 'Assign Phone Number', subtitle: 'Assign purchased numbers to users' };
+    } else if (path === '/admin/profile') {
+      return { title: 'Admin Profile', subtitle: 'Manage your account settings and preferences' };
+    }
+
     return { title: 'Dashboard', subtitle: 'Welcome back! Here\'s what\'s happening.' };
-  } else if (path === '/users') {
-    return { title: 'Users', subtitle: 'Manage user accounts and permissions' };
-  } else if(path === '/user/create'){
-    return { title: 'Create User', subtitle: 'Add a new user to the system' };
-  }if (path.startsWith('/users/') && path.includes('/view')) {
-    return { title: 'User Details', subtitle: 'View user information and activity' };
-  } else if (path.startsWith('/users/') && path.includes('/edit')) {
-    return { title: 'Edit User', subtitle: 'Update user information and settings' };
-  } else if (path === '/assistant') {
-    return { title: 'Assistants', subtitle: 'Manage your AI assistants' };
-  } else if (path === '/assistants/create') {
-    return { title: 'Create Assistant', subtitle: 'Configure your new AI assistant' };
-  } else if (path.startsWith('/assistants/') && path.includes('/view')) {
-    return { title: 'Assistant Details', subtitle: 'View assistant configuration' };
-  } else if (path.startsWith('/assistants/') && path.includes('/edit')) {
-    return { title: 'Edit Assistant', subtitle: 'Update assistant configuration' };
-  } else if (path === '/phone-numbers') {
-    return { title: 'Buy Phone Number', subtitle: 'Purchase phone number' };
-  } else if (path === '/phone-numbers-assign') {
-    return { title: 'Assign Phone Number', subtitle: 'Assign purchased numbers to users' };
-  } else if (path === '/admin/profile') {
-    return { title: 'Admin Profile', subtitle: 'Manage your account settings and preferences' };
-  }
-
-  return { title: 'Dashboard', subtitle: 'Welcome back! Here\'s what\'s happening.' };
-};
+  };
 
   const pageHeader = getPageHeader();
 
   const toggleSidebar = () => {
     const newState = !isSidebarOpen;
     setIsSidebarOpen(newState);
-    // Save sidebar state to localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('sidebarOpen', JSON.stringify(newState));
     }
   };
 
-
-
   // Get sidebar width based on screen size and state
   const getSidebarWidth = () => {
     if (windowWidth >= 1280) { // xl screens
-      return isSidebarOpen ? 280 : 80;
+      return isSidebarOpen ? 280 : 88;
     } else if (windowWidth >= 1024) { // lg screens
-      return isSidebarOpen ? 256 : 70;
+      return isSidebarOpen ? 256 : 80;
     } else if (windowWidth >= 768) { // md screens
-      return isSidebarOpen ? 240 : 60;
+      return isSidebarOpen ? 240 : 72;
     } else if (windowWidth >= 640) { // sm screens
-      return isSidebarOpen ? 220 : 50;
+      return isSidebarOpen ? 220 : 64;
     } else { // mobile
       return isSidebarOpen ? 200 : 0;
     }
@@ -129,7 +100,7 @@ function SidebarContent() {
     <div className="min-h-screen bg-gray-50 flex overflow-hidden">
       {/* Sidebar */}
       <motion.div 
-        className="fixed top-0 left-0 z-50 h-full bg-white shadow-lg border-r border-gray-200 lg:z-30 lg:translate-x-0 overflow-hidden"
+        className="fixed top-0 left-0 z-50 h-screen bg-white shadow-lg border-r border-gray-200 lg:z-30 lg:translate-x-0"
         initial={false}
         animate={{ 
           width: getSidebarWidth(),
@@ -141,13 +112,14 @@ function SidebarContent() {
           damping: 30
         }}
         style={{
-          visibility: windowWidth < 1024 && !isSidebarOpen ? 'hidden' : 'visible'
+          visibility: windowWidth < 1024 && !isSidebarOpen ? 'hidden' : 'visible',
+          overflow: 'hidden'
         }}
       >
         <div className="flex flex-col h-full">
           {/* Logo & Toggle Header */}
           <motion.div 
-            className="flex items-center justify-between h-16 sm:h-18 lg:h-20 px-2 sm:px-3 lg:px-4 border-b border-gray-200 bg-white"
+            className="flex items-center justify-between h-16 sm:h-18 lg:h-20 px-2 sm:px-3 lg:px-4 border-b border-gray-200 bg-white shrink-0"
             initial={false}
             animate={{ opacity: 1 }}
           >
@@ -172,7 +144,6 @@ function SidebarContent() {
                   />
                 </motion.div>
               ) : (
-                // Only show logo on desktop when sidebar is closed, hide on mobile
                 windowWidth >= 1024 && (
                   <img 
                     key="logo-closed"
@@ -223,7 +194,6 @@ function SidebarContent() {
                     />
                   </svg>
                 )}
-                {/* Simple hover effect instead of pulse */}
                 <div 
                   className="absolute inset-0 rounded-full bg-green-300/30 opacity-0 hover:opacity-100 transition-opacity"
                 ></div>
@@ -231,131 +201,49 @@ function SidebarContent() {
             </motion.button>
           </motion.div>
 
-     
-
           {/* Navigation */}
-          <nav className="flex-1 flex flex-col px-2 sm:px-3 py-4 sm:py-6">
-            <div className="space-y-1 sm:space-y-2">
-              {navigationItems.map((item, index) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ 
-                    delay: index * 0.1,
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 25
-                  }}
-                >
-                <NavLink
-                  to={item.href}
-                  end={item.href === '/'}
-                  title={!isSidebarOpen ? item.name : ''}
-                  onClick={() => {
-                    // Close sidebar on mobile when navigation item is clicked
-                    if (windowWidth < 1024) {
-                      setIsSidebarOpen(false);
-                    }
-                  }}
-                >
-                  {({ isActive }) => (
-                    <motion.div 
-                      className={`group flex items-center ${
-                        isSidebarOpen 
-                          ? 'px-3 sm:px-4 lg:px-4 py-3 sm:py-3' 
-                          : 'px-1 sm:px-2 lg:px-3 py-2 sm:py-3 justify-center'
-                      } text-sm sm:text-base font-medium rounded-lg sm:rounded-xl relative ${
-                        isActive
-                          ? 'text-white shadow-lg shadow-green-500/30'
-                          : 'text-gray-700 hover:text-gray-900 hover:bg-green-50 transition-colors'
-                      }`}
-                      style={isActive ? {
-                        background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
-                      } : {}}
-                    >
-                      <div 
-                        className={`transition-colors ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-[#5DD149]'}`}
-                      >
-                        <div className="h-6 w-6 sm:h-7 sm:w-7">{item.icon}</div>
-                      </div>
-                      <AnimatePresence>
-                        {isSidebarOpen && (
-                          <motion.span 
-                            className="ml-3 sm:ml-4 text-sm sm:text-base truncate"
-                            initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: "auto" }}
-                            exit={{ opacity: 0, width: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            {item.name}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                      {!isSidebarOpen && windowWidth >= 1024 && (
-                        <motion.div 
-                          className="absolute left-full ml-2 sm:ml-3 px-2 sm:px-3 py-1 sm:py-2 bg-gray-900 text-white text-xs rounded-md sm:rounded-lg whitespace-nowrap z-50 shadow-lg"
-                          initial={{ opacity: 0, x: -10 }}
-                          whileHover={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {item.name}
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  )}
-                </NavLink>
-                </motion.div>
-              ))}
+          <nav className="flex-1 flex flex-col px-2 py-3 overflow-y-auto">
+            <div className="space-y-1 flex-1">
+              {navigationSections.map((section: any, index: number) => {
+                const isActive = section.children 
+                  ? section.children.some((child: any) => location.pathname === child.href)
+                  : location.pathname === section.href;
+
+                return (
+                  <motion.div
+                    key={section.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ 
+                      delay: index * 0.1,
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 25
+                    }}
+                  >
+                    <SidebarSection
+                      section={section}
+                      isCollapsed={!isSidebarOpen}
+                      isActive={isActive}
+                      onMobileClick={() => {
+                        if (windowWidth < 1024) {
+                          setIsSidebarOpen(false);
+                        }
+                      }}
+                    />
+                  </motion.div>
+                );
+              })}
             </div>
 
-            {/* Logout Button at Bottom */}
+            {/* Profile Dropdown at Bottom */}
             <motion.div
-              className="mt-auto pt-3 sm:pt-4 border-t border-gray-200"
+              className="mt-4 pt-4 border-t border-gray-200 shrink-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <motion.button
-                onClick={handleLogout}
-                title={!isSidebarOpen ? 'Logout' : ''}
-                className={`group flex items-center w-full ${
-                  isSidebarOpen 
-                    ? 'px-3 sm:px-4 lg:px-4 py-3 sm:py-3' 
-                    : 'px-1 sm:px-2 lg:px-3 py-2 sm:py-3 justify-center'
-                } text-sm sm:text-base font-medium rounded-lg sm:rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors`}
-              >
-                <div 
-                  className="transition-colors"
-                >
-                  <svg className="h-6 w-6 sm:h-7 sm:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </div>
-                <AnimatePresence>
-                  {isSidebarOpen && (
-                    <motion.span 
-                      className="ml-3 sm:ml-4 text-sm sm:text-base"
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: "auto" }}
-                      exit={{ opacity: 0, width: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      Logout
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-                {!isSidebarOpen && windowWidth >= 1024 && (
-                  <motion.div 
-                    className="absolute left-full ml-2 sm:ml-3 px-2 sm:px-3 py-1 sm:py-2 bg-gray-900 text-white text-xs rounded-md sm:rounded-lg whitespace-nowrap z-50 shadow-lg"
-                    initial={{ opacity: 0, x: -10 }}
-                    whileHover={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    Logout
-                  </motion.div>
-                )}
-              </motion.button>
+              <ProfileDropdown isCollapsed={!isSidebarOpen} />
             </motion.div>
           </nav>
         </div>
@@ -399,175 +287,72 @@ function SidebarContent() {
           }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
         >
-          <div className="px-3 sm:px-6 py-3 sm:py-4">
-            <div className="flex items-center justify-between">
-              {/* Mobile menu button and Page title */}
-              <div className="flex items-center space-x-2 sm:space-x-4">
-                <motion.button
-                  onClick={toggleSidebar}
-                  className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                  title="Toggle Menu"
-                >
-                  <svg 
-                    className="w-6 h-6" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    {isSidebarOpen ? (
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="2" 
-                        d="M6 18L18 6M6 6l12 12" 
-                      />
-                    ) : (
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="2" 
-                        d="M4 6h16M4 12h16M4 18h16" 
-                      />
-                    )}
-                  </svg>
-                </motion.button>
-                {/* Page title */}
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
-                >
-                  <h1 
-                    className="text-lg sm:text-xl lg:text-2xl font-bold bg-clip-text text-transparent" 
-                    style={{
-                      backgroundImage: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)'
-                    }}
-                  >
-                    {pageHeader.title}
-                  </h1>
-                  <motion.p 
-                    className="text-xs sm:text-sm text-gray-500 hidden sm:block"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    {pageHeader.subtitle}
-                  </motion.p>
-                </motion.div>
-              </div>
-              
-              {/* Header actions */}
-              <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
-                {/* Connection Status Indicator */}
-                <div 
-                  className={`hidden md:flex items-center space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-colors duration-300 ${
-                    isOnline 
-                      ? 'bg-green-50 text-green-700' 
-                      : 'bg-red-50 text-red-700'
-                  }`}
-                >
-                  <div>
-                    {isOnline ? (
-                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                      </svg>
-                    ) : (
-                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636L5.636 18.364M8.111 16.404a5.5 5.5 0 010-7.778M12 20h.01M1.394 9.393L18.364 5.636" />
-                      </svg>
-                    )}
-                  </div>
-                  <span className="text-xs font-medium hidden sm:inline">
-                    {isOnline ? 'Online' : 'Offline'}
-                  </span>
-                </div>
+          <div className="flex items-center justify-between h-full px-3 sm:px-4 lg:px-6 xl:px-8">
+            {/* Mobile Menu Toggle */}
+            <motion.button
+              onClick={toggleSidebar}
+              className="lg:hidden flex items-center justify-center p-2 rounded-lg text-gray-700 hover:bg-gray-100"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </motion.button>
 
-                {/* Notifications */}
-                <button 
-                  className="relative p-1.5 sm:p-2 text-gray-400 hover:text-[#5DD149] hover:bg-green-50 rounded-lg transition-colors"
-                >
-                  <svg 
-                    className="h-5 w-5 sm:h-6 sm:w-6" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  <span 
-                    className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 h-2 w-2 bg-red-500 rounded-full"
-                  ></span>
-                </button>
-                
-                {/* Admin label */}
-                <div className="relative" ref={dropdownRef}>
-                  <motion.div 
-                    className="flex items-center space-x-2 sm:space-x-3 cursor-pointer"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 }}
-                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  >
-                    <div className="hidden sm:block text-right">
-                      <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
-                      <div className="text-xs text-gray-500">Online</div>
-                    </div>
-                    <div 
-                      className="relative"
-                    >
-                      <div className="h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 bg-gray-800 rounded-full flex items-center justify-center shadow-md hover:bg-gray-700 transition-colors">
-                        <span className="text-xs sm:text-sm font-semibold text-white">
-                          {user?.name?.charAt(0).toUpperCase() || 'A'}
-                        </span>
-                      </div>
-                      <div 
-                        className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 bg-green-400 rounded-full border-2 border-white"
-                      ></div>
-                    </div>
-                  </motion.div>
-
-                  {/* Profile Dropdown */}
-                  <AnimatePresence>
-                    {showProfileDropdown && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
-                      >
-                        <div className="py-1">
-                          <div className="px-4 py-2 border-b border-gray-100">
-                            <div className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</div>
-                            <div className="text-xs text-gray-500">{user?.email || 'admin@example.com'}</div>
-                          </div>
-                          <button
-                            onClick={() => {
-                              navigate('/admin/profile');
-                              setShowProfileDropdown(false);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center space-x-2"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            <span>Profile</span>
-                          </button>
-                          <button
-                            onClick={handleLogout}
-                            className="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors flex items-center space-x-2"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            <span>Logout</span>
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+            {/* Page Header */}
+            <motion.div 
+              className="flex-1 lg:flex-none"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="text-left lg:text-left">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                  {pageHeader.title}
+                </h1>
+                <p className="text-sm sm:text-base text-gray-600 mt-0.5 lg:mt-1">
+                  {pageHeader.subtitle}
+                </p>
               </div>
+            </motion.div>
+
+            {/* Right side content */}
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              {/* Internet Status */}
+              <div 
+                className={`flex items-center space-x-1.5 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                  isOnline 
+                    ? 'bg-green-100 text-green-700' 
+                    : 'bg-red-100 text-red-700'
+                }`}
+              >
+                <div className={`h-2 w-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <span className="hidden sm:inline">
+                  {isOnline ? 'Online' : 'Offline'}
+                </span>
+              </div>
+
+              {/* Notifications */}
+              <button 
+                className="relative p-1.5 sm:p-2 text-gray-400 hover:text-[#5DD149] hover:bg-green-50 rounded-lg transition-colors"
+              >
+                <svg 
+                  className="h-5 w-5 sm:h-6 sm:w-6" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span 
+                  className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 h-2 w-2 bg-red-500 rounded-full"
+                ></span>
+              </button>
+
+              {/* Profile Dropdown */}
+              <HeaderProfileDropdown />
             </div>
           </div>
         </motion.header>
@@ -580,30 +365,19 @@ function SidebarContent() {
           transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
         >
           <div 
-            className="bg-white min-h-[calc(100vh-120px)] sm:min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-200px)] rounded-lg lg:rounded-xl m-3 sm:m-4 lg:m-6 xl:m-8"
+            className="bg-white min-h-[calc(100vh-120px)] sm:min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-200px)] rounded-lg lg:rounded-xl m-3 sm:m-4 lg:m-6 xl:m-8 overflow-hidden"
           >
-            <div className="p-3 sm:p-4 lg:p-6 xl:p-8 overflow-x-hidden">
+            <div className="p-3 sm:p-4 lg:p-6 xl:p-8 overflow-y-auto overflow-x-hidden h-full">
               <Outlet />
             </div>
           </div>
         </motion.main>
       </motion.div>
-
-      {/* Floating Toggle Button for Collapsed Sidebar */}
- 
-
-      {/* Mobile overlay */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 lg:hidden bg-black/50"
-          onClick={toggleSidebar}
-        />
-      )}
     </div>
   );
 }
 
-export default function Sidebar() {
+export function Sidebar() {
   return (
     <InternetProvider>
       <SidebarContent />

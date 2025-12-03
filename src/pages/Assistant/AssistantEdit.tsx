@@ -89,7 +89,10 @@ export default function AssistantEdit() {
       backchanneling: false,
       call_terminate: 800
     },
-    routes: []
+    routes: [],
+    // Voice assignment fields
+    voiceId: undefined,
+    voiceName: undefined
   });
 
   // Initialize form when assistant data is loaded
@@ -155,7 +158,10 @@ export default function AssistantEdit() {
           provider: assistant.outputConfig?.provider || 'plivo',
           format: assistant.outputConfig?.format || 'wav'
         },
-        routes: assistant.routes || []
+        routes: assistant.routes || [],
+        // Voice assignment fields
+        voiceId: assistant.voiceId,
+        voiceName: assistant.voiceName
       });
       
     }

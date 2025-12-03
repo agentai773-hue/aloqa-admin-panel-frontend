@@ -95,7 +95,10 @@ export default function AssistantCreate() {
       number_of_words_for_interruption: 2,
       backchanneling: false,
       call_terminate: undefined // Optional - user must select
-    }
+    },
+    // Voice assignment fields
+    voiceId: undefined,
+    voiceName: undefined
   });
 
   // Create mutation
@@ -453,6 +456,7 @@ export default function AssistantCreate() {
                   <Step3VoiceSynthesizer
                     formData={formData}
                     setFormData={setFormData}
+                    selectedUserIds={selectedUserIds}
                   />
                 </motion.div>
               )}

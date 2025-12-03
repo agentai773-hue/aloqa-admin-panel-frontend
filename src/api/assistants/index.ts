@@ -28,6 +28,7 @@ export interface SynthesizerProviderConfig {
   sampling_rate: string;
   language: string;
   model?: string;
+  voice_id?: string; // For ElevenLabs voice ID
 }
 
 export interface SynthesizerConfig {
@@ -85,6 +86,9 @@ export interface CreateAssistantData {
   inputConfig: InputOutputConfig;
   outputConfig: InputOutputConfig;
   routes?: Route[];
+  // Voice selection from user assignments
+  voiceId?: string;
+  voiceName?: string;
 }
 
 export interface Assistant {
@@ -109,6 +113,9 @@ export interface Assistant {
   outputConfig: InputOutputConfig;
   routes?: Route[];
   agentId?: string;
+  // Voice assignment fields
+  voiceId?: string;
+  voiceName?: string;
   status: 'draft' | 'active' | 'inactive' | 'deleted';
   bolnaResponse?: Record<string, unknown>;
   createdAt: string;

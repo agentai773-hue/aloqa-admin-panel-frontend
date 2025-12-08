@@ -11,6 +11,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Check for existing token on app load
   useEffect(() => {
@@ -47,6 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
+      setError(null);
       
       const response = await authApi.login({ email, password });
       
@@ -54,11 +56,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(response.data.admin);
         return true;
       } else {
-        console.error('Login failed:', response.message);
+        const errorMessage = response.message || 'Login failed';
+        setError(errorMessage);
+        console.error('Login failed:', errorMessage);
         return false;
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+      setError(errorMessage);
+      console.error('Login error:', errorMessage);
       return false;
     } finally {
       setIsLoading(false);
@@ -81,6 +87,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     isLoading,
     isAuthenticated: !!user,
+    error,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

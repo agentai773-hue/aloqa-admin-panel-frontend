@@ -6,8 +6,8 @@ import { Navigate, useLocation } from 'react-router';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const { login, isLoading, isAuthenticated } = useAuth();
+  const [localError, setLocalError] = useState('');
+  const { login, isLoading, isAuthenticated, error } = useAuth();
   const location = useLocation();
 
   // Get the redirect path from location state, or default to dashboard
@@ -20,23 +20,20 @@ export default function Login() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
+    setLocalError('');
 
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setLocalError('Please fill in all fields');
       return;
     }
 
-    try {
-      const success = await login(email, password);
-      if (!success) {
-        setError('Invalid email or password');
-      }
-      // Navigation will happen automatically via the auth state change
-    } catch {
-      setError('An error occurred. Please try again.');
+    const success = await login(email, password);
+    if (!success) {
+      // Error from context will be displayed
     }
   };
+
+  const displayError = localError || error;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 py-6 px-4 sm:py-12 sm:px-6 lg:px-8">
@@ -92,9 +89,9 @@ export default function Login() {
             </div>
           </div>
 
-          {error && (
+          {displayError && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm text-center">
-              {error}
+              {displayError}
             </div>
           )}
 

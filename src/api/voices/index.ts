@@ -8,7 +8,7 @@ export const voiceApi = {
   getAll: async (provider?: string): Promise<Voice[]> => {
     try {
       const params = provider ? { provider } : {};
-      const response = await apiClient.get<VoiceResponse>('/voices', { params });
+      const response = await apiClient.get<VoiceResponse>('/admin/voices', { params });
       
       // Handle different response formats
       if (response.data && Array.isArray(response.data)) {
@@ -27,7 +27,7 @@ export const voiceApi = {
    */
   getById: async (voiceId: string): Promise<Voice> => {
     try {
-      const response = await apiClient.get<VoiceDetailResponse>(`/voices/${voiceId}`);
+      const response = await apiClient.get<VoiceDetailResponse>(`/admin/voices/${voiceId}`);
       if (response.data?.data) {
         return response.data.data;
       }

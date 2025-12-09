@@ -64,6 +64,12 @@ function SidebarContent() {
       return { title: 'Buy Phone Number', subtitle: 'Purchase phone number' };
     } else if (path === '/phone-numbers-assign') {
       return { title: 'Assign Phone Number', subtitle: 'Assign purchased numbers to users' };
+    } else if (path === '/voices') {
+      return { title: 'Voice Library', subtitle: 'Browse and manage available voices' };
+    } else if (path === '/voice-assignments') {
+      return { title: 'Voice Assignments', subtitle: 'Manage voice assignments to users' };
+    } else if (path === '/make-call') {
+      return { title: 'Make a Call', subtitle: 'Initiate calls using Bolna.ai assistants' };
     } else if (path === '/admin/profile') {
       return { title: 'Admin Profile', subtitle: 'Manage your account settings and preferences' };
     }

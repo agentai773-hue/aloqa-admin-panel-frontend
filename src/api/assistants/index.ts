@@ -140,11 +140,11 @@ export interface GetAssistantsParams {
 
 export const assistantsAPI = {
   createAssistant: async (data: CreateAssistantData) => {
-    return apiClient.post<Assistant>('/assistants', data as unknown as Record<string, unknown>);
+    return apiClient.post<Assistant>('/admin/assistants', data as unknown as Record<string, unknown>);
   },
 
   getAllAssistants: async (params?: GetAssistantsParams) => {
-    let endpoint = '/assistants';
+    let endpoint = '/admin/assistants';
     const queryParams = new URLSearchParams();
     
     if (params?.page) queryParams.append('page', params.page.toString());
@@ -162,22 +162,22 @@ export const assistantsAPI = {
   },
 
   getAssistantById: async (id: string) => {
-    return apiClient.get<Assistant>(`/assistants/${id}`);
+    return apiClient.get<Assistant>(`/admin/assistants/${id}`);
   },
 
   updateAssistant: async (id: string, data: Partial<CreateAssistantData>) => {
-    return apiClient.put<Assistant>(`/assistants/${id}`, data as unknown as Record<string, unknown>);
+    return apiClient.put<Assistant>(`/admin/assistants/${id}`, data as unknown as Record<string, unknown>);
   },
 
   patchAssistant: async (id: string, data: Partial<CreateAssistantData>) => {
-    return apiClient.patch<Assistant>(`/assistants/${id}`, data as unknown as Record<string, unknown>);
+    return apiClient.patch<Assistant>(`/admin/assistants/${id}`, data as unknown as Record<string, unknown>);
   },
 
   deleteAssistant: async (id: string) => {
-    return apiClient.delete<void>(`/assistants/${id}`);
+    return apiClient.delete<void>(`/admin/assistants/${id}`);
   },
 
   getAssistantsByUser: async (userId: string) => {
-    return apiClient.get<Assistant[]>(`/assistants/user/${userId}`);
+    return apiClient.get<Assistant[]>(`/admin/assistants/user/${userId}`);
   },
 };

@@ -23,7 +23,7 @@ export interface ResendVerificationResponse {
 export const verifyAPI = {
   // Verify email with token
   verifyEmail: async (token: string): Promise<VerifyEmailResponse> => {
-    const response = await apiClient.post<ApiResponse<VerifyEmailResponse>>('/auth/verify-email', { token });
+    const response = await apiClient.post<ApiResponse<VerifyEmailResponse>>('/admin/verify-email', { token });
     if (!response.data || !response.data.data) {
       throw new Error('Invalid response from server');
     }
@@ -32,7 +32,7 @@ export const verifyAPI = {
 
   // Resend verification email
   resendVerification: async (email: string): Promise<ResendVerificationResponse> => {
-    const response = await apiClient.post<ApiResponse<ResendVerificationResponse>>('/auth/resend-verification', { email });
+    const response = await apiClient.post<ApiResponse<ResendVerificationResponse>>('/admin/verify-email/resend', { email });
     if (!response.data || !response.data.data) {
       throw new Error('Invalid response from server');
     }

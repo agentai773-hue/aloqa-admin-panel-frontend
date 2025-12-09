@@ -48,13 +48,13 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isCollapsed })
         onClick={() => setIsOpen(!isOpen)}
         className={`group relative flex items-center w-full transition-all duration-200 ${
           isCollapsed 
-            ? 'px-2 py-3 mx-2 justify-center' 
-            : 'px-3 py-3 mx-2 justify-between'
+            ? 'px-2 py-3  justify-center' 
+            : 'px-3 py-3  justify-between'
         } text-sm font-medium rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#5DD149]`}
       >
         <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'gap-3'}`}>
           <div className="shrink-0 flex items-center justify-center w-10 h-10 rounded-lg bg-[#5DD149] text-white">
-            <div className="h-8 w-8 rounded-full bg-[#306B25] flex items-center justify-center">
+            <div className="h-8 w-8 rounded-full  flex items-center justify-center">
               <span className="text-sm font-semibold text-white">
                 {user?.name?.charAt(0).toUpperCase() || 'A'}
               </span>

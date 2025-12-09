@@ -49,9 +49,9 @@ export const SidebarSection: React.FC<SidebarSectionProps> = ({
           to={section.href}
           onClick={onMobileClick}
           className={({ isActive }) =>
-            `flex items-center ${isCollapsed ? 'justify-center px-2 py-3 mx-2' : 'justify-between px-3 py-3 mx-2'} rounded-xl transition-all duration-200 group relative w-full ${
+            `flex items-center ${isCollapsed ? 'justify-center px-2 py-3 ' : 'justify-between px-3 py-3'} rounded-xl transition-all duration-200 group relative w-full ${
               isActive
-                ? 'bg-[#5DD149] text-white shadow-lg'
+                ? 'bg-[#5DD149] text-white shadow-lg '
                 : 'text-gray-700 hover:bg-green-50 hover:text-[#5DD149]'
             }`
           }
@@ -105,7 +105,7 @@ export const SidebarSection: React.FC<SidebarSectionProps> = ({
       ) : (
         <button
           onClick={handleSectionClick}
-          className={`flex items-center ${isCollapsed ? 'justify-center px-2 py-3 mx-2' : 'justify-between px-3 py-3 mx-2'} rounded-xl transition-all duration-200 group relative w-full ${
+          className={`flex items-center ${isCollapsed ? 'justify-center px-2 py-3' : 'justify-between px-3 py-3'} rounded-xl transition-all duration-200 group relative w-full ${
             isActive
               ? 'bg-[#5DD149] text-white shadow-lg'
               : 'text-gray-700 hover:bg-green-50 hover:text-[#5DD149]'
@@ -194,7 +194,7 @@ export const SidebarSection: React.FC<SidebarSectionProps> = ({
                 to={child.href}
                 onClick={onMobileClick}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-2.5 mx-2 rounded-lg transition-all duration-200 group w-full ${
+                  `flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group w-full ${
                     isActive
                       ? 'bg-[#5DD149] text-white shadow-md'
                       : 'text-gray-600 hover:bg-green-50 hover:text-[#5DD149]'

@@ -71,7 +71,7 @@ export interface GetUsersParams {
 export const usersAPI = {
   // Get all users with pagination and search
   async getUsers(params?: GetUsersParams) {
-    let endpoint = '/users';
+    let endpoint = '/admin/users';
     const queryParams = new URLSearchParams();
     
     if (params?.page) queryParams.append('page', params.page.toString());
@@ -90,17 +90,17 @@ export const usersAPI = {
 
   // Get user by ID
   async getUserById(id: string) {
-    return apiClient.get<{ user: User }>(`/users/${id}`);
+    return apiClient.get<{ user: User }>(`/admin/users/${id}`);
   },
 
   // Create new user
   async createUser(userData: CreateUserData) {
-    return apiClient.post<{ user: User }>('/users', userData);
+    return apiClient.post<{ user: User }>('/admin/users', userData);
   },
 
   // Update user
-  async updateUser(id: string, userData: UpdateUserData) {
-    return apiClient.put<{ user: User }>(`/users/${id}`, userData);
+  async updateUser(id: string, userData: Partial<CreateUserData>) {
+    return apiClient.put<{ user: User }>(`/admin/users/${id}`, userData);
   },
 
   // Toggle user approval
@@ -110,16 +110,16 @@ export const usersAPI = {
 
   // Verify user email manually by admin
   async verifyUserEmail(id: string) {
-    return apiClient.patch<{ user: User }>(`/users/${id}/verify-email`, {});
+    return apiClient.patch<{ user: User }>(`/admin/users/${id}/verify-email`, {});
   },
 
   // Delete user
   async deleteUser(id: string) {
-    return apiClient.delete<DeleteUserResponse>(`/users/${id}`);
+    return apiClient.delete<DeleteUserResponse>(`/admin/users/${id}`);
   },
 
   // Get user statistics
   async getUserStats() {
-    return apiClient.get<UserStatsResponse>('/users/stats');
+    return apiClient.get<UserStatsResponse>('/admin/users/stats');
   }
 };

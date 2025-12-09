@@ -307,7 +307,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
       {/* Manual Voice Configuration */}
       {voiceSelectionMode === 'manual' && (
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          
+
 
           <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
             <Settings className="h-5 w-5" />
@@ -461,152 +461,132 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
               <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.bufferSize.description}</p>
             </div>
             {formData.synthesizerConfig.provider === 'elevenlabs' && (
-  <>
-    {/* Stability */}
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Stability</label>
-      <input
-        type="number"
-        min={0}
-        max={100}
-        value={formData.synthesizerConfig.provider_config.stability || 50}
-        onChange={(e) =>
-          setFormData(prev => ({
-            ...prev,
-            synthesizerConfig: {
-              ...prev.synthesizerConfig,
-              provider_config: {
-                ...prev.synthesizerConfig.provider_config,
-                stability: Number(e.target.value)
-              }
-            }
-          }))
-        }
-        className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
-      />
-    </div>
+              <>
+                {/* Stability */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Stability (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.stability || 0.5}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            stability: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                  <p className="text-xs text-gray-500">Recommended: 0.70 - 0.95</p>
+                </div>
 
-    {/* Similarity Boost */}
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Similarity Boost</label>
-      <input
-        type="number"
-        min={0}
-        max={100}
-        value={formData.synthesizerConfig.provider_config.similarity_boost || 50}
-        onChange={(e) =>
-          setFormData(prev => ({
-            ...prev,
-            synthesizerConfig: {
-              ...prev.synthesizerConfig,
-              provider_config: {
-                ...prev.synthesizerConfig.provider_config,
-                similarity_boost: Number(e.target.value)
-              }
-            }
-          }))
-        }
-        className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
-      />
-    </div>
+                {/* Similarity Boost */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Similarity Boost (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.similarity_boost || 0.5}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            similarity_boost: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                </div>
 
-    {/* Speed */}
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Speed</label>
-      <input
-        type="number"
-        min={50}
-        max={150}
-        value={formData.synthesizerConfig.provider_config.speed || 100}
-        onChange={(e) =>
-          setFormData(prev => ({
-            ...prev,
-            synthesizerConfig: {
-              ...prev.synthesizerConfig,
-              provider_config: {
-                ...prev.synthesizerConfig.provider_config,
-                speed: Number(e.target.value)
-              }
-            }
-          }))
-        }
-        className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
-      />
-    </div>
+                {/* Speed */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Speed (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.speed || 0.95}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            speed: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                </div>
 
-    {/* Emotion */}
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Emotion</label>
-      <select
-        value={formData.synthesizerConfig.provider_config.emotion || 'neutral'}
-        onChange={(e) =>
-          setFormData(prev => ({
-            ...prev,
-            synthesizerConfig: {
-              ...prev.synthesizerConfig,
-              provider_config: {
-                ...prev.synthesizerConfig.provider_config,
-                emotion: e.target.value
-              }
-            }
-          }))
-        }
-        className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
-      >
-        <option value="neutral">Neutral</option>
-        <option value="friendly">Friendly</option>
-        <option value="angry">Angry</option>
-        <option value="sad">Sad</option>
-      </select>
-    </div>
+                {/* Emotion Strength */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Emotion Strength (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.emotion_strength || 0.5}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            emotion_strength: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                </div>
 
-    {/* Emotion Strength */}
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Emotion Strength</label>
-      <input
-        type="number"
-        min={0}
-        max={100}
-        value={formData.synthesizerConfig.provider_config.emotion_strength || 50}
-        onChange={(e) =>
-          setFormData(prev => ({
-            ...prev,
-            synthesizerConfig: {
-              ...prev.synthesizerConfig,
-              provider_config: {
-                ...prev.synthesizerConfig.provider_config,
-                emotion_strength: Number(e.target.value)
-              }
-            }
-          }))
-        }
-        className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
-      />
-    </div>
+                {/* Speaker Boost */}
+                <div className="flex items-center space-x-2 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.synthesizerConfig.provider_config.use_speaker_boost || false}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            use_speaker_boost: e.target.checked
+                          }
+                        }
+                      }))
+                    }
+                    className="w-5 h-5 rounded border-gray-300 text-[#5DD149] focus:ring-[#5DD149]"
+                  />
+                  <label className="text-sm font-medium text-gray-700">Use Speaker Boost</label>
+                </div>
+              </>
+            )}
 
-    {/* Speaker Boost */}
-    <div className="flex items-center space-x-2 mt-2">
-      <input
-        type="checkbox"
-        checked={formData.synthesizerConfig.provider_config.use_speaker_boost || false}
-        onChange={(e) =>
-          setFormData(prev => ({
-            ...prev,
-            synthesizerConfig: {
-              ...prev.synthesizerConfig,
-              provider_config: {
-                ...prev.synthesizerConfig.provider_config,
-                use_speaker_boost: e.target.checked
-              }
-            }
-          }))
-        }
-        className="w-5 h-5 rounded border-gray-300 text-[#5DD149] focus:ring-[#5DD149]"
-      />
-      <label className="text-sm font-medium text-gray-700">Use Speaker Boost</label>
-    </div>
-  </>
-)}
 
           </div>
         </div>
@@ -718,13 +698,14 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
             {/* Stability */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Stability
+                Stability (0 - 1)
               </label>
               <input
                 type="number"
                 min={0}
-                max={100}
-                value={formData.synthesizerConfig.provider_config.stability}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.stability || 0.5}
                 onChange={(e) =>
                   setFormData(prev => ({
                     ...prev,
@@ -744,13 +725,14 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
             {/* Similarity Boost */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Similarity Boost
+                Similarity Boost (0 - 1)
               </label>
               <input
                 type="number"
                 min={0}
-                max={100}
-                value={formData.synthesizerConfig.provider_config.similarity_boost}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.similarity_boost || 0.5}
                 onChange={(e) =>
                   setFormData(prev => ({
                     ...prev,
@@ -770,13 +752,14 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
             {/* Speed */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Speed
+                Speed (0 - 1)
               </label>
               <input
                 type="number"
-                min={50}
-                max={150}
-                value={formData.synthesizerConfig.provider_config.speed}
+                min={0}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.speed || 0.95}
                 onChange={(e) =>
                   setFormData(prev => ({
                     ...prev,
@@ -821,13 +804,14 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
             {/* Emotion Strength */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Emotion Strength
+                Emotion Strength (0 - 1)
               </label>
               <input
                 type="number"
                 min={0}
-                max={100}
-                value={formData.synthesizerConfig.provider_config.emotion_strength}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.emotion_strength || 0.5}
                 onChange={(e) =>
                   setFormData(prev => ({
                     ...prev,

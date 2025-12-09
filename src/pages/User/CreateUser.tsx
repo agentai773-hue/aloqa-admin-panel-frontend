@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { usersAPI, type CreateUserData } from '../../api';
 import { Eye, EyeOff } from 'lucide-react';
+import UserSuccessModal from '../../components/modals/userModal/UserSuccessModal';
 
 export default function CreateUser() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function CreateUser() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<'weak' | 'medium' | 'strong' | ''>('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [createdUserData, setCreatedUserData] = useState<{ firstName: string; lastName: string; email: string } | null>(null);
+  const [createdUserData, setCreatedUserData] = useState<CreateUserData | null>(null);
   const [formData, setFormData] = useState<CreateUserData>({
     firstName: '',
     lastName: '',
@@ -144,97 +145,85 @@ export default function CreateUser() {
       
       if (response.success && response.data) {
         // Store user data and show success modal
-        setCreatedUserData({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email
-        });
+        setCreatedUserData(formData);
         setShowSuccessModal(true);
       }
     } catch (err: unknown) {
       console.error('Error creating user:', err);
       
-      // Check if it's a duplicate email error
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create user';
-      
-      if (errorMessage.toLowerCase().includes('email already exists') || 
-          errorMessage.toLowerCase().includes('already exists')) {
-        setValidationErrors({ email: 'User with this email already exists' });
-      } else {
-        setValidationErrors({ submit: errorMessage });
+      // Handle axios error with response
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string; error?: string; field?: string } } };
+        const errorData = axiosError.response?.data;
+        
+        // Check for duplicate key error
+        if (errorData?.field === 'email' || 
+            errorData?.message?.toLowerCase().includes('email already exists')) {
+          setValidationErrors({ 
+            email: errorData?.error || 'This email is already registered. Please use a different email address.' 
+          });
+          return;
+        }
+        
+        // Check for email configuration error
+        if (errorData?.message?.toLowerCase().includes('email service not configured') ||
+            errorData?.message?.toLowerCase().includes('email configuration missing')) {
+          setValidationErrors({ 
+            submit: 'Email service is not configured. Please contact the administrator to enable email verification.' 
+          });
+          return;
+        }
+        
+        // Generic error from backend
+        if (errorData?.message || errorData?.error) {
+          setValidationErrors({ 
+            submit: errorData.error || errorData.message || 'Failed to create user' 
+          });
+          return;
+        }
       }
+      
+      // Fallback error message
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create user. Please try again.';
+      setValidationErrors({ submit: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <div className="bg-white shadow-md border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/users')}
-                className="group p-3 hover:bg-gray-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-gray-300"
-              >
-                <svg className="h-6 w-6 text-gray-600 group-hover:text-gray-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="bg-linear-to-r from-blue-600 to-indigo-600 p-3 rounded-xl shadow-lg">
-                    <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-gray-50">
+      {/* Form Container */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6">
+        <form onSubmit={handleSubmit}>
+          {/* Main Form Card */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+            
+            {/* Personal Information Section */}
+            <div className="p-4 sm:p-6 md:p-8 lg:p-10 bg-linear-to-r from-white to-green-50/20">
+              <div className="mb-6 sm:mb-8 pb-3 sm:pb-4 border-b-2 border-[#5DD149]/20">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="p-2 sm:p-3 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-lg sm:rounded-xl shadow-lg">
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                      Create New User
-                    </h1>
-                    <p className="text-gray-600 mt-1 flex items-center gap-2">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Fill in the details below to create a new user account
-                    </p>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Personal Information</h2>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">Basic user details and contact information</p>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Form Container */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <form onSubmit={handleSubmit}>
-          {/* Main Form Card */}
-          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden">
-            
-            {/* Personal Information Section */}
-            <div className="p-8 md:p-10 border-b-2 border-gray-100 bg-linear-to-r from-blue-50/30 to-indigo-50/30">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="bg-blue-100 p-3 rounded-xl">
-                  <svg className="h-7 w-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Personal Information</h2>
-                  <p className="text-sm text-gray-600 mt-1">Basic user details and contact information</p>
-                </div>
-              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* First Name */}
                 <div className="group">
-                  <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
+                  <label className="flex text-sm sm:text-base font-bold text-gray-700 mb-2 sm:mb-3 items-center gap-2">
+                    <div className="p-1 sm:p-1.5 bg-[#5DD149]/10 rounded-lg">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
                     First Name <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -243,17 +232,17 @@ export default function CreateUser() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base border-2 rounded-lg sm:rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.firstName 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100'
+                          : 'border-gray-300 focus:border-[#5DD149] hover:border-[#5DD149]/50 focus:ring-4 focus:ring-[#5DD149]/20 bg-white'
                       }`}
-                      placeholder="John"
+                      placeholder="Enter first name"
                     />
                   </div>
                   {validationErrors.firstName && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-fadeIn">
-                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 animate-fadeIn">
+                      <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                       </svg>
                       {validationErrors.firstName}
@@ -264,9 +253,11 @@ export default function CreateUser() {
                 {/* Last Name */}
                 <div className="group">
                   <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
+                    <div className="p-1.5 bg-[#5DD149]/10 rounded-lg">
+                      <svg className="h-4 w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
                     Last Name <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -278,9 +269,9 @@ export default function CreateUser() {
                       className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.lastName 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100'
+                          : 'border-gray-300 focus:border-[#5DD149] hover:border-[#5DD149]/50 focus:ring-4 focus:ring-[#5DD149]/20 bg-white'
                       }`}
-                      placeholder="Doe"
+                      placeholder="Enter last name"
                     />
                   </div>
                   {validationErrors.lastName && (
@@ -296,9 +287,11 @@ export default function CreateUser() {
                 {/* Email */}
                 <div className="group">
                   <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                    <div className="p-1.5 bg-[#5DD149]/10 rounded-lg">
+                      <svg className="h-4 w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
                     Email Address <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -310,9 +303,9 @@ export default function CreateUser() {
                       className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.email 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100'
+                          : 'border-gray-300 focus:border-[#5DD149] hover:border-[#5DD149]/50 focus:ring-4 focus:ring-[#5DD149]/20 bg-white'
                       }`}
-                      placeholder="john.doe@company.com"
+                      placeholder="user@example.com"
                     />
                   </div>
                   {validationErrors.email && (
@@ -328,14 +321,17 @@ export default function CreateUser() {
                 {/* Mobile */}
                 <div className="group">
                   <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
+                    <div className="p-1.5 bg-[#5DD149]/10 rounded-lg">
+                      <svg className="h-4 w-4 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    </div>
                     Mobile Number <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 font-semibold">
-                      +91
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-600 font-semibold">
+                      <span className="text-[#5DD149]">🇮🇳</span>
+                      <span>+91</span>
                     </div>
                     <input
                       type="tel"
@@ -343,15 +339,17 @@ export default function CreateUser() {
                       value={formData.mobile}
                       onChange={handleInputChange}
                       maxLength={10}
-                      className={`w-full pl-14 pr-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
+                      className={`w-full pl-20 pr-16 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.mobile 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-blue-500 hover:border-gray-400 focus:ring-4 focus:ring-blue-100'
+                          : 'border-gray-300 focus:border-[#5DD149] hover:border-[#5DD149]/50 focus:ring-4 focus:ring-[#5DD149]/20 bg-white'
                       }`}
                       placeholder="9876543210"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-500">
-                      {formData.mobile.length}/10
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#5DD149]/10 px-3 py-1 rounded-lg">
+                      <span className={`text-xs font-bold ${formData.mobile.length === 10 ? 'text-[#5DD149]' : 'text-gray-500'}`}>
+                        {formData.mobile.length}/10
+                      </span>
                     </div>
                   </div>
                   {validationErrors.mobile && (
@@ -367,16 +365,18 @@ export default function CreateUser() {
             </div>
 
             {/* Company Information Section */}
-            <div className="p-8 md:p-10 border-b-2 border-gray-100 bg-linear-to-r from-green-50/30 to-emerald-50/30">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="bg-green-100 p-3 rounded-xl">
-                  <svg className="h-7 w-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Company Information</h2>
-                  <p className="text-sm text-gray-600 mt-1">Business details and company address</p>
+            <div className="p-8 md:p-10 bg-gradient-to-r from-green-50/20 to-white border-t-2 border-gray-100">
+              <div className="mb-8 pb-4 border-b-2 border-[#306B25]/20">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-gradient-to-br from-[#306B25] to-[#5DD149] rounded-xl shadow-lg">
+                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Company Information</h2>
+                    <p className="text-sm text-gray-600 mt-1">Business details and company address</p>
+                  </div>
                 </div>
               </div>
               
@@ -384,9 +384,11 @@ export default function CreateUser() {
                 {/* Company Name */}
                 <div className="group">
                   <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16" />
-                    </svg>
+                    <div className="p-1.5 bg-[#306B25]/10 rounded-lg">
+                      <svg className="h-4 w-4 text-[#306B25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16" />
+                      </svg>
+                    </div>
                     Company Name <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -398,9 +400,9 @@ export default function CreateUser() {
                       className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.companyName 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-green-500 hover:border-gray-400 focus:ring-4 focus:ring-green-100'
+                          : 'border-gray-300 focus:border-[#306B25] hover:border-[#306B25]/50 focus:ring-4 focus:ring-[#306B25]/20 bg-white'
                       }`}
-                      placeholder="Acme Corporation Inc."
+                      placeholder="Your Company Pvt. Ltd."
                     />
                   </div>
                   {validationErrors.companyName && (
@@ -416,10 +418,12 @@ export default function CreateUser() {
                 {/* Company Address */}
                 <div className="group">
                   <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                    <div className="p-1.5 bg-[#306B25]/10 rounded-lg">
+                      <svg className="h-4 w-4 text-[#306B25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
                     Company Address <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -431,9 +435,9 @@ export default function CreateUser() {
                       className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-200 resize-none ${
                         validationErrors.companyAddress 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-green-500 hover:border-gray-400 focus:ring-4 focus:ring-green-100'
+                          : 'border-gray-300 focus:border-[#306B25] hover:border-[#306B25]/50 focus:ring-4 focus:ring-[#306B25]/20 bg-white'
                       }`}
-                      placeholder="123 Business Street&#10;Suite 456&#10;City, State 12345"
+                      placeholder="123 Business Street, Suite 456, City, State - 123456"
                     />
                   </div>
                   {validationErrors.companyAddress && (
@@ -449,16 +453,18 @@ export default function CreateUser() {
             </div>
 
             {/* Security Information Section */}
-            <div className="p-8 md:p-10 bg-linear-to-r from-purple-50/30 to-pink-50/30">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="bg-purple-100 p-3 rounded-xl">
-                  <svg className="h-7 w-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Security Information</h2>
-                  <p className="text-sm text-gray-600 mt-1">Set up secure login credentials</p>
+            <div className="p-8 md:p-10 bg-gradient-to-r from-white to-green-50/20 border-t-2 border-gray-100">
+              <div className="mb-8 pb-4 border-b-2 border-[#5DD149]/20">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-gradient-to-br from-[#5DD149] to-[#306B25] rounded-xl shadow-lg">
+                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Security Information</h2>
+                    <p className="text-sm text-gray-600 mt-1">Set up secure login credentials</p>
+                  </div>
                 </div>
               </div>
               
@@ -466,9 +472,11 @@ export default function CreateUser() {
                 {/* Password */}
                 <div className="group">
                   <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                    </svg>
+                    <div className="p-1.5 bg-[#306B25]/10 rounded-lg">
+                      <svg className="h-4 w-4 text-[#306B25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                      </svg>
+                    </div>
                     Password <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -480,14 +488,14 @@ export default function CreateUser() {
                       className={`w-full px-4 py-3.5 pr-12 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.password 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-purple-500 hover:border-gray-400 focus:ring-4 focus:ring-purple-100'
+                          : 'border-gray-300 focus:border-[#306B25] hover:border-[#306B25]/50 focus:ring-4 focus:ring-[#306B25]/20 bg-white'
                       }`}
-                      placeholder="••••••••"
+                      placeholder="Enter secure password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#306B25] transition-colors p-1 rounded-lg hover:bg-[#306B25]/10"
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -495,36 +503,39 @@ export default function CreateUser() {
                   
                   {/* Password Strength Indicator */}
                   {formData.password && (
-                    <div className="mt-3">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-xs font-semibold text-gray-600">Password Strength:</span>
-                        <span className={`text-xs font-bold ${
-                          passwordStrength === 'weak' ? 'text-red-600' :
-                          passwordStrength === 'medium' ? 'text-yellow-600' :
-                          'text-green-600'
+                    <div className="mt-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-semibold text-gray-600">Password Strength</span>
+                        <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                          passwordStrength === 'weak' ? 'bg-red-100 text-red-700' :
+                          passwordStrength === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-green-100 text-green-700'
                         }`}>
                           {passwordStrength.toUpperCase()}
                         </span>
                       </div>
-                      <div className="flex gap-1">
-                        <div className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                      <div className="flex gap-1.5">
+                        <div className={`h-2 flex-1 rounded-full transition-all duration-300 ${
                           passwordStrength === 'weak' ? 'bg-red-500' :
                           passwordStrength === 'medium' ? 'bg-yellow-500' :
-                          passwordStrength === 'strong' ? 'bg-green-500' :
+                          passwordStrength === 'strong' ? 'bg-[#5DD149]' :
                           'bg-gray-200'
                         }`}></div>
-                        <div className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                        <div className={`h-2 flex-1 rounded-full transition-all duration-300 ${
                           passwordStrength === 'medium' ? 'bg-yellow-500' :
-                          passwordStrength === 'strong' ? 'bg-green-500' :
+                          passwordStrength === 'strong' ? 'bg-[#5DD149]' :
                           'bg-gray-200'
                         }`}></div>
-                        <div className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                          passwordStrength === 'strong' ? 'bg-green-500' :
+                        <div className={`h-2 flex-1 rounded-full transition-all duration-300 ${
+                          passwordStrength === 'strong' ? 'bg-[#5DD149]' :
                           'bg-gray-200'
                         }`}></div>
                       </div>
-                      <p className="text-xs text-gray-600 mt-2">
-                        Use 8+ characters with a mix of uppercase, lowercase, numbers & symbols
+                      <p className="text-xs text-gray-600 mt-2 flex items-start gap-1.5">
+                        <svg className="h-3.5 w-3.5 text-[#5DD149] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Use 8+ characters with uppercase, lowercase, numbers & symbols</span>
                       </p>
                     </div>
                   )}
@@ -542,9 +553,11 @@ export default function CreateUser() {
                 {/* Confirm Password */}
                 <div className="group">
                   <label className="flex text-sm font-bold text-gray-700 mb-2 items-center gap-2">
-                    <svg className="h-4 w-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
+                    <div className="p-1.5 bg-[#306B25]/10 rounded-lg">
+                      <svg className="h-4 w-4 text-[#306B25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
                     Confirm Password <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -556,17 +569,26 @@ export default function CreateUser() {
                       className={`w-full px-4 py-3.5 pr-12 border-2 rounded-xl focus:outline-none transition-all duration-200 ${
                         validationErrors.confirmPassword 
                           ? 'border-red-400 focus:border-red-500 bg-red-50 focus:ring-4 focus:ring-red-100' 
-                          : 'border-gray-300 focus:border-purple-500 hover:border-gray-400 focus:ring-4 focus:ring-purple-100'
+                          : formData.confirmPassword && formData.password === formData.confirmPassword
+                          ? 'border-[#5DD149] bg-green-50/30 focus:ring-4 focus:ring-[#5DD149]/20'
+                          : 'border-gray-300 focus:border-[#306B25] hover:border-[#306B25]/50 focus:ring-4 focus:ring-[#306B25]/20 bg-white'
                       }`}
-                      placeholder="••••••••"
+                      placeholder="Re-enter your password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#306B25] transition-colors p-1 rounded-lg hover:bg-[#306B25]/10"
                     >
                       {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
+                    {formData.confirmPassword && formData.password === formData.confirmPassword && (
+                      <div className="absolute right-14 top-1/2 -translate-y-1/2">
+                        <svg className="h-6 w-6 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
                   {validationErrors.confirmPassword && (
                     <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-fadeIn">
@@ -581,14 +603,16 @@ export default function CreateUser() {
 
               {/* Submit Error */}
               {validationErrors.submit && (
-                <div className="mt-8 p-5 bg-red-50 border-2 border-red-200 rounded-xl animate-fadeIn">
+                <div className="mt-8 p-5 bg-gradient-to-r from-red-50 to-red-100/50 border-2 border-red-300 rounded-2xl animate-fadeIn shadow-lg">
                   <div className="flex items-start gap-3">
-                    <svg className="h-6 w-6 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-semibold text-red-900">Error Creating User</p>
-                      <p className="text-sm text-red-700 mt-1">{validationErrors.submit}</p>
+                    <div className="p-2 bg-red-200 rounded-lg shrink-0">
+                      <svg className="h-6 w-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-red-900 mb-1">Error Creating User</p>
+                      <p className="text-sm text-red-700">{validationErrors.submit}</p>
                     </div>
                   </div>
                 </div>
@@ -597,164 +621,76 @@ export default function CreateUser() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between gap-4 mt-8 px-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             <button
               type="button"
               onClick={() => navigate('/users')}
-              className="group px-8 py-4 text-gray-700 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
+              className="w-full sm:w-auto group px-6 sm:px-8 py-3 sm:py-4 text-gray-700 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg sm:rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-xl flex items-center justify-center gap-2"
             >
-              <svg className="h-5 w-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              Cancel
+              <span className="text-sm sm:text-base">Cancel</span>
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group px-10 py-4 bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white rounded-xl font-bold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:-translate-y-1 disabled:transform-none flex items-center gap-3"
+              className="w-full sm:w-auto group relative px-8 sm:px-10 py-3 sm:py-4 text-white rounded-lg sm:rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:-translate-y-1 disabled:transform-none flex items-center justify-center gap-2 sm:gap-3 overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #5DD149 0%, #306B25 100%)',
+              }}
             >
-              {isSubmitting ? (
-                <>
-                  <svg className="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>Creating User...</span>
-                </>
-              ) : (
-                <>
-                  <svg className="h-6 w-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                  </svg>
-                  <span>Create New User</span>
-                </>
-              )}
+              <div className="absolute inset-0 bg-linear-to-r from-[#4BC13B] to-[#255A1D] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center gap-2 sm:gap-3">
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span className="text-sm sm:text-base">Creating User...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    <span className="text-sm sm:text-base">Create New User</span>
+                  </>
+                )}
+              </div>
             </button>
           </div>
         </form>
       </div>
 
       {/* Success Modal */}
-      {showSuccessModal && createdUserData && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all animate-slideIn">
-            {/* Header with gradient */}
-            <div className="bg-linear-to-r from-green-500 via-emerald-500 to-teal-500 p-6 text-white">
-              <div className="flex items-center justify-center mb-4">
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-full">
-                  <svg className="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-center">User Created Successfully!</h3>
-              <p className="text-green-100 text-center mt-2 text-sm">
-                The account has been created and verification email sent
-              </p>
-            </div>
-
-            {/* Body */}
-            <div className="p-6 space-y-4">
-              {/* User Details Card */}
-              <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border-2 border-blue-100">
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">User Details</p>
-                    <h4 className="text-lg font-bold text-gray-900 mt-1">
-                      {createdUserData.firstName} {createdUserData.lastName}
-                    </h4>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <svg className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-gray-700 font-medium">{createdUserData.email}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Email Verification Notice */}
-              <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <svg className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-yellow-900">Email Verification Required</p>
-                    <p className="text-xs text-yellow-800 mt-1">
-                      A verification link has been sent to <span className="font-semibold">{createdUserData.email}</span>. 
-                      The user must verify their email before accessing the account.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Next Steps */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <p className="text-xs font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Next Steps
-                </p>
-                <ul className="space-y-1.5 text-xs text-gray-600">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>User account created successfully</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">→</span>
-                    <span>User will receive verification email</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-600 mt-0.5">→</span>
-                    <span>After verification, admin approval required</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Footer Actions */}
-            <div className="bg-gray-50 px-6 py-4 flex gap-3">
-              <button
-                onClick={() => {
-                  setShowSuccessModal(false);
-                  setFormData({
-                    firstName: '',
-                    lastName: '',
-                    email: '',
-                    mobile: '',
-                    companyName: '',
-                    companyAddress: '',
-                    password: '',
-                    confirmPassword: '',
-                    totalMinutes: 0,
-                    paymentId: ''
-                  });
-                  setPasswordStrength('');
-                }}
-                className="flex-1 px-4 py-3 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition-all duration-200 shadow-sm hover:shadow"
-              >
-                Create Another User
-              </button>
-              <button
-                onClick={() => navigate('/users')}
-                className="flex-1 px-4 py-3 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                Go to User List
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <UserSuccessModal 
+        isOpen={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          setCreatedUserData(null);
+          navigate('/users');
+        }}
+        onCreateAnother={() => {
+          setShowSuccessModal(false);
+          setCreatedUserData(null);
+          setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            mobile: '',
+            companyName: '',
+            companyAddress: '',
+            password: '',
+            confirmPassword: '',
+            totalMinutes: 0,
+            paymentId: ''
+          });
+          setPasswordStrength('');
+        }}
+        userData={createdUserData}
+      />
     </div>
   );
 }

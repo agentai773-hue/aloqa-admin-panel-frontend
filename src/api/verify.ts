@@ -1,72 +1,41 @@
-// Email Verification API functions
-import axios from 'axios';
+import { apiClient, type ApiResponse } from './client';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
-
-// Create axios instance for verification endpoints (no auth required)
-const verifyAxios = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export interface VerifyEmailResponse {
-  success: boolean;
-  message: string;
-  data?: {
-    user: {
-      _id: string;
-      email: string;
-      firstName: string;
-      lastName: string;
-      isActive: 0 | 1;
-      isApproval: 0 | 1;
-    };
-  };
+// Types
+export interface VerifyEmailData {
+  token: string;
 }
 
-export interface ResendVerificationRequest {
+export interface ResendVerificationData {
   email: string;
 }
 
-export interface ResendVerificationResponse {
-  success: boolean;
+export interface VerifyEmailResponse {
   message: string;
+  success: boolean;
 }
 
+export interface ResendVerificationResponse {
+  message: string;
+  success: boolean;
+}
+
+// API functions
 export const verifyAPI = {
   // Verify email with token
-  async verifyEmail(token: string): Promise<VerifyEmailResponse> {
-    try {
-      const response = await verifyAxios.get<VerifyEmailResponse>(`/verify-email/${token}`);
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.data) {
-        return error.response.data;
-      }
-      return {
-        success: false,
-        message: 'An error occurred during verification. Please try again later.',
-      };
+  verifyEmail: async (token: string): Promise<VerifyEmailResponse> => {
+    const response = await apiClient.post<ApiResponse<VerifyEmailResponse>>('/auth/verify-email', { token });
+    if (!response.data || !response.data.data) {
+      throw new Error('Invalid response from server');
     }
+    return response.data.data;
   },
 
   // Resend verification email
-  async resendVerification(email: string): Promise<ResendVerificationResponse> {
-    try {
-      const response = await verifyAxios.post<ResendVerificationResponse>('/verify-email/resend', {
-        email,
-      });
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.data) {
-        return error.response.data;
-      }
-      return {
-        success: false,
-        message: 'An error occurred. Please try again later.',
-      };
+  resendVerification: async (email: string): Promise<ResendVerificationResponse> => {
+    const response = await apiClient.post<ApiResponse<ResendVerificationResponse>>('/auth/resend-verification', { email });
+    if (!response.data || !response.data.data) {
+      throw new Error('Invalid response from server');
     }
+    return response.data.data;
   },
 };

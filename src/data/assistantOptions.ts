@@ -31,13 +31,44 @@ export const AGENT_FLOW_TYPES = [
 
 export const LLM_PROVIDERS = [
   { value: 'openai', label: 'OpenAI' },
+  { value: 'openrouter', label: 'Openrouter' },
+  { value: 'azure', label: 'Azure' },
+  { value: 'deepseek', label: 'Deepseek' },
 ];
 
-export const LLM_MODELS = [
-  { value: 'gpt-4o', label: 'GPT-4o' },
-  { value: 'gpt-4', label: 'GPT-4' },
-  { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
-];
+export const LLM_MODELS = {
+  openai: [
+    { value: 'gpt-4.1', label: 'GPT-4.1' },
+    { value: 'gpt-4.1-nano', label: 'GPT-4.1-nano' },
+    { value: 'gpt-4.1-mini', label: 'GPT-4.1-mini' },
+    { value: 'gpt-4o-mini', label: 'GPT-4o-mini' },
+    { value: 'gpt-4', label: 'GPT-4' },
+    { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
+  ],
+  openrouter: [
+    { value: 'gpt-oss-20b', label: 'gpt-oss-20b' },
+    { value: 'gpt-oss-120b', label: 'gpt-oss-120b' },
+    { value: 'gpt-4', label: 'gpt-4' },
+    { value: 'gpt-4o-mini', label: 'gpt-4o-mini' },
+    { value: 'gpt-4o', label: 'gpt-4o' },
+    { value: 'gpt-4.1', label: 'gpt-4.1' },
+    { value: 'gpt-4.1-nano', label: 'gpt-4.1-nano' },
+    { value: 'gpt-4.1-mini', label: 'gpt-4.1-mini' },
+    { value: 'Claude sonnet-4', label: 'Claude sonnet-4' },
+  ],
+  azure: [
+    { value: 'gpt-4.1-mini cluster', label: 'gpt-4.1-mini cluster' },
+    { value: 'gpt-4.1 cluster', label: 'gpt-4.1 cluster' },
+    { value: 'gpt-4.1-nano cluster', label: 'gpt-4.1-nano cluster' },
+    { value: 'gpt-4o-mini cluster', label: 'gpt-4o-mini cluster' },
+    { value: 'gpt-4o cluster', label: 'gpt-4o cluster' },
+    { value: 'gpt-4 cluster', label: 'gpt-4 cluster' },
+    { value: 'gpt-3.5 cluster', label: 'gpt-3.5 cluster' },
+  ],
+  deepseek: [
+    { value: 'deepseek-chat', label: 'deepseek-chat' },
+  ],
+};
 
 export const SYNTHESIZER_PROVIDERS = [
   { value: 'polly', label: 'Polly' },
@@ -108,21 +139,109 @@ export const TRANSCRIBER_MODELS = {
   ],
 };
 
-export const TRANSCRIBER_LANGUAGES = [
-  { value: 'hi', label: 'Hindi' },
-  { value: 'en', label: 'English' },
-  { value: 'es', label: 'Spanish' },
-  { value: 'fr', label: 'French' },
-  { value: 'de', label: 'German' },
-  { value: 'bn', label: 'Bengali' },
-  { value: 'ta', label: 'Tamil' },
-  { value: 'te', label: 'Telugu' },
-  { value: 'gu', label: 'Gujarati' },
-  { value: 'kn', label: 'Kannada' },
-  { value: 'ml', label: 'Malayalam' },
-  { value: 'mr', label: 'Marathi' },
-  { value: 'pa', label: 'Punjabi' },
-];
+/**
+ * Transcriber Language Support by Provider and Model
+ * 
+ * IMPORTANT: Not all languages are supported by all models!
+ * Bolna API will reject unsupported language-model combinations.
+ * 
+ * Known Limitations (from Bolna API):
+ * - Some Deepgram models (e.g., nova-3) may not support all languages listed
+ * - Always test your language-model combination before production use
+ * 
+ * The backend will return user-friendly error messages when a combination is not supported.
+ * Example error: "Language 'gu-IN' is not supported by the transcriber model 'nova-3'"
+ */
+export const TRANSCRIBER_LANGUAGES = {
+  deepgram: [
+    { value: 'en', label: 'English' },
+    { value: 'hi', label: 'Hindi' },
+    { value: 'bn', label: 'Bengali' },
+    { value: 'nl', label: 'Dutch' },
+    { value: 'fr', label: 'French' },
+    { value: 'gu', label: 'Gujarati' },
+    { value: 'multi', label: 'India Multilingual' },
+    { value: 'id', label: 'Indonesian' },
+    { value: 'kn', label: 'Kannada' },
+    { value: 'ms', label: 'Malay' },
+    { value: 'ml', label: 'Malayalam' },
+    { value: 'mr', label: 'Marathi' },
+    { value: 'od', label: 'Odia' },
+    { value: 'pt', label: 'Portuguese (Portugal)' },
+    { value: 'pa', label: 'Punjabi (India)' },
+    { value: 'es', label: 'Spanish' },
+    { value: 'ta', label: 'Tamil' },
+    { value: 'te', label: 'Telugu' },
+    { value: 'th', label: 'Thai' },
+    { value: 'vi', label: 'Vietnamese' },
+  ],
+  azure: [
+    { value: 'en', label: 'English' },
+    { value: 'hi', label: 'Hindi' },
+    { value: 'bn', label: 'Bengali' },
+    { value: 'nl', label: 'Dutch' },
+    { value: 'fr', label: 'French' },
+    { value: 'gu', label: 'Gujarati' },
+    { value: 'multi', label: 'India Multilingual' },
+    { value: 'id', label: 'Indonesian' },
+    { value: 'kn', label: 'Kannada' },
+    { value: 'ms', label: 'Malay' },
+    { value: 'ml', label: 'Malayalam' },
+    { value: 'mr', label: 'Marathi' },
+    { value: 'od', label: 'Odia' },
+    { value: 'pt', label: 'Portuguese (Portugal)' },
+    { value: 'pa', label: 'Punjabi (India)' },
+    { value: 'es', label: 'Spanish' },
+    { value: 'ta', label: 'Tamil' },
+    { value: 'te', label: 'Telugu' },
+    { value: 'th', label: 'Thai' },
+    { value: 'vi', label: 'Vietnamese' },
+  ],
+  google: [
+    { value: 'en', label: 'English' },
+    { value: 'hi', label: 'Hindi' },
+    { value: 'bn', label: 'Bengali' },
+    { value: 'nl', label: 'Dutch' },
+    { value: 'fr', label: 'French' },
+    { value: 'gu', label: 'Gujarati' },
+    { value: 'multi', label: 'India Multilingual' },
+    { value: 'id', label: 'Indonesian' },
+    { value: 'kn', label: 'Kannada' },
+    { value: 'ms', label: 'Malay' },
+    { value: 'ml', label: 'Malayalam' },
+    { value: 'mr', label: 'Marathi' },
+    { value: 'od', label: 'Odia' },
+    { value: 'pt', label: 'Portuguese (Portugal)' },
+    { value: 'pa', label: 'Punjabi (India)' },
+    { value: 'es', label: 'Spanish' },
+    { value: 'ta', label: 'Tamil' },
+    { value: 'te', label: 'Telugu' },
+    { value: 'th', label: 'Thai' },
+    { value: 'vi', label: 'Vietnamese' },
+  ],
+  sarvam: [
+    { value: 'en', label: 'English' },
+    { value: 'hi', label: 'Hindi' },
+    { value: 'bn', label: 'Bengali' },
+    { value: 'nl', label: 'Dutch' },
+    { value: 'fr', label: 'French' },
+    { value: 'gu', label: 'Gujarati' },
+    { value: 'multi', label: 'India Multilingual' },
+    { value: 'id', label: 'Indonesian' },
+    { value: 'kn', label: 'Kannada' },
+    { value: 'ms', label: 'Malay' },
+    { value: 'ml', label: 'Malayalam' },
+    { value: 'mr', label: 'Marathi' },
+    { value: 'od', label: 'Odia' },
+    { value: 'pt', label: 'Portuguese (Portugal)' },
+    { value: 'pa', label: 'Punjabi (India)' },
+    { value: 'es', label: 'Spanish' },
+    { value: 'ta', label: 'Tamil' },
+    { value: 'te', label: 'Telugu' },
+    { value: 'th', label: 'Thai' },
+    { value: 'vi', label: 'Vietnamese' },
+  ],
+};
 
 export const IO_PROVIDERS = [
   { value: 'plivo', label: 'Plivo' },

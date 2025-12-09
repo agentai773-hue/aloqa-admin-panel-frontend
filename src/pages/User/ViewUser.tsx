@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { usersAPI } from '../../api/users';
+import { usersAPI } from '../../api';
 import toast from 'react-hot-toast';
 
 export default function ViewUser() {
@@ -23,9 +23,9 @@ export default function ViewUser() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-50">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-green-600 border-t-transparent mx-auto"></div>
           <p className="mt-4 text-gray-600 font-medium">Loading user details...</p>
         </div>
       </div>
@@ -37,15 +37,15 @@ export default function ViewUser() {
   const user = data.data.user;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-4">
           <button
             onClick={() => navigate('/users')}
-            className="group inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-6"
+            className="group inline-flex items-center gap-2 text-gray-600 hover:text-[#5DD149] transition-colors mb-6"
           >
-            <div className="p-1 rounded-full group-hover:bg-blue-100 transition-colors">
+            <div className="p-1 rounded-full group-hover:bg-green-100 transition-colors">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
@@ -59,7 +59,7 @@ export default function ViewUser() {
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
           {/* Profile Header */}
-          <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-8 py-10">
+          <div className="bg-linear-to-r from-[#5DD149] to-[#306B25] px-8 py-10">
             
             <div className="flex items-center gap-6">
               <div className="h-24 w-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-4 border-white/30">
@@ -71,7 +71,7 @@ export default function ViewUser() {
                 <h2 className="text-3xl font-bold text-white mb-2">
                   {user.firstName} {user.lastName}
                 </h2>
-                <p className="text-blue-100 text-lg">{user.email}</p>
+                <p className="text-green-100 text-lg">{user.email}</p>
               </div>
                  <div className={`px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm ${
               user.isApproval === 1 
@@ -88,8 +88,8 @@ export default function ViewUser() {
             {/* Personal Information */}
             <div className="mb-10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <svg className="h-6 w-6 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
@@ -105,12 +105,12 @@ export default function ViewUser() {
                   <label className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Last Name</label>
                   <p className="text-xl font-bold text-gray-900">{user.lastName}</p>
                 </div>
-                <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200">
-                  <label className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2 block">Email Address</label>
+                <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-5 border border-green-200">
+                  <label className="text-sm font-semibold text-[#5DD149] uppercase tracking-wide mb-2 block">Email Address</label>
                   <p className="text-xl font-bold text-gray-900 break-all">{user.email}</p>
                 </div>
-                <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
-                  <label className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-2 block">Mobile Number</label>
+                <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-5 border border-green-200">
+                  <label className="text-sm font-semibold text-[#306B25] uppercase tracking-wide mb-2 block">Mobile Number</label>
                   <p className="text-xl font-bold text-gray-900">{user.mobile}</p>
                 </div>
               </div>
@@ -119,8 +119,8 @@ export default function ViewUser() {
             {/* Company Information */}
             <div className="mb-10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-indigo-100 rounded-lg">
-                  <svg className="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <svg className="h-6 w-6 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
@@ -128,8 +128,8 @@ export default function ViewUser() {
               </div>
               
               <div className="space-y-6">
-                <div className="bg-linear-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
-                  <label className="text-sm font-semibold text-indigo-600 uppercase tracking-wide mb-3 block">Company Name</label>
+                <div className="bg-linear-to-r from-green-50/50 to-emerald-50/50 rounded-xl p-6 border border-green-200">
+                  <label className="text-sm font-semibold text-[#5DD149] uppercase tracking-wide mb-3 block">Company Name</label>
                   <p className="text-2xl font-bold text-gray-900">{user.companyName}</p>
                 </div>
                 <div className="bg-linear-to-br from-gray-50 to-slate-50 rounded-xl p-6 border border-gray-200">
@@ -176,7 +176,12 @@ export default function ViewUser() {
               </button>
               <button
                 onClick={() => navigate(`/users/${id}/edit`)}
-                className="flex-1 min-w-[200px] px-6 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold shadow-lg shadow-blue-500/30"
+                className="flex-1 min-w-[200px] px-6 py-3.5 text-white rounded-xl transition-all font-semibold shadow-lg shadow-green-500/30"
+                style={{
+                  background: 'linear-gradient(to right, #5DD149, #306B25)',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #4BC13B, #255A1D)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #5DD149, #306B25)'}
               >
                 Edit User Profile
               </button>

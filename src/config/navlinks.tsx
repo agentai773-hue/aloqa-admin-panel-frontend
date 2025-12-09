@@ -5,9 +5,10 @@ import {
   UserPlus,
   Bot,
   PlusCircle,
-  PhoneCall,
-  List,
   Phone,
+  PhoneOutgoing,
+  Mic,
+  UserCheck,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -43,18 +44,23 @@ export const navigationItems: NavItem[] = [
     icon: <PlusCircle className="h-5 w-5" />
   },
   {
-    name: 'Phone Numbers',
+    name: 'Buy Phone Number',
     href: '/phone-numbers',
     icon: <Phone className="h-5 w-5" />
   },
   {
     name: 'Assign Number',
-    href: '/assign/number',
-    icon: <PhoneCall className="h-5 w-5" />
+    href: '/phone-numbers-assign',
+    icon: <PhoneOutgoing className="h-5 w-5" />
   },
   {
-    name: 'Number Lists',
-    href: '/number/lists',
-    icon: <List className="h-5 w-5" />
+    name: 'Voice Library',
+    href: '/voices',
+    icon: <Mic className="h-5 w-5" />
+  },
+  {
+    name: 'Voice Assignments',
+    href: '/voice-assignments',
+    icon: <UserCheck className="h-5 w-5" />
   },
 ];

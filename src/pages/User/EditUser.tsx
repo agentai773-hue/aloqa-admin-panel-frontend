@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersAPI, type UpdateUserData } from '../../api/users';
+import { usersAPI } from '../../api';
+import type { UpdateUserData } from '../../api';
 import toast from 'react-hot-toast';
 
 export default function EditUser() {
@@ -80,9 +81,9 @@ export default function EditUser() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-50">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-green-600 border-t-transparent mx-auto"></div>
           <p className="mt-4 text-gray-600 font-medium">Loading user data...</p>
         </div>
       </div>
@@ -90,15 +91,15 @@ export default function EditUser() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="group inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-6"
+            className="group inline-flex items-center gap-2 text-gray-600 hover:text-[#5DD149] transition-colors mb-6"
           >
-            <div className="p-1 rounded-full group-hover:bg-blue-100 transition-colors">
+            <div className="p-1 rounded-full group-hover:bg-green-100 transition-colors">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
@@ -117,8 +118,8 @@ export default function EditUser() {
           {/* Personal Information Section */}
           <div className="p-8 border-b border-gray-200">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <svg className="h-6 w-6 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
@@ -136,7 +137,7 @@ export default function EditUser() {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-[#5DD149] focus:ring-2 focus:ring-green-200 transition-all"
                   placeholder="Enter first name"
                 />
               </div>
@@ -150,7 +151,7 @@ export default function EditUser() {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-[#5DD149] focus:ring-2 focus:ring-green-200 transition-all"
                   placeholder="Enter last name"
                 />
               </div>
@@ -164,7 +165,7 @@ export default function EditUser() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-[#5DD149] focus:ring-2 focus:ring-green-200 transition-all"
                   placeholder="email@example.com"
                 />
               </div>
@@ -178,7 +179,7 @@ export default function EditUser() {
                   value={formData.mobile}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-[#5DD149] focus:ring-2 focus:ring-green-200 transition-all"
                   placeholder="Enter mobile number"
                 />
               </div>
@@ -186,10 +187,10 @@ export default function EditUser() {
           </div>
 
           {/* Company Information Section */}
-          <div className="p-8 border-b border-gray-200 bg-linear-to-br from-indigo-50/50 to-purple-50/50">
+          <div className="p-8 border-b border-gray-200 bg-linear-to-r from-green-50/30 to-emerald-50/30">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-indigo-100 rounded-lg">
-                <svg className="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <svg className="h-6 w-6 text-[#5DD149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
@@ -207,7 +208,7 @@ export default function EditUser() {
                   value={formData.companyName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all bg-white"
                   placeholder="Enter company name"
                 />
               </div>
@@ -221,7 +222,7 @@ export default function EditUser() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all resize-none bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all resize-none bg-white"
                   placeholder="Enter complete company address"
                 />
               </div>
@@ -271,8 +272,8 @@ export default function EditUser() {
           {/* Password Section */}
           <div className="p-8 border-b border-gray-200">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <svg className="h-6 w-6 text-[#306B25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
@@ -292,7 +293,7 @@ export default function EditUser() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-[#306B25] focus:ring-2 focus:ring-green-200 transition-all"
                   placeholder="Enter new password"
                 />
               </div>
@@ -305,7 +306,7 @@ export default function EditUser() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-[#306B25] focus:ring-2 focus:ring-green-200 transition-all"
                   placeholder="Confirm new password"
                 />
               </div>
@@ -325,7 +326,12 @@ export default function EditUser() {
               <button
                 type="submit"
                 disabled={updateMutation.isPending}
-                className="flex-1 min-w-[200px] px-6 py-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 min-w-[200px] px-6 py-4 text-white rounded-xl transition-all font-semibold shadow-lg shadow-green-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: 'linear-gradient(to right, #5DD149, #306B25)',
+                }}
+                onMouseEnter={(e) => !updateMutation.isPending && (e.currentTarget.style.background = 'linear-gradient(to right, #4BC13B, #255A1D)')}
+                onMouseLeave={(e) => !updateMutation.isPending && (e.currentTarget.style.background = 'linear-gradient(to right, #5DD149, #306B25)')}
               >
                 {updateMutation.isPending ? (
                   <span className="flex items-center justify-center gap-2">

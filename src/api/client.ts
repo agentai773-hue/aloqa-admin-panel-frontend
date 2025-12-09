@@ -1,32 +1,34 @@
-// API configuration and base client using axios
+// Optimized API client and configuration
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
-interface ValidationError {
+export interface ValidationError {
   field: string;
   message: string;
 }
 
-interface ApiResponse<T> {
+export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data?: T;
   errors?: ValidationError[];
 }
 
-// Create axios instance with default config
+// Create axios instance
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Enable cookies
 });
 
-// Request interceptor to attach token
+// Request interceptor to add auth token
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = Cookies.get('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -41,20 +43,21 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle 401 Unauthorized - redirect to login
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      console.warn('Unauthorized access - clearing auth and redirecting to login');
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('refreshToken');
-      window.location.href = '/login';
-    }
-    
-    // Handle 403 Forbidden
-    if (axios.isAxiosError(error) && error.response?.status === 403) {
-      console.error('Access forbidden - insufficient permissions');
-    }
-    
     console.error('API request failed:', error);
+    
+    // Handle 401 Unauthorized - token expired
+    if (error.response?.status === 401) {
+      // Clear auth cookies
+      Cookies.remove('authToken', { path: '/' });
+      Cookies.remove('refreshToken', { path: '/' });
+      Cookies.remove('adminUser', { path: '/' });
+      
+      // Redirect to login if not already there
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    
     throw error;
   }
 );

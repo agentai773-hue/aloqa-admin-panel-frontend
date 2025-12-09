@@ -1,22 +1,61 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersAPI, type User, type CreateUserData } from '../api';
+import { usersAPI, type User, type CreateUserData, type GetUsersParams } from '../api';
 import toast from 'react-hot-toast';
 
-export const useUsers = () => {
-  const queryClient = useQueryClient();
+export interface UseUsersOptions {
+  enabled?: boolean;
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: 'verified' | 'pending';
+  approval?: 'approved' | 'pending';
+}
 
-  // Fetch users
+export const useUsers = (options: UseUsersOptions = {}) => {
+  const queryClient = useQueryClient();
+  const { 
+    enabled = true, 
+    page = 1, 
+    limit = 10, 
+    search, 
+    status, 
+    approval 
+  } = options;
+
+  // Fetch users with pagination and search
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['users'],
+    queryKey: ['users', { page, limit, search, status, approval }],
     queryFn: async () => {
-      const response = await usersAPI.getUsers();
+      const params: GetUsersParams = {
+        page,
+        limit,
+        search,
+        status,
+        approval,
+      };
+      
+      // Convert filter values to API format
+      if (approval === 'approved') params.isApproval = 1;
+      if (approval === 'pending') params.isApproval = 0;
+
+      const response = await usersAPI.getUsers(params);
       if (response.success && response.data) {
-        return response.data.users;
+        return response.data;
       }
       throw new Error('Failed to fetch users');
     },
+    enabled, // Only fetch when enabled
     staleTime: 30000, // 30 seconds
   });
+
+  // Extract users and pagination info
+  const users = data?.users || [];
+  const pagination = {
+    total: data?.total || 0,
+    page: data?.page || 1,
+    limit: data?.limit || 10,
+    totalPages: Math.ceil((data?.total || 0) / (data?.limit || 10))
+  };
 
   // Create user mutation
   const createUser = useMutation({
@@ -126,7 +165,8 @@ export const useUsers = () => {
   });
 
   return {
-    users: data || [],
+    users,
+    pagination,
     isLoading,
     error,
     refetch,

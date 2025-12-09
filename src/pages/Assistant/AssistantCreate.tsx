@@ -74,8 +74,8 @@ export default function AssistantCreate() {
         emotion: 'friendly',
         emotion_strength: 0.50,
         voice_pause_model: 'minimal',
-        auto_punctuation_pause: false,
-        dynamic_emotion_adaptation: true,
+        auto_punctuation_pause: true,
+        dynamic_emotion_adaptation: false,
         use_speaker_boost: true,
 
       },

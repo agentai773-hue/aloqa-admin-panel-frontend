@@ -35,6 +35,7 @@ export interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
+  error: string | null;
 }
 
 // Dashboard related types

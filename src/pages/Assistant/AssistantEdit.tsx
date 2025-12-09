@@ -27,7 +27,7 @@ export default function AssistantEdit() {
   const assistant = assistantResponse?.data;
 
   // Create selectedUserIds array from current assistant user
-  const selectedUserIds: string[] = assistant?.userId 
+  const selectedUserIds: string[] = assistant?.userId
     ? [typeof assistant.userId === 'string' ? assistant.userId : assistant.userId._id]
     : [];
 
@@ -68,8 +68,17 @@ export default function AssistantEdit() {
       provider_config: {
         voice: 'Kajal',
         engine: 'neural',
-        sampling_rate: '8000',
-        language: 'hi-IN'
+        sampling_rate: '16000',
+        language: 'hi-IN',
+        stability: 90,
+        similarity_boost: 75,
+        speed: 96,
+        emotion: 'friendly',
+        emotion_strength: 50,
+        voice_pause_model: 'minimal',
+        auto_punctuation_pause: false,
+        dynamic_emotion_adaptation: true,
+        use_speaker_boost: true,
       },
       stream: true,
       buffer_size: 60,
@@ -82,7 +91,10 @@ export default function AssistantEdit() {
       stream: true,
       sampling_rate: 16000,
       encoding: 'linear16',
-      endpointing: 250
+      endpointing: 250,
+      interim_results: true,
+      punctuate: true,
+      smart_format: true
     },
     inputConfig: {
       provider: 'plivo',
@@ -97,7 +109,8 @@ export default function AssistantEdit() {
       incremental_delay: 40,
       number_of_words_for_interruption: 2,
       backchanneling: false,
-      call_terminate: 800
+      call_terminate: 800,
+      optimize_latency: true
     },
     routes: [],
     // Voice assignment fields
@@ -137,8 +150,18 @@ export default function AssistantEdit() {
           provider_config: {
             voice: assistant.synthesizerConfig?.provider_config?.voice || 'Kajal',
             engine: assistant.synthesizerConfig?.provider_config?.engine || 'neural',
-            sampling_rate: assistant.synthesizerConfig?.provider_config?.sampling_rate || '8000',
-            language: assistant.synthesizerConfig?.provider_config?.language || 'hi-IN'
+            sampling_rate: assistant.synthesizerConfig?.provider_config?.sampling_rate || '16000',
+            language: assistant.synthesizerConfig?.provider_config?.language || 'hi-IN',
+            // ElevenLabs fields
+            stability: assistant.synthesizerConfig?.provider_config?.stability ?? 90,
+            similarity_boost: assistant.synthesizerConfig?.provider_config?.similarity_boost ?? 75,
+            speed: assistant.synthesizerConfig?.provider_config?.speed ?? 100,
+            emotion: assistant.synthesizerConfig?.provider_config?.emotion ?? "friendly",
+            emotion_strength: assistant.synthesizerConfig?.provider_config?.emotion_strength ?? 50,
+            voice_pause_model: assistant.synthesizerConfig?.provider_config?.voice_pause_model ?? "minimal",
+            auto_punctuation_pause: assistant.synthesizerConfig?.provider_config?.auto_punctuation_pause ?? false,
+            dynamic_emotion_adaptation: assistant.synthesizerConfig?.provider_config?.dynamic_emotion_adaptation ?? true,
+            use_speaker_boost: assistant.synthesizerConfig?.provider_config?.use_speaker_boost ?? true
           },
           stream: assistant.synthesizerConfig?.stream ?? true,
           buffer_size: assistant.synthesizerConfig?.buffer_size ?? 60,
@@ -151,14 +174,21 @@ export default function AssistantEdit() {
           stream: assistant.transcriberConfig?.stream ?? true,
           sampling_rate: assistant.transcriberConfig?.sampling_rate ?? 16000,
           encoding: assistant.transcriberConfig?.encoding || 'linear16',
-          endpointing: assistant.transcriberConfig?.endpointing ?? 250
+          endpointing: assistant.transcriberConfig?.endpointing ?? 250,
+          interim_results: assistant.transcriberConfig?.interim_results ?? true,
+          punctuate: assistant.transcriberConfig?.punctuate ?? true,
+          smart_format: assistant.transcriberConfig?.smart_format ?? true,
+
+
         },
         taskConfig: {
           hangup_after_silence: assistant.taskConfig?.hangup_after_silence ?? 8,
           incremental_delay: assistant.taskConfig?.incremental_delay ?? 40,
           number_of_words_for_interruption: assistant.taskConfig?.number_of_words_for_interruption ?? 2,
           backchanneling: assistant.taskConfig?.backchanneling ?? false,
-          call_terminate: assistant.taskConfig?.call_terminate ?? 800
+          call_terminate: assistant.taskConfig?.call_terminate ?? 800,
+          optimize_latency: assistant.taskConfig?.optimize_latency ?? true
+
         },
         inputConfig: {
           provider: assistant.inputConfig?.provider || 'plivo',
@@ -173,7 +203,7 @@ export default function AssistantEdit() {
         voiceId: assistant.voiceId,
         voiceName: assistant.voiceName
       });
-      
+
     }
   }, [assistant]);
 
@@ -188,13 +218,13 @@ export default function AssistantEdit() {
     },
     onError: (error: unknown) => {
       const errorResponse = (error as { response?: { data?: { message?: string; errorDetail?: string } } })?.response?.data;
-      
+
       // Use the user-friendly message from backend, or the error detail, or fallback message
-      const message = errorResponse?.message 
+      const message = errorResponse?.message
         || errorResponse?.errorDetail
-        || (error as { message?: string })?.message 
+        || (error as { message?: string })?.message
         || 'Failed to update assistant';
-      
+
       toast.error(message, {
         duration: 6000, // Show error for 6 seconds since it might be detailed
         style: {
@@ -206,11 +236,31 @@ export default function AssistantEdit() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.agentName.trim()) {
       toast.error('Please enter agent name');
       return;
     }
+
+
+    // ⬇️ Add this block here
+    if (formData.synthesizerConfig.provider === "elevenlabs") {
+      formData.synthesizerConfig.provider_config = {
+        ...formData.synthesizerConfig.provider_config,
+        voice: formData.voiceName || formData.synthesizerConfig.provider_config.voice,
+        voice_id: formData.voiceId,
+        model: "eleven_multilingual_v2",
+        sampling_rate: "16000",
+      };
+    } else {
+      const {
+        stability, similarity_boost, speed, emotion, emotion_strength, voice_pause_model,
+        auto_punctuation_pause, dynamic_emotion_adaptation, use_speaker_boost, ...rest
+      } = formData.synthesizerConfig.provider_config;
+
+      formData.synthesizerConfig.provider_config = rest;
+    }
+
 
     updateMutation.mutate(formData);
   };
@@ -294,13 +344,13 @@ export default function AssistantEdit() {
                 <h2 className="text-2xl font-bold text-gray-900">Basic Information</h2>
               </div>
             </div>
-            
+
             <div className="p-8 md:p-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Assigned User */}
                 <div className="md:col-span-2">
                   <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
-                    Assigned User 
+                    Assigned User
                     <span className="ml-2 text-xs font-normal normal-case text-gray-500 tracking-normal">(Cannot be changed)</span>
                   </label>
                   <div className="relative">
@@ -559,8 +609,8 @@ export default function AssistantEdit() {
           </div>
 
           {/* Voice Synthesizer */}
-          <Step3VoiceSynthesizer 
-            formData={formData} 
+          <Step3VoiceSynthesizer
+            formData={formData}
             setFormData={setFormData}
             selectedUserIds={selectedUserIds}
           />
@@ -801,7 +851,7 @@ export default function AssistantEdit() {
         {/* Info Note */}
         <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
           <p className="text-sm text-[#306B25]">
-            <strong>Note:</strong> Changes will be saved to both the database and Bolna AI. 
+            <strong>Note:</strong> Changes will be saved to both the database and Bolna AI.
             The assigned user cannot be changed after creation.
           </p>
         </div>

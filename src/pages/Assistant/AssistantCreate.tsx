@@ -19,14 +19,14 @@ import { AssistantCreateSuccessModal } from '../../components/modals/assistantMo
 export default function AssistantCreate() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   // State
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [createdAssistantName, setCreatedAssistantName] = useState('');
-  
+
   const totalSteps = 5;
 
   // Fetch approved users
@@ -66,8 +66,18 @@ export default function AssistantCreate() {
       provider_config: {
         voice: 'Kajal',
         engine: 'neural',
-        sampling_rate: '8000',
-        language: 'hi-IN'
+        sampling_rate: '16000',
+        language: 'hi-IN',
+        stability: 90,
+        similarity_boost: 75,
+        speed: 96,
+        emotion: 'friendly',
+        emotion_strength: 50,
+        voice_pause_model: 'minimal',
+        auto_punctuation_pause: false,
+        dynamic_emotion_adaptation: true,
+        use_speaker_boost: true,
+
       },
       stream: true,
       buffer_size: 60,
@@ -80,7 +90,12 @@ export default function AssistantCreate() {
       stream: true,
       sampling_rate: 16000,
       encoding: 'linear16',
-      endpointing: 250
+      endpointing: 250,
+      interim_results: true,
+      punctuate: true,
+      smart_format: true
+
+
     },
     inputConfig: {
       provider: 'plivo',
@@ -92,7 +107,8 @@ export default function AssistantCreate() {
     },
     taskConfig: {
       hangup_after_silence: 6,
-      incremental_delay: 40,
+      incremental_delay: 60,
+      optimize_latency: true,
       number_of_words_for_interruption: 2,
       backchanneling: false,
       call_terminate: undefined // Optional - user must select
@@ -112,13 +128,13 @@ export default function AssistantCreate() {
     },
     onError: (error: unknown) => {
       const errorResponse = (error as { response?: { data?: { message?: string; errorDetail?: string } } })?.response?.data;
-      
+
       // Use the user-friendly message from backend, or the error detail, or fallback message
-      const message = errorResponse?.message 
+      const message = errorResponse?.message
         || errorResponse?.errorDetail
-        || (error as { message?: string })?.message 
+        || (error as { message?: string })?.message
         || 'Failed to create assistant';
-      
+
       toast.error(message, {
         duration: 6000, // Show error for 6 seconds since it might be detailed
         style: {
@@ -154,14 +170,14 @@ export default function AssistantCreate() {
         return false;
       }
     }
-    
+
     if (step === 2) {
       if (!formData.llmConfig.model.trim()) {
         toast.error('Please select a model');
         return false;
       }
     }
-    
+
     if (step === 3) {
       if (!formData.synthesizerConfig.provider.trim()) {
         toast.error('Please select a synthesizer provider');
@@ -176,7 +192,7 @@ export default function AssistantCreate() {
         return false;
       }
     }
-    
+
     if (step === 4) {
       if (!formData.transcriberConfig.provider.trim()) {
         toast.error('Please select transcriber provider');
@@ -199,14 +215,14 @@ export default function AssistantCreate() {
         return false;
       }
     }
-    
+
     if (step === 5) {
       if (formData.taskConfig.call_terminate === undefined || formData.taskConfig.call_terminate === null) {
         toast.error('Please set call termination duration');
         return false;
       }
     }
-    
+
     return true;
   };
 
@@ -226,7 +242,7 @@ export default function AssistantCreate() {
     <div className="min-h-screen bg-linear-to-br from-[#f0fdf4] via-[#dcfce7] to-[#f0fdf4] p-2 sm:p-4 lg:p-6 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div 
+        <div
           className="absolute inset-0"
           style={{
             backgroundImage: `
@@ -238,17 +254,17 @@ export default function AssistantCreate() {
           }}
         />
       </div>
-      
+
       <div className="max-w-4xl xl:max-w-6xl mx-auto relative z-10">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="bg-white border-b border-gray-200 shadow-xl rounded-lg lg:rounded-xl p-3 sm:p-4 lg:p-6 mb-3 sm:mb-4 lg:mb-6 overflow-hidden relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-5">
-            <div 
+            <div
               className="absolute inset-0"
               style={{
                 backgroundImage: `radial-gradient(circle at 20% 50%, #5DD149 2px, transparent 2px), radial-gradient(circle at 80% 20%, #306B25 2px, transparent 2px)`,
@@ -256,7 +272,7 @@ export default function AssistantCreate() {
               }}
             />
           </div>
-          
+
           <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="p-2 sm:p-3 bg-linear-to-br from-[#5DD149] to-[#306B25] rounded-lg sm:rounded-xl shadow-lg">
@@ -273,7 +289,7 @@ export default function AssistantCreate() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
               {/* Progress Ring */}
               <div className="relative w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16">
@@ -305,7 +321,7 @@ export default function AssistantCreate() {
                   </span>
                 </div>
               </div>
-              
+
               {/* Step Info */}
               <div className="flex flex-col items-start px-3 sm:px-4 py-2 bg-linear-to-r from-[#5DD149]/10 to-[#306B25]/10 rounded-lg sm:rounded-xl border-2 border-[#5DD149]/30">
                 <span className="text-xs font-medium text-gray-600">Current Step</span>
@@ -318,7 +334,7 @@ export default function AssistantCreate() {
         </motion.div>
 
         {/* Step Indicator */}
-        <motion.div 
+        <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -328,7 +344,7 @@ export default function AssistantCreate() {
         </motion.div>
 
         {/* Form Container */}
-        <motion.div 
+        <motion.div
           className="bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-2xl border-2 border-[#5DD149]/20 p-3 sm:p-4 md:p-6 lg:p-8 relative overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -338,10 +354,10 @@ export default function AssistantCreate() {
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-linear-to-br from-[#5DD149]/15 to-[#306B25]/10 rounded-full blur-2xl" />
           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-linear-to-tr from-[#5DD149]/10 to-[#306B25]/15 rounded-full blur-3xl" />
           <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-linear-to-bl from-[#5DD149]/8 to-[#306B25]/5 rounded-full blur-xl" />
-          
+
           {/* Subtle grid pattern overlay */}
           <div className="absolute inset-0 opacity-5">
-            <div 
+            <div
               className="absolute inset-0"
               style={{
                 backgroundImage: `
@@ -352,17 +368,17 @@ export default function AssistantCreate() {
               }}
             />
           </div>
-          
+
           <div className="relative">
             {/* Step Title */}
-            <motion.div 
+            <motion.div
               className="mb-6 sm:mb-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
               <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-        
+
                 <div className="flex-1">
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-[#306B25] to-[#5DD149] bg-clip-text text-transparent">
                     {currentStep === 1 && "User Selection & Basic Info"}
@@ -380,11 +396,11 @@ export default function AssistantCreate() {
                   </p>
                 </div>
               </div>
-              
+
               {/* Enhanced Progress Bar */}
               <div className="relative">
                 <div className="w-full bg-gray-200/50 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
-                  <motion.div 
+                  <motion.div
                     className="bg-linear-to-r from-[#5DD149] via-[#4BC13B] to-[#306B25] h-full rounded-full relative overflow-hidden shadow-sm"
                     initial={{ width: 0 }}
                     animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
@@ -517,6 +533,23 @@ export default function AssistantCreate() {
                 // Ensure userId is set from selected user
                 if (selectedUserIds.length > 0) {
                   setFormData(prev => ({ ...prev, userId: selectedUserIds[0] }));
+                }
+                // Normalize ElevenLabs config before submit
+                if (formData.synthesizerConfig.provider === "elevenlabs") {
+                  formData.synthesizerConfig.provider_config = {
+                    ...formData.synthesizerConfig.provider_config,
+                    voice: formData.voiceName || formData.synthesizerConfig.provider_config.voice,
+                    voice_id: formData.voiceId,
+                    model: "eleven_multilingual_v2",
+                    sampling_rate: "16000",
+                  };
+                } else {
+                  const {
+                    stability, similarity_boost, speed, emotion, emotion_strength, voice_pause_model,
+                    auto_punctuation_pause, dynamic_emotion_adaptation, use_speaker_boost, ...rest
+                  } = formData.synthesizerConfig.provider_config;
+
+                  formData.synthesizerConfig.provider_config = rest;
                 }
 
                 createMutation.mutate({ ...formData, userId: selectedUserIds[0] });

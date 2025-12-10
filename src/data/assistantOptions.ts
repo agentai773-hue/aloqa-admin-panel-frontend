@@ -375,7 +375,7 @@ export const SLIDER_CONFIGS = {
   },
   bufferSize: {
     min: 10,
-    max: 200,
+    max: 1000,
     step: 10,
     default: 60,
     label: 'Buffer Size',

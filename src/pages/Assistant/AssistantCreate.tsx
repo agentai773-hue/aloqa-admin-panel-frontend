@@ -91,7 +91,7 @@ export default function AssistantCreate() {
       sampling_rate: 16000,
       encoding: 'linear16',
       endpointing: 250,
-      interim_results: true,
+      interim_results: false,
       punctuate: true,
       smart_format: true
 

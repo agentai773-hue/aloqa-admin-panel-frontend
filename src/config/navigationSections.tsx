@@ -6,6 +6,7 @@ import {
   PlusCircle,
   Phone,
   PhoneOutgoing,
+  PhoneCall,
   Mic,
   UserCheck,
   List,
@@ -97,5 +98,13 @@ export const navigationSections: NavSection[] = [
         icon: <UserCheck className="h-4 w-4" />,
       },
     ],
+  },
+  {
+    id: 'calls',
+    name: 'Make Sample Call',
+    icon: <PhoneCall className="h-5 w-5" />,
+    isExpandable: false,
+    href: '/sample-call',
+    isActive: false,
   },
 ];

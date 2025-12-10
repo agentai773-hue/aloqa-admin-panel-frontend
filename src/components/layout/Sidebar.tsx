@@ -64,6 +64,8 @@ function SidebarContent() {
       return { title: 'Buy Phone Number', subtitle: 'Purchase phone number' };
     } else if (path === '/phone-numbers-assign') {
       return { title: 'Assign Phone Number', subtitle: 'Assign purchased numbers to users' };
+    } else if (path === '/sample-call') {
+      return { title: 'Make Sample Call', subtitle: 'Test your assistants with voice calls' };
     } else if (path === '/admin/profile') {
       return { title: 'Admin Profile', subtitle: 'Manage your account settings and preferences' };
     }

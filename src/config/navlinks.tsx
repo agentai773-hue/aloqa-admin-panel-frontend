@@ -7,6 +7,7 @@ import {
   PlusCircle,
   Phone,
   PhoneOutgoing,
+  PhoneCall,
   Mic,
   UserCheck,
 } from 'lucide-react';
@@ -62,5 +63,10 @@ export const navigationItems: NavItem[] = [
     name: 'Voice Assignments',
     href: '/voice-assignments',
     icon: <UserCheck className="h-5 w-5" />
+  },
+  {
+    name: 'Make Sample Call',
+    href: '/sample-call',
+    icon: <PhoneCall className="h-5 w-5" />
   },
 ];

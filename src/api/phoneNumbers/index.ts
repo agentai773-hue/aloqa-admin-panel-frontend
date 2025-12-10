@@ -82,37 +82,37 @@ export interface GetAllPhoneNumbersParams {
 export const phoneNumbersAPI = {
   // Get purchased phone numbers from backend (using Aloqa_TOKEN)
   getPurchasedNumbers: async (): Promise<PurchasedNumber[]> => {
-    const response = await axios.get<{ success: boolean; data: PurchasedNumber[] }>('/phone-numbers/purchased');
+    const response = await axios.get<{ success: boolean; data: PurchasedNumber[] }>('/admin/phone-numbers/list/purchased');
     return response.data.data;
   },
 
   // Search available phone numbers from Bolna
   searchPhoneNumbers: async (params: SearchPhoneNumbersParams): Promise<PhoneNumberSearch[]> => {
-    const response = await axios.get<{ success: boolean; data: PhoneNumberSearch[] }>('/phone-numbers/search', { params });
+    const response = await axios.get<{ success: boolean; data: PhoneNumberSearch[] }>('/admin/phone-numbers/search', { params });
     return response.data.data;
   },
 
   // Buy a phone number from Bolna
   buyPhoneNumber: async (data: BuyPhoneNumberParams): Promise<PhoneNumber> => {
-    const response = await axios.post<{ success: boolean; data: PhoneNumber }>('/phone-numbers/buy', data);
+    const response = await axios.post<{ success: boolean; data: PhoneNumber }>('/admin/phone-numbers/buy', data);
     return response.data.data;
   },
 
   // Assign phone number to user
   assignPhoneNumber: async (data: AssignPhoneNumberParams): Promise<{ success: boolean; message: string }> => {
-    const response = await axios.post<{ success: boolean; message: string }>('/phone-numbers/assign', data);
+    const response = await axios.post<{ success: boolean; message: string }>('/admin/phone-numbers/assign', data);
     return response.data;
   },
 
   // Get assigned phone numbers
   getAssignedNumbers: async (): Promise<AssignedPhoneNumber[]> => {
-    const response = await axios.get<{ success: boolean; data: AssignedPhoneNumber[] }>('/phone-numbers/assigned');
+    const response = await axios.get<{ success: boolean; data: AssignedPhoneNumber[] }>('/admin/phone-numbers/list/assigned');
     return response.data.data;
   },
 
   // Get all phone numbers with optional filters
   getAllPhoneNumbers: async (params: GetAllPhoneNumbersParams): Promise<PhoneNumber[]> => {
-    const response = await axios.get<{ success: boolean; data: PhoneNumber[] }>('/phone-numbers', { params });
+    const response = await axios.get<{ success: boolean; data: PhoneNumber[] }>('/admin/phone-numbers', { params });
     return response.data.data;
   }
 };

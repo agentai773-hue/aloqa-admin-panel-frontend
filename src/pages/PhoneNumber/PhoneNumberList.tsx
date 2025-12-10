@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { phoneNumbersAPI, usersAPI } from '../../api';
 import type { PurchasedNumber } from '../../api';
 import { TableSkeleton, CardSkeleton } from '../../components/ui/SkeletonLoader';
+import { usePhoneNumbers } from '../../hooks/usePhoneNumbers';
 import toast from 'react-hot-toast';
 
 export default function PhoneNumberList() {
@@ -21,11 +22,12 @@ export default function PhoneNumberList() {
 
   const users = usersResponse?.data?.users || [];
 
-  // Fetch purchased phone numbers from backend (using Aloqa_TOKEN)
-  const { data: purchasedNumbers = [], isLoading: isPurchasedLoading, refetch: refetchPurchased } = useQuery({
-    queryKey: ['purchasedNumbers'],
-    queryFn: () => phoneNumbersAPI.getPurchasedNumbers(),
-  });
+  // Use the new usePhoneNumbers hook
+  const { 
+    purchasedNumbers = [], 
+    isLoading: isPurchasedLoading, 
+    refetchPurchased 
+  } = usePhoneNumbers();
 
   // Fetch available phone numbers for buying (only when modal is open)
   const { data: availableNumbers = [], isLoading: isAvailableLoading, refetch: refetchAvailable } = useQuery({

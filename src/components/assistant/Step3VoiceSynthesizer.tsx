@@ -30,7 +30,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
 
   // Fetch user's voice assignments (only when dynamic mode and user is selected)
   const { data: userVoicesData, isLoading: loadingUserVoices, error: voicesError } = useUserVoiceAssignments(
-    selectedUserId, 
+    selectedUserId,
     { status: 'active' },
     { enabled: voiceSelectionMode === 'dynamic' && !!selectedUserId }
   );
@@ -43,8 +43,8 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
   const userVoices: VoiceAssignment[] = Array.isArray(userVoicesData?.data)
     ? userVoicesData.data
     : Array.isArray(userVoicesData)
-    ? userVoicesData
-    : [];
+      ? userVoicesData
+      : [];
 
   // Get available voices based on selected provider
   const getVoiceOptions = () => {
@@ -64,11 +64,11 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
     if (formData.synthesizerConfig.provider === 'elevenlabs') {
       // Find the selected voice to get its voice_id
       const selectedVoice = allVoices.find((voice: Voice) => voice.name === voiceName);
-      
+
       if (selectedVoice) {
         // Clean voice_id (remove elevenlabs- prefix if present)
-        const cleanVoiceId = selectedVoice.voice_id.startsWith('elevenlabs-') 
-          ? selectedVoice.voice_id.replace('elevenlabs-', '') 
+        const cleanVoiceId = selectedVoice.voice_id.startsWith('elevenlabs-')
+          ? selectedVoice.voice_id.replace('elevenlabs-', '')
           : selectedVoice.voice_id;
 
         setFormData(prev => ({
@@ -81,8 +81,8 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
               ...prev.synthesizerConfig.provider_config,
               voice: voiceName,           // Voice name for Bolna
               voice_id: cleanVoiceId,     // Clean voice ID for Bolna
-              model: "eleven_turbo_v2_5", // Required model for ElevenLabs
-              sampling_rate: "8000"       // Required sampling rate
+              model: "eleven_multilingual_v2", // Required model for ElevenLabs
+              sampling_rate: "16000"       // Required sampling rate
             }
           }
         }));
@@ -105,7 +105,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
   // Handle voice selection mode change
   const handleVoiceModeChange = (mode: 'manual' | 'dynamic') => {
     setVoiceSelectionMode(mode);
-    
+
     // Clear voice selections when switching modes
     if (mode === 'manual') {
       setFormData(prev => ({
@@ -143,10 +143,10 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
   // Handle dynamic voice selection
   const handleDynamicVoiceSelect = (voiceId: string, voiceName: string) => {
     // Remove 'elevenlabs-' prefix if present from voiceId
-    const cleanVoiceId = voiceId.startsWith('elevenlabs-') 
-      ? voiceId.replace('elevenlabs-', '') 
+    const cleanVoiceId = voiceId.startsWith('elevenlabs-')
+      ? voiceId.replace('elevenlabs-', '')
       : voiceId;
-    
+
     setFormData(prev => ({
       ...prev,
       voiceId: cleanVoiceId,  // Store clean ID
@@ -158,8 +158,8 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
           ...prev.synthesizerConfig.provider_config,
           voice: voiceName,           // ✅ Voice name in voice field
           voice_id: cleanVoiceId,     // ✅ Clean voice ID in voice_id field
-          model: "eleven_turbo_v2_5", // Required model for ElevenLabs
-          sampling_rate: "8000"       // Required sampling rate
+          model: "eleven_multilingual_v2", // Required model for ElevenLabs
+          sampling_rate: "16000"       // Required sampling rate
         }
       }
     }));
@@ -173,13 +173,12 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
           <Mic className="h-5 w-5" />
           Voice Selection Mode
         </h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${
-            voiceSelectionMode === 'manual' 
-              ? 'border-[#5DD149] bg-green-50' 
-              : 'border-gray-200 hover:border-gray-300'
-          }`}>
+          <label className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${voiceSelectionMode === 'manual'
+            ? 'border-[#5DD149] bg-green-50'
+            : 'border-gray-200 hover:border-gray-300'
+            }`}>
             <input
               type="radio"
               value="manual"
@@ -188,11 +187,10 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
               className="sr-only"
             />
             <div className="flex items-center space-x-3">
-              <div className={`w-4 h-4 rounded-full border-2 ${
-                voiceSelectionMode === 'manual' 
-                  ? 'border-[#5DD149] bg-[#5DD149]' 
-                  : 'border-gray-300'
-              }`}>
+              <div className={`w-4 h-4 rounded-full border-2 ${voiceSelectionMode === 'manual'
+                ? 'border-[#5DD149] bg-[#5DD149]'
+                : 'border-gray-300'
+                }`}>
                 {voiceSelectionMode === 'manual' && (
                   <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5" />
                 )}
@@ -204,11 +202,10 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
             </div>
           </label>
 
-          <label className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${
-            voiceSelectionMode === 'dynamic' 
-              ? 'border-[#5DD149] bg-green-50' 
-              : 'border-gray-200 hover:border-gray-300'
-          }`}>
+          <label className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${voiceSelectionMode === 'dynamic'
+            ? 'border-[#5DD149] bg-green-50'
+            : 'border-gray-200 hover:border-gray-300'
+            }`}>
             <input
               type="radio"
               value="dynamic"
@@ -217,11 +214,10 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
               className="sr-only"
             />
             <div className="flex items-center space-x-3">
-              <div className={`w-4 h-4 rounded-full border-2 ${
-                voiceSelectionMode === 'dynamic' 
-                  ? 'border-[#5DD149] bg-[#5DD149]' 
-                  : 'border-gray-300'
-              }`}>
+              <div className={`w-4 h-4 rounded-full border-2 ${voiceSelectionMode === 'dynamic'
+                ? 'border-[#5DD149] bg-[#5DD149]'
+                : 'border-gray-300'
+                }`}>
                 {voiceSelectionMode === 'dynamic' && (
                   <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5" />
                 )}
@@ -242,7 +238,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
             <Volume2 className="h-5 w-5" />
             Select User Voice
           </h4>
-          
+
           {!selectedUserId ? (
             <div className="text-center py-8">
               <User className="h-12 w-12 text-gray-400 mx-auto mb-3" />
@@ -274,18 +270,16 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
                 <div
                   key={voiceAssignment._id}
                   onClick={() => handleDynamicVoiceSelect(voiceAssignment.voiceId, voiceAssignment.voiceName)}
-                  className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${
-                    formData.voiceId === voiceAssignment.voiceId
-                      ? 'border-[#5DD149] bg-green-50'
-                      : 'border-gray-200 hover:border-[#5DD149] hover:bg-green-50'
-                  }`}
+                  className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${formData.voiceId === voiceAssignment.voiceId
+                    ? 'border-[#5DD149] bg-green-50'
+                    : 'border-gray-200 hover:border-[#5DD149] hover:bg-green-50'
+                    }`}
                 >
                   <div className="text-center">
-                    <div className={`w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center ${
-                      formData.voiceId === voiceAssignment.voiceId
-                        ? 'bg-[#5DD149] text-white'
-                        : 'bg-gray-100 text-gray-600'
-                    }`}>
+                    <div className={`w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center ${formData.voiceId === voiceAssignment.voiceId
+                      ? 'bg-[#5DD149] text-white'
+                      : 'bg-gray-100 text-gray-600'
+                      }`}>
                       <span className="text-2xl font-bold">
                         {voiceAssignment.voiceName.charAt(0).toUpperCase()}
                       </span>
@@ -294,7 +288,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
                     <p className="text-sm text-gray-600 mb-1">{voiceAssignment.voiceAccent}</p>
                     <p className="text-sm text-gray-600">{voiceAssignment.voiceModel}</p>
                     <p className="text-xs text-gray-500 mt-2">{voiceAssignment.projectName}</p>
-                    
+
                     {formData.voiceId === voiceAssignment.voiceId && (
                       <div className="mt-2 flex justify-center">
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -313,12 +307,14 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
       {/* Manual Voice Configuration */}
       {voiceSelectionMode === 'manual' && (
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+
+
           <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
             <Settings className="h-5 w-5" />
             Voice Configuration
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
+
             {/* Provider */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -330,19 +326,19 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
                   const newProvider = e.target.value;
                   setFormData(prev => ({
                     ...prev,
-                    synthesizerConfig: { 
-                      ...prev.synthesizerConfig, 
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
                       provider: newProvider,
                       provider_config: {
                         ...prev.synthesizerConfig.provider_config,
                         voice: newProvider === 'elevenlabs' ? (allVoices[0]?.name || 'Rachel') : 'Kajal',
                         engine: newProvider === 'polly' ? 'neural' : prev.synthesizerConfig.provider_config.engine,
                         voice_id: newProvider === 'polly' ? undefined : prev.synthesizerConfig.provider_config.voice_id,
-                        model: newProvider === 'elevenlabs' ? "eleven_turbo_v2_5" : undefined
+                        model: newProvider === 'elevenlabs' ? "eleven_multilingual_v2" : undefined
                       }
                     }
                   }));
-                  
+
                   // If switching to ElevenLabs and voices are loaded, set the first voice with proper voice_id
                   if (newProvider === 'elevenlabs' && allVoices.length > 0) {
                     handleManualVoiceSelect(allVoices[0].name);
@@ -377,7 +373,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
 
               {formData.synthesizerConfig.provider === 'elevenlabs' && formData.voiceId && (
                 <p className="text-xs text-gray-500 mt-2">
-                  🎯 Voice ID: {formData.voiceId} | Model: eleven_turbo_v2_5
+                  🎯 Voice ID: {formData.voiceId} | Model: eleven_multilingual_v2
                 </p>
               )}
             </div>
@@ -464,12 +460,140 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
               />
               <p className="text-xs text-gray-500 mt-2">{SLIDER_CONFIGS.bufferSize.description}</p>
             </div>
+            {formData.synthesizerConfig.provider === 'elevenlabs' && (
+              <>
+                {/* Stability */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Stability (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.stability || 0.5}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            stability: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                  <p className="text-xs text-gray-500">Recommended: 0.70 - 0.95</p>
+                </div>
+
+                {/* Similarity Boost */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Similarity Boost (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.similarity_boost || 0.5}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            similarity_boost: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                </div>
+
+                {/* Speed */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Speed (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.speed || 0.95}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            speed: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                </div>
+
+                {/* Emotion Strength */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Emotion Strength (0 - 1)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={formData.synthesizerConfig.provider_config.emotion_strength || 0.5}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            emotion_strength: Number(e.target.value)
+                          }
+                        }
+                      }))
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+                  />
+                </div>
+
+                {/* Speaker Boost */}
+                <div className="flex items-center space-x-2 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.synthesizerConfig.provider_config.use_speaker_boost || false}
+                    onChange={(e) =>
+                      setFormData(prev => ({
+                        ...prev,
+                        synthesizerConfig: {
+                          ...prev.synthesizerConfig,
+                          provider_config: {
+                            ...prev.synthesizerConfig.provider_config,
+                            use_speaker_boost: e.target.checked
+                          }
+                        }
+                      }))
+                    }
+                    className="w-5 h-5 rounded border-gray-300 text-[#5DD149] focus:ring-[#5DD149]"
+                  />
+                  <label className="text-sm font-medium text-gray-700">Use Speaker Boost</label>
+                </div>
+              </>
+            )}
+
+
           </div>
         </div>
       )}
 
       {/* Voice Selection Summary */}
-      {voiceSelectionMode === 'dynamic' && formData.voiceId && (
+      {/* {voiceSelectionMode === 'dynamic' && formData.voiceId && (
         <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#5DD149] flex items-center justify-center">
@@ -483,9 +607,253 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
             </div>
           </div>
         </div>
+      )} */}
+
+      {/* Dynamic Assigned Voice Configuration (Read-Only Like Manual Layout) */}
+      {voiceSelectionMode === 'dynamic' && formData.voiceName && (
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h4 className="text-lg font-bold text-[#306B25] mb-4 flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Assigned Voice Configuration
+          </h4>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            {/* Provider */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Provider *</label>
+              <input
+                value={formData.synthesizerConfig.provider}
+                disabled
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-500"
+              />
+            </div>
+
+            {/* Voice */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Voice *</label>
+              <input
+                value={formData.voiceName}
+                disabled
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-500"
+              />
+            </div>
+
+            {/* Model */}
+            {formData.synthesizerConfig.provider_config.model && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Model</label>
+                <input
+                  value={formData.synthesizerConfig.provider_config.model}
+                  disabled
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-500"
+                />
+              </div>
+            )}
+
+            {/* Voice ID */}
+            {formData.voiceId && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Voice ID</label>
+                <input
+                  value={formData.voiceId}
+                  disabled
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-500"
+                />
+              </div>
+            )}
+
+            {/* Audio Format */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Audio Format</label>
+              <input
+                value={formData.synthesizerConfig.audio_format}
+                disabled
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-500"
+              />
+            </div>
+
+            {/* Buffer Size */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Buffer Size</label>
+              <input
+                type="number"
+                min={SLIDER_CONFIGS.bufferSize.min}
+                max={SLIDER_CONFIGS.bufferSize.max}
+                step={SLIDER_CONFIGS.bufferSize.step}
+                value={formData.synthesizerConfig.buffer_size}
+                onChange={(e) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
+                      buffer_size: parseInt(e.target.value) || 0
+                    }
+                  }))
+                }
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-[#5DD149] focus:border-[#5DD149]"
+              />
+              <p className="text-xs text-gray-500 mt-1">{SLIDER_CONFIGS.bufferSize.description}</p>
+            </div>
+            {/* Stability */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Stability (0 - 1)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.stability || 0.5}
+                onChange={(e) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
+                      provider_config: {
+                        ...prev.synthesizerConfig.provider_config,
+                        stability: Number(e.target.value)
+                      }
+                    }
+                  }))
+                }
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+              />
+            </div>
+
+            {/* Similarity Boost */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Similarity Boost (0 - 1)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.similarity_boost || 0.5}
+                onChange={(e) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
+                      provider_config: {
+                        ...prev.synthesizerConfig.provider_config,
+                        similarity_boost: Number(e.target.value)
+                      }
+                    }
+                  }))
+                }
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+              />
+            </div>
+
+            {/* Speed */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Speed (0 - 1)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.speed || 0.95}
+                onChange={(e) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
+                      provider_config: {
+                        ...prev.synthesizerConfig.provider_config,
+                        speed: Number(e.target.value)
+                      }
+                    }
+                  }))
+                }
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+              />
+            </div>
+
+            {/* Emotion */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Emotion
+              </label>
+              <select
+                value={formData.synthesizerConfig.provider_config.emotion}
+                onChange={(e) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
+                      provider_config: { ...prev.synthesizerConfig.provider_config, emotion: e.target.value }
+                    }
+                  }))
+                }
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+              >
+                <option value="neutral">Neutral</option>
+                <option value="friendly">Friendly</option>
+                <option value="angry">Angry</option>
+                <option value="sad">Sad</option>
+              </select>
+            </div>
+
+            {/* Emotion Strength */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Emotion Strength (0 - 1)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={1}
+                step={0.01}
+                value={formData.synthesizerConfig.provider_config.emotion_strength || 0.5}
+                onChange={(e) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
+                      provider_config: {
+                        ...prev.synthesizerConfig.provider_config,
+                        emotion_strength: Number(e.target.value)
+                      }
+                    }
+                  }))
+                }
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-[#5DD149] focus:border-[#5DD149]"
+              />
+            </div>
+
+            {/* Speaker Boost */}
+            <div className="flex items-center space-x-2 mt-2">
+              <input
+                type="checkbox"
+                checked={formData.synthesizerConfig.provider_config.use_speaker_boost}
+                onChange={(e) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    synthesizerConfig: {
+                      ...prev.synthesizerConfig,
+                      provider_config: { ...prev.synthesizerConfig.provider_config, use_speaker_boost: e.target.checked }
+                    }
+                  }))
+                }
+                className="w-5 h-5 rounded border-gray-300 text-[#5DD149] focus:ring-[#5DD149]"
+              />
+              <label className="text-sm font-medium text-gray-700">Use Speaker Boost</label>
+            </div>
+
+
+          </div>
+        </div>
       )}
 
-  
+
+
     </div>
   );
 }

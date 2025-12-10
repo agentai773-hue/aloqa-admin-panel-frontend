@@ -29,6 +29,15 @@ export interface SynthesizerProviderConfig {
   language: string;
   model?: string;
   voice_id?: string; // For ElevenLabs voice ID
+    stability?: number;
+  similarity_boost?: number;
+  speed?: number;
+  emotion?: string;
+  emotion_strength?: number;
+  voice_pause_model?: string;
+  auto_punctuation_pause?: boolean;
+  dynamic_emotion_adaptation?: boolean;
+  use_speaker_boost?: boolean;
 }
 
 export interface SynthesizerConfig {
@@ -37,6 +46,7 @@ export interface SynthesizerConfig {
   stream: boolean;
   buffer_size: number;
   audio_format: string;
+
 }
 
 export interface TranscriberConfig {
@@ -47,6 +57,9 @@ export interface TranscriberConfig {
   sampling_rate: number;
   encoding: string;
   endpointing: number;
+  interim_results:boolean;
+  punctuate:boolean;
+  smart_format:boolean;
 }
 
 export interface TaskConfig {
@@ -57,10 +70,9 @@ export interface TaskConfig {
   call_terminate?: number;
   hangup_after_llm_call?: boolean;
   call_cancellation_prompt?: string | null;
-  backchanneling_message_gap?: number;
-  backchanneling_start_delay?: number;
   ambient_noise?: boolean;
   ambient_noise_track?: string;
+  optimize_latency:boolean;
   voicemail?: boolean;
   inbound_limit?: number;
   whitelist_phone_numbers?: string[];

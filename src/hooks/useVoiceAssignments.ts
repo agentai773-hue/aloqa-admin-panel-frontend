@@ -35,9 +35,7 @@ export function useUserVoiceAssignments(
   return useQuery({
     queryKey: voiceAssignmentKeys.userAssignments(userId, filters),
     queryFn: async () => {
-      console.log('🔍 Fetching voice assignments for user:', userId, 'with filters:', filters);
       const result = await voiceAssignmentAPI.getAssignmentsByUser(userId, filters);
-      console.log('📊 Voice assignments result:', result);
       return result;
     },
     enabled: !!userId && (options?.enabled !== false),

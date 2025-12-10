@@ -37,9 +37,7 @@ export const useAssistants = (options: UseAssistantsOptions = {}) => {
         agentType,
       };
 
-      console.log('🚀 Fetching assistants with params:', params);
       const response = await assistantsAPI.getAllAssistants(params);
-      console.log('📊 Assistants response:', response);
       
       if (response.success && response.data) {
         return response.data;

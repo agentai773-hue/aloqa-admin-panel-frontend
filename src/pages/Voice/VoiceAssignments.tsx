@@ -45,7 +45,6 @@ export default function VoiceAssignments() {
     }),
     staleTime: 30000, // Cache for 30 seconds
   });
-  console.log('Fetched assignments data:', assignmentsData); // Debug log
 
   // Delete assignment mutation
   const deleteMutation = useMutation({
@@ -94,14 +93,7 @@ const assignments = normalizedData.data || [];
 const pagination = normalizedData.pagination;
 
 
-
-  // Debug logging to see what we're getting
-  console.log('VoiceAssignments - Debug Info:',pagination);
-  console.log('isLoading:', isLoading);
-  console.log('error:', error);
-  console.log('assignmentsData:', assignmentsData);
-  console.log('assignments:', assignments);
-  console.log('assignments.length:', assignments?.length);
+ 
 
   if (error) {
     return (

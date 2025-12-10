@@ -28,7 +28,6 @@ export default function AdminLogin() {
 
     try {
       const result = await login(email, password);
-      console.log('✅ Login result:', result);
     } catch (error) {
       console.error('❌ Login error:', error);
     }

@@ -92,7 +92,7 @@ export default function AssistantEdit() {
       sampling_rate: 16000,
       encoding: 'linear16',
       endpointing: 250,
-      interim_results: true,
+      interim_results: false,
       punctuate: true,
       smart_format: true
     },
@@ -175,7 +175,7 @@ export default function AssistantEdit() {
           sampling_rate: assistant.transcriberConfig?.sampling_rate ?? 16000,
           encoding: assistant.transcriberConfig?.encoding || 'linear16',
           endpointing: assistant.transcriberConfig?.endpointing ?? 250,
-          interim_results: assistant.transcriberConfig?.interim_results ?? true,
+          interim_results: assistant.transcriberConfig?.interim_results ?? false,
           punctuate: assistant.transcriberConfig?.punctuate ?? true,
           smart_format: assistant.transcriberConfig?.smart_format ?? true,
 

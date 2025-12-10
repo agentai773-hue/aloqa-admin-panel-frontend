@@ -3,20 +3,29 @@ export interface SampleCallData {
   phoneNumber: string;
   recipientName: string;
   assistantId: string;
+  [key: string]: unknown; // Index signature to make it compatible with Record<string, unknown>
 }
 
 export interface SampleCallResponse {
   success: boolean;
   message: string;
   data?: {
-    callId: string;
+    execution_id: string;
     status: string;
-    leadData?: {
-      firstName: string;
-      phoneNumber: string;
-      assistantId: string;
+    bolna_message: string;
+    assistant: {
+      id: string;
+      name: string;
+      bolna_agent_id: string;
+    };
+    call_details: {
+      recipient_phone: string;
+      from_phone: string;
+      recipient_name: string;
+      initiated_at: string;
     };
   };
+  timestamp?: string;
 }
 
 export interface CallHistoryFilters {

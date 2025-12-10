@@ -540,7 +540,7 @@ export default function AssistantCreate() {
                     ...formData.synthesizerConfig.provider_config,
                     voice: formData.voiceName || formData.synthesizerConfig.provider_config.voice,
                     voice_id: formData.voiceId,
-                    model: "eleven_multilingual_v2",
+                    model: "eleven_flash_v2_5",
                     sampling_rate: "16000",
                   };
                 } else {

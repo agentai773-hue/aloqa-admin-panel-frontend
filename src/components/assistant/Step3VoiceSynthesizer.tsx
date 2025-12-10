@@ -81,7 +81,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
               ...prev.synthesizerConfig.provider_config,
               voice: voiceName,           // Voice name for Bolna
               voice_id: cleanVoiceId,     // Clean voice ID for Bolna
-              model: "eleven_multilingual_v2", // Required model for ElevenLabs
+              model: "eleven_flash_v2_5", // Required model for ElevenLabs
               sampling_rate: "16000"       // Required sampling rate
             }
           }
@@ -158,7 +158,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
           ...prev.synthesizerConfig.provider_config,
           voice: voiceName,           // ✅ Voice name in voice field
           voice_id: cleanVoiceId,     // ✅ Clean voice ID in voice_id field
-          model: "eleven_multilingual_v2", // Required model for ElevenLabs
+          model: "eleven_flash_v2_5", // Required model for ElevenLabs
           sampling_rate: "16000"       // Required sampling rate
         }
       }
@@ -334,7 +334,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
                         voice: newProvider === 'elevenlabs' ? (allVoices[0]?.name || 'Rachel') : 'Kajal',
                         engine: newProvider === 'polly' ? 'neural' : prev.synthesizerConfig.provider_config.engine,
                         voice_id: newProvider === 'polly' ? undefined : prev.synthesizerConfig.provider_config.voice_id,
-                        model: newProvider === 'elevenlabs' ? "eleven_multilingual_v2" : undefined
+                        model: newProvider === 'elevenlabs' ? "eleven_flash_v2_5" : undefined
                       }
                     }
                   }));
@@ -373,7 +373,7 @@ export default function Step3VoiceSynthesizer({ formData, setFormData, selectedU
 
               {formData.synthesizerConfig.provider === 'elevenlabs' && formData.voiceId && (
                 <p className="text-xs text-gray-500 mt-2">
-                  🎯 Voice ID: {formData.voiceId} | Model: eleven_multilingual_v2
+                  🎯 Voice ID: {formData.voiceId} | Model: eleven_flash_v2_5
                 </p>
               )}
             </div>

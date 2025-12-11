@@ -2,7 +2,36 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+// Get API URL with fallback and validation
+const getApiUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  const fallbackUrl = 'http://localhost:8080/api';
+  
+  // If no environment URL, use fallback
+  if (!envUrl) {
+    console.warn('⚠️ VITE_API_URL not set, using fallback:', fallbackUrl);
+    return fallbackUrl;
+  }
+  
+  // Validate URL format
+  if (!envUrl.startsWith('http://') && !envUrl.startsWith('https://')) {
+    console.error('❌ Invalid VITE_API_URL format:', envUrl);
+    return fallbackUrl;
+  }
+  
+  return envUrl;
+};
+
+const API_BASE_URL = getApiUrl();
+
+// Enhanced logging for debugging production issues
+console.log('🔧 Admin Panel API Configuration:', {
+  'Environment': import.meta.env.MODE || 'unknown',
+  'VITE_API_URL (raw)': import.meta.env.VITE_API_URL,
+  'API_BASE_URL (final)': API_BASE_URL,
+  'Is Production': import.meta.env.PROD,
+  'Is Development': import.meta.env.DEV
+});
 
 export interface ValidationError {
   field: string;

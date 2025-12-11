@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 // Get API URL with fallback and validation
 const getApiUrl = (): string => {
   const envUrl = import.meta.env.VITE_API_URL;
-  const fallbackUrl = 'http://localhost:8080/api';
+  const fallbackUrl = import.meta.env.PROD ? 'https://aloqa-backend-production.up.railway.app/api' : 'http://localhost:8080/api';
   
   // If no environment URL, use fallback
   if (!envUrl) {
@@ -13,13 +13,21 @@ const getApiUrl = (): string => {
     return fallbackUrl;
   }
   
-  // Validate URL format
+  // Auto-fix URL format by adding https:// if missing
+  let fixedUrl = envUrl;
   if (!envUrl.startsWith('http://') && !envUrl.startsWith('https://')) {
-    console.error('❌ Invalid VITE_API_URL format:', envUrl);
-    return fallbackUrl;
+    fixedUrl = 'https://' + envUrl;
+    console.log('🔧 Fixed URL by adding https://', { original: envUrl, fixed: fixedUrl });
   }
   
-  return envUrl;
+  // Validate the fixed URL
+  try {
+    new URL(fixedUrl);
+    return fixedUrl;
+  } catch (error) {
+    console.error('❌ Invalid URL format even after fixing:', fixedUrl, error);
+    return fallbackUrl;
+  }
 };
 
 const API_BASE_URL = getApiUrl();
